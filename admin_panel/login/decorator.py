@@ -17,20 +17,23 @@ def dashboard_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("admin_panel:dashboard")
+              
+                return redirect("home")
             else:
-                return render(request, "login/login.html", {"error": "Invalid credentials"})
+
+                return render(request,"login/login.html")
         except:
+            print('bbb')
             usertye = Operators.objects.filter(username=username)
             if usertye:
                 if usertye.first().active:
                     login(request, user)
-                    return redirect("dashboard")
+                    return redirect("home")
             else:
                 if user is not None:
                     login(request, user)
-                    return redirect("dashboard")
-    return render(request, "dashboard/login.html")
+                    return redirect("home")
+    return render(request,"login/login.html")
 
 
 @login_required_decorator

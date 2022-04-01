@@ -90,6 +90,11 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+      let input = document.getElementById("currency")
+      let edit = document.getElementById("edit").addEventListener("click", () => input.removeAttribute("readonly"));
+
+    </script>
     {% block javascript %}{% endblock %}
   </body>
 </html>
