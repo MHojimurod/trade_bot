@@ -5,13 +5,13 @@ from admin_panel.models import Fillials
 
 
 def create_fillial(request):
-    model = Fillials
+    model = Fillials()
     form = FillialsForm(request.POST,instance=model)
     if form.is_valid():
         form.save()
-        return redirect('fillials')
+        return redirect('/fillials/list')
     ctx = {'form': form}
-    return render(request, 'dashboard/fillial/create.html', ctx)
+    return render(request, 'dashboard/fillials/create.html', ctx)
 
 def list_fillial(request):
     fillials = Fillials.objects.all()
@@ -23,6 +23,11 @@ def edit_fillial(request, id):
     form = FillialsForm(request.POST or None,instance=fillial)
     if form.is_valid():
         form.save()
-        return redirect('fillials')
-    ctx = {'form': form}
-    return render(request, 'dashboard/fillial/edit.html', ctx)
+        return redirect('/fillials/list')
+    ctx = {'form': form,"data":fillial}
+    return render(request, 'dashboard/fillials/edit.html', ctx)
+
+def delete_fillial(request, id):
+    fillial = Fillials.objects.get(id=id)
+    fillial.delete()
+    return redirect('/fillials/list')

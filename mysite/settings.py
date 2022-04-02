@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "admin_panel"
+    "admin_panel",
+    "ckeditor"
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                "admin_panel.currency.get_currency.get_current_context"
+                "admin_panel.currency.get_currency.get_current_context",
+                "admin_panel.currency.get_currency.update_currency"
             ],
         },
     },
@@ -121,7 +123,26 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AWS_QUERYSTRING_AUTH = False
+CKEDITOR_CONFIGS = {
+    "default": {
+        'toolbarCanCollapse': False,
+        'height': '200', 
+        'width': '100%', 
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat',]
+        ]
+    }
+}

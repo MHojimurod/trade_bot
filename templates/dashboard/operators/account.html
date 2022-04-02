@@ -1,0 +1,109 @@
+{% extends 'main/base.html' %} {% load static %}
+{% block style %} {% endblock %}
+ {% block content %}
+
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account</h4>
+
+      <div class="row">
+        <div class="col-md-12">
+          
+          <div class="card mb-4">
+            <h5 class="card-header">Profil tafsilotlari</h5>
+            <!-- Account -->
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="card-body">
+                <div class="d-flex align-items-start align-items-sm-center gap-4">
+                  <img src="{{user_account.photo.url}}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                  <div class="button-wrapper">
+                    <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                      <span class="d-none d-sm-block">Yangi rasm yuklash</span>
+                      <i class="bx bx-upload d-block d-sm-none"></i>
+                      <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                    </label>
+                    <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                      <i class="bx bx-reset d-block d-sm-none"></i>
+                      <span class="d-none d-sm-block">Reset</span>
+                    </button>
+  
+                    <p class="text-muted mb-0">JPG, GIF yoki PNG ruxsat berilgan. Maksimal hajmi 800K</p>
+                  </div>
+                </div>
+            </div>
+            <hr class="my-0">
+            <div class="card-body">
+                <div class="row">
+                  <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">Ism</label>
+                    <input class="form-control" type="text" id="firstName" name="firstName" value="{{user_account.name}}" autofocus="">
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="lastName" class="form-label">Familya</label>
+                    <input class="form-control" type="text" name="lastName" id="lastName" value="{{user_account.surname}}">
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="username" class="form-label">Username</label>
+                    <input readonly class="form-control" type="text" name="username" id="username" value="{{user_account.username}}">
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label" for="phoneNumber">Telefon</label>
+                    <div class="input-group input-group-merge">
+                      <span class="input-group-text">UZ (+998)</span>
+                      <input maxlength="9" type="text" id="phoneNumber" name="phoneNumber" value="{{user_account.phone}}" class="form-control" placeholder="99 999 99 99">
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label" for="country">Country</label>
+                    <select id="country" name="country" class="select2 form-select">
+                      <option value="">----</option>
+                      <option value="Qoraqalpog‘iston Respublikasi">Qoraqalpog‘iston Respublikasi</option>
+                      <option value="Andijon viloyati">Andijon viloyati</option>
+                      <option value="Buxoro viloyati">Buxoro viloyati</option>
+                      <option value="Jizzax viloyati">Jizzax viloyati</option>
+                      <option value="Qashqadaryo viloyati">Qashqadaryo viloyati</option>
+                      <option value="Navoiy viloyati">Navoiy viloyati</option>
+                      <option value="Namangan viloyati">Namangan viloyati</option>
+                      <option value="Samarqand viloyati">Samarqand viloyati</option>
+                      <option value="Surxandaryo viloyati">Surxandaryo viloyati</option>
+                      <option value="Sirdaryo viloyati">Sirdaryo viloyati</option>
+                      <option value="Toshkent viloyati">Toshkent viloyati</option>
+                      <option value="Farg‘ona viloyati">Farg‘ona viloyati</option>
+                      <option value="Xorazm viloyati">Xorazm viloyati</option>
+                      <option value="Toshkent shahri">Toshkent shahri</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-md-6">
+                    <label for="address" class="form-label">Manzil</label>
+                    <input type="text" class="form-control" id="address" value="{{user_account.address}}" name="address" placeholder="Address">
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <button type="submit" class="btn btn-primary me-2">Saqlash</button>
+                  <button type="reset" class="btn btn-outline-secondary">Tozalash</button>
+                </div>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+
+
+    <div class="content-backdrop fade"></div>
+  </div>
+
+
+{% endblock %}
+{% block javascript %}
+<script src="/static/dashboard/assets/js/pages-account-settings-account.js"></script>
+<script>
+
+</script>
+{% endblock %}
