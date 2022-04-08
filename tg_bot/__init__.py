@@ -1,13 +1,16 @@
-from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
+from .order import Order
 
-class Bot(Updater, Basehandlers):
+class Bot(Updater, Basehandlers, Order):
     def __init__(self,*args, **kwargs):
 
         super().__init__(TOKEN, *args, **kwargs)
+
+        not_start = ~Filters.regex("^/start$")
 
 
         self.conversation = ConversationHandler(
@@ -16,17 +19,24 @@ class Bot(Updater, Basehandlers):
             ],
             {
                 LANGUAGE: [
-                    MessageHandler(Filters.text, self.language),
+                    MessageHandler(Filters.text & not_start, self.language),
                 ],
                 NAME: [
-                    MessageHandler(Filters.text, self.name),
+                    MessageHandler(Filters.text & not_start, self.name),
                 ],
                 NUMBER: [
                     MessageHandler(Filters.contact, self.number),
                 ],
                 MENU: [
-                    
-                ]
+                    MessageHandler(
+                        Filters.regex(
+                            ("^(" "Buyurtma berish" "|" "заказать " "|" "Order" ")$") ), self.order
+                        )
+                ],
+                ORDER: [ 
+                    CallbackQueryHandler(
+                        self.category_list, pattern="^category_list:")
+                 ]
 
             },
             [

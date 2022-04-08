@@ -2,10 +2,12 @@
 
 
 
-from telegram import Update
+from telegram import Update, User as tgUser
 from admin_panel.models import User
 from telegram import ReplyKeyboardMarkup as x
-def get_user(update:Update):
+
+
+def get_user(update: Update) -> "tuple[tgUser, User]":
     user = update.message.from_user if update.message else update.callback_query.from_user
     
     return (user,
@@ -31,7 +33,6 @@ def distribute(items, number) -> list:
 
 
 class ReplyKeyboardMarkup(x):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.resize_keyboard = True
-
