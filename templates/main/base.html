@@ -111,8 +111,18 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="/static/dashboard/assets/js/ui-toasts.js"></script>
     {% block javascript %}{% endblock %}
     <script>
+      function Timer(){
+        let a = document.getElementById("toast");
+        setTimeout(() => {
+          a.style.display = "none"
+        }, 3000);
+          
+      };
+      Timer();
+      
       let input = document.getElementById("currency");
       let edit = document
         .getElementById("edit")

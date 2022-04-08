@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %} {% load static %}
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css" />
+ {% endblock %}
+ {% block content %}
+ 
+ 
+ <div class="content-wrapper">
+ 
+     <div class="container-xxl flex-grow-1 container-p-y">
+       <div class="row">
+         <div class="col-xl">
+           <div class="card mb-4">
+             <div class="card-body">
+               <form method="post">
+                   {% csrf_token %}
+                 <div class="row">
+                   <div class="mb-3 col-md-6">
+                     <label class="form-label"  for="id_name">Ismi</label>
+                     <input type="text" required class="form-control" id="id_name" name="name">
+                   </div>
+                 </div>
+                 <div class="form-check form-switch mb-2">
+                   <input name="active" type="checkbox"  id="id_active"
+                     class="form-check-input"
+                     type="checkbox"/>
+                   <label class="form-check-label" for="id_active">Faollashtirish</label>
+                 </div>
+                 <button type="submit" class="btn btn-primary">Send</button>
+               </form>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+     <!-- / Content -->
+ 
+     <div class="content-backdrop fade"></div>
+   </div>
+ 
+ {% endblock %}
+ {% block javascript %}
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
+ <script>
+     $("#id_name").emojioneArea({
+         pickerPosition: "bottom",
+
+     })
+ </script>
+ {% endblock %}
+

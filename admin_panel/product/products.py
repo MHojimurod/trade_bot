@@ -1,0 +1,63 @@
+from calendar import c
+from multiprocessing import parent_process
+from pyexpat import model
+from pyexpat.errors import messages
+import re
+from django.shortcuts import render, redirect
+from admin_panel.forms import CategoryForm, ProductForm, SubCategoryForm
+from django.db.models import Q
+from admin_panel.models import Category, Product
+from django.contrib import messages
+
+def list_product(request,pk):
+    if request.method == "POST":
+        if request.POST["fff"] == "delete":
+            print(len(request.POST.getlist("results")))
+            if len(request.POST.getlist("results"))>0:
+                for i in request.POST.getlist("results"):
+                    Product.objects.filter(id=i).delete()
+                
+            else:
+                messages.error(request,"Siz hech narsa tanlamadingiz")
+        return redirect(f'/product/list/{pk}')
+                
+    products = Product.objects.filter(category_id=pk)
+    sub = Category.objects.filter(id=pk).first()
+    main_category = Category.objects.filter(pk=sub.parent_id).first()
+    ctx = {'products': products,"main_category": main_category,"sub":sub,"category_active":"active"}
+    return render(request, 'dashboard/products/list.html', ctx)
+
+
+
+def create_product(request,pk):
+    sub = Category.objects.filter(id=pk).first()
+    main_category = Category.objects.filter(id=sub.parent_id).first()
+    model = Product()
+    form = ProductForm(request.POST,request.FILES,instance=model)
+    if form.is_valid():
+        form.save()
+        return redirect(f'/product/list/{pk}')
+    ctx = {'form': form,"category": pk,"main_category": main_category,"sub":sub,"category_active":"active"}
+    return render(request, 'dashboard/products/create.html',ctx)
+
+
+
+def edit_product(request, pk):
+    
+    category = Product.objects.get(id=pk)
+    sub = Category.objects.filter(id=category.category_id).first()
+    main_category = Category.objects.filter(id=sub.parent_id).first()
+    form = ProductForm(request.POST or None,request.FILES or None,instance=category)
+    if form.is_valid():
+        form.save()
+        return redirect(f'/product/list/{sub.id}')
+    ctx = {'form': form,"data":category,"category_active":"active","sub":sub,"main_category": main_category}
+    return render(request, 'dashboard/products/edit.html', ctx)
+
+
+
+def delete_product(request, pk):
+    category = Product.objects.get(id=pk)
+    data = category.parent_id
+    category.delete()
+    return redirect(f'/product/list/{data}')

@@ -1,0 +1,64 @@
+{% extends 'main/base.html' %} {% load static %} {% block style %} {% endblock %} {% block content %}
+{% include 'main/messages.html' %}
+<div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4">
+      <span class="text-muted fw-light">Forms/</span> Vertical Layouts
+    </h4>
+
+    <!-- Basic Layout -->
+    <div class="row">
+      <div class="col-xl">
+        <div class="card mb-4">
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <!-- {{ form.as_p }} -->
+              <div class="row">
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="basic-default-fullname"
+                    >Nomi Uz</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="id_name_uz"
+                    name="name_uz"
+                    value="{{data.name_uz}}"
+                  />
+                </div>
+                <div class="mb-3 col-md-6">
+                  <label class="form-label" for="basic-default-fullname"
+                    >Nomi Ru</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="id_name_ru"
+                    name="name_ru"
+                    value="{{data.name_ru}}"
+                  />
+                </div>
+              </div>
+              <div class="form-check form-switch mb-2">
+                <input name="active" type="checkbox"  id="id_active"
+                  {% if data.active %} checked {% endif %}
+                  class="form-check-input"
+                  type="checkbox"/>
+                <label class="form-check-label" for="id_active">Faollashtirish</label>
+              </div>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / Content -->
+
+  <div class="content-backdrop fade"></div>
+</div>
+
+{% endblock %} 

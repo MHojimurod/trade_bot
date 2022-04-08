@@ -15,6 +15,7 @@ class Operators(models.Model):
     address = models.CharField(max_length=200,null=True,blank=True)
     token = models.CharField(max_length=200)
     active = models.BooleanField(default=False)
+    is_have =  models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
@@ -48,7 +49,7 @@ class Product(models.Model):
     name_uz = models.CharField(max_length=200)
     name_ru = models.CharField(max_length=200)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    photo  = models.ImageField(upload_to='images/', default='/static/dashboard/assets/img/default.png')
+    photo  = models.ImageField(upload_to='images/')
     active = models.BooleanField(default=False)
 
     def __str__(self):

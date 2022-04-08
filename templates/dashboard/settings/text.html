@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %} {% load static %}
+{% block style %} {% endblock %}
+ {% block content %}
+
+ {% include 'main/messages.html' %}
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
+
+      <div class="row">
+            <div class="col-6">
+                <h5 class="card-header">Text Uz</h5>
+            </div>
+                <div class="col-6">
+
+                <h5 class="card-header">Text Ru</h5>
+            </div>
+
+                <div class="col-6">
+                <div class="card-body">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
+                    <label for="floatingInput">uz</label>
+                </div>
+                </div>
+                </div>
+                <div class="col-6">
+                <div class="card-body">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
+                    <label for="floatingInput">ru</label>
+                </div>
+                </div>
+                </div>
+                <div class="col-6">
+                <div class="card-body">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
+                    <label for="floatingInput">ru</label>
+                </div>
+                </div>
+                </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="content-backdrop fade"></div>
+  </div>
+  {% endblock %}

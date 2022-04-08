@@ -2,11 +2,19 @@
 {% block style %} {% endblock %}
  {% block content %}
 
+ {% include 'main/messages.html' %}
 <div class="content-wrapper">
     <!-- Content -->
 
     <div class="container-xxl flex-grow-1 container-p-y">
-      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Account Settings /</span> Account</h4>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Asosiy</a>
+          </li>
+          <li class="breadcrumb-item active">Mening Profilim</li>
+        </ol>
+      </nav>
 
       <div class="row">
         <div class="col-md-12">
@@ -59,7 +67,7 @@
                   </div>
                   
                   <div class="mb-3 col-md-6">
-                    <label class="form-label" for="country">Country</label>
+                    <label class="form-label" for="country">Viloyat</label>
                     <select id="country" name="country" class="select2 form-select">
                       <option value="">----</option>
                       <option value="Qoraqalpog‘iston Respublikasi">Qoraqalpog‘iston Respublikasi</option>
@@ -67,7 +75,7 @@
                       <option value="Buxoro viloyati">Buxoro viloyati</option>
                       <option value="Jizzax viloyati">Jizzax viloyati</option>
                       <option value="Qashqadaryo viloyati">Qashqadaryo viloyati</option>
-                      <option value="Navoiy viloyati">Navoiy viloyati</option>
+                      <option   value="Navoiy viloyati">Navoiy viloyati</option>
                       <option value="Namangan viloyati">Namangan viloyati</option>
                       <option value="Samarqand viloyati">Samarqand viloyati</option>
                       <option value="Surxandaryo viloyati">Surxandaryo viloyati</option>

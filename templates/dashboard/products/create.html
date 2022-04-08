@@ -13,9 +13,15 @@
             <a href="/">Asosiy</a>
           </li>
           <li class="breadcrumb-item">
-            <a href="/fillials/list">Filliallar</a>
+            <a href="/category/list">Kategoriya</a>
           </li>
-          <li class="breadcrumb-item active">Fillial Qo'shish</li>
+          <li class="breadcrumb-item">
+            <a href="/sub_category/list/{{main_category.id}}">{{main_category.name_uz}}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/product/list/{{sub.id}}">{{sub.name_uz}}</a>
+          </li>
+          <li class="breadcrumb-item active">Maxsulot qo'shish</li>
         </ol>
       </nav>
 
@@ -23,14 +29,11 @@
       <div class="row">
         <div class="col-xl">
           <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">Basic Layout</h5>
-              <small class="text-muted float-end">Default label</small>
-            </div>
+            
             <div class="card-body">
-              <form method="post">
+              <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <!-- {{ form.as_p }} -->
+                <input type="hidden" name="category" id="id_category" value="{{sub.id}}">
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label class="form-label"  for="basic-default-fullname">Nomi Uz</label>
@@ -39,31 +42,13 @@
                   <div class="mb-3 col-md-6">
                     <label class="form-label"  for="basic-default-fullname">Nomi Ru</label>
                     <input type="text" required class="form-control" id="id_name_ru" name="name_ru">
-                  </div>
-                  <!-- <div class="mb-3">
-                    <label class="form-label" for="basic-default-company">Company</label>
-                    <input type="text" class="form-control" id="basic-default-company" placeholder="ACME Inc.">
-                  </div>
-                  <div class="mb-3">
-                      <label class="form-label" for="inputGroupFile01">image</label>
-                      <div class="input-group">
-                          <label class="input-group-text" for="inputGroupFile01">Upload</label>
-                          <input type="file" class="form-control" id="inputGroupFile01">
-                        </div>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label" for="basic-default-phone">Phone No</label>
-                    <input type="text" id="basic-default-phone" class="form-control phone-mask" placeholder="658 799 8941">
-                  </div> -->
+                  </div>  
                   <div class="mb-3 col-md-6">
-                    <label class="form-label" for="basic-default-message">Description</label>
-                    <!-- <textarea id="basic-default-message" class="form-control" value="{{data.desc_uz|safe}}" ></textarea> -->
-                    {{form.desc_uz}}
-                  </div>
-                  <div class="mb-3 col-md-6">
-                    <label class="form-label" for="basic-default-message">Message</label>
-                    <!-- <textarea id="basic-default-message" class="form-control" value="{{data.desc_ru|safe}}"></textarea> -->
-                    {{form.desc_ru}}
+                    <label class="form-label"  for="basic-default-fullname">Rasmi</label>
+                    <div class="input-group">
+                      <label class="input-group-text" for="id_photo">Upload</label>
+                      <input type="file" class="form-control" name="photo" id="id_photo">
+                    </div>
                   </div>
                 </div>
                 <div class="form-check form-switch mb-2">
@@ -88,4 +73,9 @@
 {% block javascript %}
 <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
 <script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+<script>
+  let yashil = document.getElementById("yashil");
+      
+       console.log(yashil.addEventListener("click", () => yashil.getAttribute("dataaaa")));
+</script>
  {% endblock %}
