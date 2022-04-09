@@ -158,39 +158,84 @@ class User(models.Model):
                 name=name, language=self.language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
 
-    def category_list(self, page:int=0, per:int=10, id:str = None):
-        
-
+    def category_list(self, page:int=1, parent:int = None):
         keyboard = []
-        if id is None:
-            categories: list[Category] = Category.objects.filter(
-                parent=None)
-        else:
-            category: Category = Category.objects.get(pk=id)
-            categories: list[Category] = category.sub_categories()
-            products : list[Product] = category.products()
+        categorys = list(Category.objects.filter(parent=parent, active=True) if parent is not None else Category.objects.filter(parent=None, active=True))
+        categorys_count = len(categorys)
+        categorys_per_page = 10
+        categorys_pages = categorys_count // categorys_per_page + \
+            1 if categorys_count % categorys_per_page != 0 else categorys_count // categorys_per_page
         
+        categorys_page = categorys[(
+            page - 1) * categorys_per_page:page * categorys_per_page]
         
-        categories = categories[page * per: (page + 1) * per]
+        categorys_page_inline = [  ]
+        text = "Katalog\n\n"
+        for i in range(len(categorys_page)):
+            category = categorys_page[i]
+            text += f"{i + 1}. {category.name(self.language)}\n"
+            categorys_page_inline.append(
+                InlineKeyboardButton(
+                    str(i + 1), callback_data=f"select_category:{category.id}")
+            )
+        keyboard = distribute(categorys_page_inline, 5)
 
-        text = "Categories {page_start}-{page_end} of {total}.\n\n".format(page_start=page * per, page_end=(page * per) +
-                                                                              len(categories[page * per: (page + 1) * per]), total=len(categories))
-        categories = categories[page * per: (page + 1) * per]
-        for i in range(len(categories)):
-            text += f"{i + 1}. {categories[i].name(self.language)}\n"
-            keyboard.append(InlineKeyboardButton(
-               str(i + 1),
-               callback_data=f"enter_category_{categories[i].id}"))
-        
-        
+        controls = []
+        if page > 1:
+            controls.append(InlineKeyboardButton(
+                "⬅️", callback_data=f"category_pagination:{page - 1}"))
+        controls.append(InlineKeyboardButton(
+            "🔙", callback_data=f"cancel_pagination"),)
+
+        if page < categorys_pages:
+            controls.append(InlineKeyboardButton(
+                "➡️", callback_data=f"category_pagination:{page + 1}"))
+        keyboard.append(controls)
+
         return {
             "text": text,
-            "reply_markup": InlineKeyboardMarkup([ *distribute(keyboard, 5), 
-                [InlineKeyboardButton("<", callback_data=f"category_list:{page - 1}"),
-                InlineKeyboardButton(">", callback_data=f"category_list:{page + 1}")]
-            ])
+            "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
+    
+    def product_list(self, page:int=1, category:Category=None):
+        keyboard = []
+        products = list(Product.objects.filter(category=category, active=True))
+        products_count = len(products)
+        products_per_page = 10
+        products_pages = products_count // products_per_page + \
+            1 if products_count % products_per_page != 0 else products_count // products_per_page
+
+        products_page = products[(
+            page - 1) * products_per_page:page * products_per_page]
+
+        products_page_inline = []
+        text = "Katalog\n\n"
+        for i in range(len(products_page)):
+            product: Product = products_page[i]
+            text += f"{i + 1}. {product.name(self.language)}\n"
+            products_page_inline.append(
+                InlineKeyboardButton(
+                    str(i + 1), callback_data=f"select_product:{product.id}")
+            )
+        keyboard = distribute(products_page_inline, 5)
+
+        controls = []
+        if page > 1:
+            controls.append(InlineKeyboardButton(
+                "⬅️", callback_data=f"category_pagination:{page - 1}"))
+        controls.append(InlineKeyboardButton(
+            "🔙", callback_data=f"cancel_pagination"),)
+
+        if page < products_pages:
+            controls.append(InlineKeyboardButton(
+                "➡️", callback_data=f"category_pagination:{page + 1}"))
+        keyboard.append(controls)
+
+        return {
+            "text": text,
+            "reply_markup": InlineKeyboardMarkup(keyboard)
+        }
 
         
         

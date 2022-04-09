@@ -35,7 +35,9 @@ class Bot(Updater, Basehandlers, Order):
                 ],
                 ORDER: [ 
                     CallbackQueryHandler(
-                        self.category_list, pattern="^category_list:")
+                        self.category_list, pattern="^category_pagination:"),
+                    CallbackQueryHandler(
+                        self.enter_category, pattern="^select_category:")
                  ]
 
             },
