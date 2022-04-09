@@ -30,6 +30,7 @@
           </thead>
           <tbody class="table-border-bottom-0">
             {% for i in category %}
+            {{ i.name_ru }}
             <tr>
               <td><input class="form-check-input " type="checkbox" value="{{i.id}}"></td>
               <td>

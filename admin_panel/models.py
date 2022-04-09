@@ -90,12 +90,13 @@ class Category(models.Model):
     id: int
     name_uz: str = models.CharField(max_length=200)
     name_ru: str = models.CharField(max_length=200)
+    
     active: bool = models.BooleanField(default=False)
     parent: "Category" = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True)
 
-    def __str__(self):
-        return self.name_ru
+    # def __str__(self):
+    #     return self.name_uz
     
     def name(self, language: Language=None) -> str:
         if language is None:
