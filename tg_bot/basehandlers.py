@@ -1,6 +1,7 @@
 from telegram.ext import CallbackContext, Updater
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from admin_panel.models import Language, User
+from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
 from .constants import  LANGUAGE, NAME, NUMBER, MENU
 
@@ -10,6 +11,8 @@ class a(Update):
 
 
 # class Basehandlers(a):
+user: tgUser
+db: User
 
 class Basehandlers():
     def start(self, update:Update, context:CallbackContext):
@@ -28,7 +31,8 @@ class Basehandlers():
             ))
             return LANGUAGE
         else:
-            user.send_message("Salom")
+            user.send_message("Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+            return MENU
     
     def language(self, update:Update, context: CallbackContext):
         user,db = get_user(update)
@@ -64,12 +68,8 @@ class Basehandlers():
         user,db = get_user(update)
         number = update.message.contact.phone_number
         context.user_data['register']['number'] = number
-        new_user = User.objects.create(**context.user_data['register'])
+        new_user: User = User.objects.create(**context.user_data['register'])
 
         user.send_message(
-                          "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup([
-                              [
-                                  "xx"
-                              ]
-                          ]))
+                          "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
         return MENU
