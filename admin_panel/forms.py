@@ -11,11 +11,11 @@ class  FillialsForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['active']
+        fields = ['name_uz','name_ru','active']
 class SubCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ["parent", 'active']
+        fields = ["name_uz","name_ru","parent", 'active']
 
 
 class ProductForm(forms.ModelForm):

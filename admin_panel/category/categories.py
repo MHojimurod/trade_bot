@@ -8,6 +8,7 @@ from admin_panel.models import Category
 
 def list_category(request):
     category = Category.objects.filter(parent_id=None)
+    print(category)
     ctx = {'category': category, "category_active":"active"}
     return render(request, 'dashboard/category/list.html', ctx)
 
@@ -16,6 +17,7 @@ def list_category(request):
 def create_category(request):
     model = Category()
     form = CategoryForm(request.POST,instance=model)
+    print(request.POST)
     if request.POST:
         if form.is_valid():
             form.save()
