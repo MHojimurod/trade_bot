@@ -31,3 +31,8 @@ def delete_fillial(request, id):
     fillial = Fillials.objects.get(id=id)
     fillial.delete()
     return redirect('/fillials/list')
+
+def one_fillial(request,pk):
+    fillial = Fillials.objects.get(pk=pk)
+    ctx = {"fillial":fillial, "fillial_active":"active"}
+    return render(request,"dashboard/fillials/one_fillial.html",ctx)

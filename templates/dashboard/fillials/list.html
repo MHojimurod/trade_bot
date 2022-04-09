@@ -28,11 +28,11 @@
             {% for i in fillials %}
             <tr>
               <td>
-               <a href=""><i class="fab fa-angular fa-lg text-danger me-3"></i>
+               <a href="{% url 'one_fillial' i.id %}"><i class="fab fa-angular fa-lg text-danger me-3"></i>
                 <strong>{{i.name_uz}}</strong></a>
               </td>
               <td>
-                <a href=""><strong>{{i.name_ru}}</strong></a>
+                <a href="{% url 'one_fillial' i.id %}"><strong>{{i.name_ru}}</strong></a>
               </td>
               {%  if i.active %}
               <td><span class="badge bg-label-primary me-1">Faol</span></td>

@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %} {% load static %}
+{% block style %} {% endblock %}
+ {% block content %}
+ {% include 'main/messages.html' %}
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Asosiy</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'list_fillial' %}">Filliallar</a>
+        </li>
+        <li class="breadcrumb-item active">{{fillial.name_uz}}</li>
+      </ol>
+    </nav>
+    <div class="row">
+        <div class=" col-md-6">
+            <div class="card card-body">
+              <h5 class="card-title">{{fillial.name_uz}}</h5>
+              <p class="card-text">
+                {{fillial.desc_uz|safe}}
+              </p>
+            </div>
+          </div>
+        <div class="col-md-6">
+            <div class="card card-body">
+              <h5 class="card-title">{{fillial.name_ru}}</h5>
+              <p class="card-text">
+                {{fillial.desc_ru|safe}}
+              </p>
+            </div>
+          </div>
+    </div>
+    <div class="content-backdrop fade"></div>
+  </div>
+</div>
+{% endblock %}

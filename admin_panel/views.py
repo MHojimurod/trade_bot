@@ -15,7 +15,7 @@ from admin_panel.models import Fillials, Operators
 @login_required_decorator
 def home(request):
     ctx = {"home":"active"}
-    return render(request, 'dashboard/clients/list.html',ctx)
+    return render(request, 'dashboard/fillials/one_fillial.html',ctx)
 
 
 

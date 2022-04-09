@@ -4,7 +4,7 @@ from admin_panel.product.products import create_product, delete_product, edit_pr
 from admin_panel.sub_category.sub_categories import create_sub_category, delete_sub_category, edit_sub_category, list_sub_category
 from admin_panel.views import account, home,list_operators,create_operator,edit_operator,delete_operator
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
-from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial
+from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
 from admin_panel.clients.all_clients import clients_list,send_telegram
 urlpatterns = [
     path('', home, name='home'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('fillials/list', list_fillial,name='list_fillial'),
     path('fillials/edit/<int:id>', edit_fillial,name='edit_fillial'),
     path('fillials/delete/<int:id>', delete_fillial,name='delete_fillial'),
+    path('fillial/one/<int:pk>', one_fillial,name='one_fillial'),
 
     #category
     path('category/create', create_category,name='create_category'),
