@@ -37,7 +37,19 @@ class Bot(Updater, Basehandlers, Order):
                     CallbackQueryHandler(
                         self.category_list, pattern="^category_pagination:"),
                     CallbackQueryHandler(
-                        self.enter_category, pattern="^select_category:")
+                        self.enter_category, pattern="^select_category:"),
+                    CallbackQueryHandler(
+                        self.select_product, pattern="^select_product:"),
+                    CallbackQueryHandler(
+                        self.product_count, pattern="^product_count:"),
+                    CallbackQueryHandler(
+                        self.back_to_category_from_product, pattern="^back_to_category_from_product"),
+                    CallbackQueryHandler(
+                        self.back_to_category_from_category, pattern="^back_to_category_from_category"),
+                    CallbackQueryHandler(
+                        self.add_to_cart, pattern="add_to_cart"),
+                    CallbackQueryHandler(
+                        self.cart, pattern="^cart"),
                  ]
 
             },

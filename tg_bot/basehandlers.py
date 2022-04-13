@@ -14,14 +14,17 @@ class a(Update):
 user: tgUser
 db: User
 
+
+
 class Basehandlers():
     def start(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
+        context.user_data['temp_message'] = None
         context.user_data['register'] = {
             "chat_id": user.id
         }
         if not db:
-            user.send_message("Iltimos tilni tanlang!", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['temp_message'] = user.send_message("Iltimos tilni tanlang!", reply_markup=ReplyKeyboardMarkup(
                 distribute(
                     [
                         l.name for l in Language.objects.all()
@@ -31,9 +34,11 @@ class Basehandlers():
             ))
             return LANGUAGE
         else:
-            user.send_message("Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+            context.user_data['temp_message'] = user.send_message(
+                "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
             return MENU
     
+    @remove_temp_message
     def language(self, update:Update, context: CallbackContext):
         user,db = get_user(update)
         language = update.message.text
@@ -42,17 +47,18 @@ class Basehandlers():
 
         if lang:
             context.user_data['register']['language'] = lang
-            user.send_message("Iltimos ismingizni va familyangizni kiriting!", reply_markup=ReplyKeyboardRemove())
+            context.user_data['temp_message'] = user.send_message("Iltimos ismingizni va familyangizni kiriting!", reply_markup=ReplyKeyboardRemove())
             return NAME
         else:
-            user.send_message("Til topilmadi!")
-    
+            context.user_data['temp_message'] = user.send_message("Til topilmadi!")
+
+    @remove_temp_message
     def name(self, update:Update, context:CallbackContext):
         user,db = get_user(update)
         name = update.message.text
         if len(name.split()) >= 2:
             context.user_data['register']['name'] = name
-            user.send_message("Iltimos telefon raqamingizni kiriting!", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['temp_message'] = user.send_message("Iltimos telefon raqamingizni kiriting!", reply_markup=ReplyKeyboardMarkup(
                 [
                     [
                         KeyboardButton('Send number', request_contact=True)
@@ -61,15 +67,16 @@ class Basehandlers():
             ))
             return NUMBER
         else:
-            user.send_message("Iltimos ismingizni va familyangizni kiriting!")
+            context.user_data['temp_message'] = user.send_message("Iltimos ismingizni va familyangizni kiriting!")
             return NAME
-        
+
+    @remove_temp_message
     def number(self, update:Update, context:CallbackContext):
         user,db = get_user(update)
         number = update.message.contact.phone_number
         context.user_data['register']['number'] = number
         new_user: User = User.objects.create(**context.user_data['register'])
 
-        user.send_message(
+        context.user_data['temp_message'] = user.send_message(
                           "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
         return MENU

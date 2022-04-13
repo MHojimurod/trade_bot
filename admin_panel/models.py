@@ -1,8 +1,9 @@
 from multiprocessing import parent_process
+from shutil import get_unpack_formats
 from django.db import models
-from django.contrib.auth.models import User
 from ckeditor.fields import RichTextField
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
+from telegram.ext import CallbackContext
 
 # from tg_bot.utils import distribute
 
@@ -21,9 +22,6 @@ def distribute(items, number) -> list:
 # Create your models here.
 
 
-
-
-
 class Language(models.Model):
     id: int
     name: str = models.CharField(max_length=100)
@@ -31,40 +29,45 @@ class Language(models.Model):
 
     def __str__(self) -> str:
         return self.name
-    
-    def _(self, name:str, *args, **kwargs) -> str:
-        res:Text = Text.objects.filter(name=name, language=self).first()
+
+    def _(self, name: str, *args, **kwargs) -> str:
+        res: Text = Text.objects.filter(name=name, language=self).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+
 
 class Text(models.Model):
     id: int
-    name:str = models.CharField(max_length=100)
-    data:str = models.TextField()
-    language:Language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    name: str = models.CharField(max_length=100)
+    data: str = models.TextField()
+    language: Language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name
-    
-    def _(self, name:str, language: Language=None, *args, **kwargs) -> str:
+
+    def _(self, name: str, language: Language = None, *args, **kwargs) -> str:
         if language is None:
-            res:Text = Text.objects.filter(name=name, language=1).first()
+            res: Text = Text.objects.filter(name=name, language=1).first()
         else:
-            res:Text = Text.objects.filter(name=name, language=language).first()
+            res: Text = Text.objects.filter(
+                name=name, language=language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+
 
 class Operators(models.Model):
     id: int
-    name: str = models.CharField(max_length=200,null=True,blank=True)
-    surname : str= models.CharField(max_length=200,null=True,blank=True)
+    name: str = models.CharField(max_length=200, null=True, blank=True)
+    surname: str = models.CharField(max_length=200, null=True, blank=True)
     username: str = models.CharField(max_length=200)
     password: str = models.CharField(max_length=200)
-    phone : int= models.IntegerField()
-    photo  = models.ImageField(upload_to='images/', default='/static/dashboard/assets/img/default.png')
-    region: str= models.CharField(max_length=200,null=True,blank=True)
-    address: str= models.CharField(max_length=200,null=True,blank=True)
-    token: str= models.CharField(max_length=200)
+    phone: int = models.IntegerField()
+    photo = models.ImageField(
+        upload_to='images/', default='/static/dashboard/assets/img/default.png')
+    region: str = models.CharField(max_length=200, null=True, blank=True)
+    address: str = models.CharField(max_length=200, null=True, blank=True)
+    token: str = models.CharField(max_length=200)
     active: bool = models.BooleanField(default=False)
-    is_have: bool =  models.BooleanField(default=False)
+    is_have: bool = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
 
@@ -83,22 +86,22 @@ class Fillials(models.Model):
 
 class BotSettings(models.Model):
     id: int
-    money: int= models.IntegerField(default=0)
+    money: int = models.IntegerField(default=0)
 
 
 class Category(models.Model):
     id: int
     name_uz: str = models.CharField(max_length=200)
     name_ru: str = models.CharField(max_length=200)
-    
+
     active: bool = models.BooleanField(default=False)
     parent: "Category" = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True, blank=True)
 
-    # def __str__(self):
-    #     return self.name_uz
-    
-    def name(self, language: Language=None) -> str:
+    def __str__(self):
+        return f"cats{len(self.sub_categories())} - products {len(self.products())}"
+
+    def name(self, language: Language = None) -> str:
         if language is None:
             return self.name_uz
         return self.__getattribute__(f"name_{language.code}")
@@ -109,23 +112,24 @@ class Category(models.Model):
     def sub_categories(self):
         return Category.objects.filter(parent=self)
 
+
 class Product(models.Model):
     id: int
     name_uz: str = models.CharField(max_length=200)
     name_ru: str = models.CharField(max_length=200)
     category: Category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    photo  = models.ImageField(upload_to='images/')
+    photo = models.ImageField(upload_to='images/')
     active: bool = models.BooleanField(default=False)
+    color: "Color" = models.ForeignKey(
+        "Color", on_delete=models.CASCADE, null=True, blank=True)
 
-    def name(self, language: Language=None) -> str:
+    def name(self, language: Language = None) -> str:
         if language is None:
             return self.name_uz
         return self.__getattribute__(f"name_{language.code}")
 
     def __str__(self):
         return self.name_ru
-
-
 
 
 class Color(models.Model):
@@ -135,58 +139,60 @@ class Color(models.Model):
 
     def credits(self) -> "Percent":
         return Percent.objects.filter(color=self)
-    
-
 
 
 class Percent(models.Model):
     id: int
-    percent:int = models.PositiveIntegerField()
+    percent: int = models.PositiveIntegerField()
     color: Color = models.ForeignKey(Color, on_delete=models.CASCADE)
 
 
 class User(models.Model):
     id: int
-    chat_id:int = models.IntegerField()
+    chat_id: int = models.IntegerField()
     language: Language = models.ForeignKey(Language, on_delete=models.SET(1))
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
 
-    
-
-    def text(self,name, *args, **kwargs) -> str:
+    def text(self, name, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(
-                name=name, language=self.language).first()
+            name=name, language=self.language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
 
-    def category_list(self, page:int=1, parent:int = None):
+    def category_list(self, page: int = 1, parent: int = None, context: CallbackContext = None):
         keyboard = []
-        categorys = list(Category.objects.filter(parent=parent, active=True) if parent is not None else Category.objects.filter(parent=None, active=True))
+        categorys = list(Category.objects.filter(parent=parent, active=True)
+                         if parent is not None else Category.objects.filter(parent=None, active=True))
         categorys_count = len(categorys)
         categorys_per_page = 10
         categorys_pages = categorys_count // categorys_per_page + \
             1 if categorys_count % categorys_per_page != 0 else categorys_count // categorys_per_page
-        
+
         categorys_page = categorys[(
             page - 1) * categorys_per_page:page * categorys_per_page]
-        
-        categorys_page_inline = [  ]
+
+        categorys_page_inline = []
         text = "Katalog\n\n"
         for i in range(len(categorys_page)):
             category = categorys_page[i]
-            text += f"{i + 1}. {category.name(self.language)}\n"
+            # text += f"{i + 1}. {category.name(self.language)}\n"
             categorys_page_inline.append(
                 InlineKeyboardButton(
-                    str(i + 1), callback_data=f"select_category:{category.id}")
+                    category.name(self.language), callback_data=f"select_category:{category.id}")
             )
-        keyboard = distribute(categorys_page_inline, 5)
+        keyboard = distribute(categorys_page_inline, 3)
+
+        if len(context.user_data['cart']) > 0:
+            keyboard.append([
+                InlineKeyboardButton("🛒 Корзина", callback_data="cart")
+            ])
 
         controls = []
+        controls.append(InlineKeyboardButton(
+            "🔙", callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
                 "⬅️", callback_data=f"category_pagination:{page - 1}"))
-        controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"cancel_pagination"),)
 
         if page < categorys_pages:
             controls.append(InlineKeyboardButton(
@@ -198,8 +204,7 @@ class User(models.Model):
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
-    
-    def product_list(self, page:int=1, category:Category=None):
+    def product_list(self, page: int = 1, category: Category = None):
         keyboard = []
         products = list(Product.objects.filter(category=category, active=True))
         products_count = len(products)
@@ -222,11 +227,11 @@ class User(models.Model):
         keyboard = distribute(products_page_inline, 5)
 
         controls = []
+        controls.append(InlineKeyboardButton(
+            "🔙", callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
                 "⬅️", callback_data=f"category_pagination:{page - 1}"))
-        controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"cancel_pagination"),)
 
         if page < products_pages:
             controls.append(InlineKeyboardButton(
@@ -238,9 +243,57 @@ class User(models.Model):
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
-        
-        
+    def product_info(self, context: CallbackContext):
 
+        text = ""
+
+        keyboard = []
+        count_controls = []
+        if context.user_data['order']['current_product']['count'] > 1:
+            count_controls.append(
+                InlineKeyboardButton("-", callback_data=f"product_count:-"))
+
+        count_controls.append(
+            InlineKeyboardButton(
+                str(context.user_data['order']['current_product']['count']), callback_data=f"just"))
+
+        count_controls.append(
+            InlineKeyboardButton("+", callback_data=f"product_count:+"))
+
+        keyboard.append(count_controls)
+
+        keyboard.append([
+            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3)
+        ])
+        keyboard.append([
+            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3, 6)
+        ])
+        keyboard.append([
+            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
+        ])
+
+        print(keyboard)
+
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    "🔙", callback_data=f"back_to_category_from_product"),
+                InlineKeyboardButton(
+                    "🛒", callback_data=f"add_to_cart"),
+            ]
+        )
+        return {
+            "text": "product",
+            "reply_markup": InlineKeyboardMarkup(keyboard)
+        }
+
+    def cart(self, context: CallbackContext):
+        text = ""
+        keyboard: list = []
+        if len(context.user_data['cart']) > 0:
+            for i in range(len(context.user_data['cart'])):
+                product = context.user_data['cart'][i]
+                text += f"{i + 1}. {product['product'].name(self.language)}: {product['product'].price}"
 
     def menu(self):
         return [
