@@ -4,7 +4,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import CallbackContext
-
+from django.db.models.query import QuerySet
 # from tg_bot.utils import distribute
 
 
@@ -120,8 +120,14 @@ class Product(models.Model):
     category: Category = models.ForeignKey(Category, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to='images/')
     active: bool = models.BooleanField(default=False)
-    color: "Color" = models.ForeignKey(
-        "Color", on_delete=models.CASCADE, null=True, blank=True)
+    tan_price: int = models.IntegerField()
+    color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
+    
+    def price(self):
+        return self.tan_price + ((self.tan_price // 100) * self.color.base_percent)
+    
+    def percents(self):
+        pass
 
     def name(self, language: Language = None) -> str:
         if language is None:
@@ -132,19 +138,25 @@ class Product(models.Model):
         return self.name_ru
 
 
+
+
+
 class Color(models.Model):
     id: int
     color: str = models.CharField(max_length=200)
     base_percent: int = models.PositiveIntegerField()
 
-    def credits(self) -> "Percent":
+    @property
+    def months(self) -> QuerySet:
         return Percent.objects.filter(color=self)
 
 
 class Percent(models.Model):
     id: int
-    percent: int = models.PositiveIntegerField()
     color: Color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    months: int = models.IntegerField()
+    percent: int = models.IntegerField()
+
 
 
 class User(models.Model):
@@ -159,12 +171,12 @@ class User(models.Model):
             name=name, language=self.language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
 
-    def category_list(self, page: int = 1, parent: int = None, context: CallbackContext = None):
+    def category_list(self, page: int = 1, parent: int = None, context: CallbackContext = None, user:"User"=None):
         keyboard = []
         categorys = list(Category.objects.filter(parent=parent, active=True)
                          if parent is not None else Category.objects.filter(parent=None, active=True))
         categorys_count = len(categorys)
-        categorys_per_page = 10
+        categorys_per_page = 9
         categorys_pages = categorys_count // categorys_per_page + \
             1 if categorys_count % categorys_per_page != 0 else categorys_count // categorys_per_page
 
@@ -182,7 +194,7 @@ class User(models.Model):
             )
         keyboard = distribute(categorys_page_inline, 3)
 
-        if len(context.user_data['cart']) > 0:
+        if user.busket.is_available and parent == None:
             keyboard.append([
                 InlineKeyboardButton("🛒 Корзина", callback_data="cart")
             ])
@@ -249,6 +261,7 @@ class User(models.Model):
 
         keyboard = []
         count_controls = []
+        product: Product = context.user_data['order']['current_product']['product']
         if context.user_data['order']['current_product']['count'] > 1:
             count_controls.append(
                 InlineKeyboardButton("-", callback_data=f"product_count:-"))
@@ -272,7 +285,13 @@ class User(models.Model):
             InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
         ])
 
-        print(keyboard)
+        keyboard.append([
+            InlineKeyboardButton(
+                f"{i.months} oy {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months
+        ])
+        
+
+
 
         keyboard.append(
             [
@@ -287,13 +306,71 @@ class User(models.Model):
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
-    def cart(self, context: CallbackContext):
-        text = ""
-        keyboard: list = []
-        if len(context.user_data['cart']) > 0:
-            for i in range(len(context.user_data['cart'])):
-                product = context.user_data['cart'][i]
-                text += f"{i + 1}. {product['product'].name(self.language)}: {product['product'].price}"
+    def cart(self, context: CallbackContext, user:"User", back_to_category:bool=True):
+        # text = "1"
+        # keyboard: list = []
+        # if len(context.user_data['cart']) > 0:
+        #     for i in range(len(context.user_data['cart'])):
+        #         product = context.user_data['cart'][i]
+        #         controls = []
+        #         if product['count'] > 1:
+        #             controls.append(InlineKeyboardButton(
+        #                 "-", callback_data=f"cart_product_count:-:{i}"))
+        #         controls += [InlineKeyboardButton(
+        #                 str(product['count']), callback_data=f"just"),
+        #         InlineKeyboardButton(
+        #                 "+", callback_data=f"cart_product_count:+:{i}")]
+        #         keyboard.append(controls)
+        #     keyboard.append([
+        #         InlineKeyboardButton("🔙", callback_data=f"back_to_category_from_cart"),
+        #         InlineKeyboardButton("🛒", callback_data=f"order_cart"),
+        #     ])
+        # else:
+        #     text = "Корзина пуста"
+        #     keyboard.append([
+        #         InlineKeyboardButton(
+        #             "🔙", callback_data=f"back_to_category_from_cart"),
+        #     ])
+        # return {
+        #     "text": text,
+        #     "reply_markup": InlineKeyboardMarkup(keyboard)
+        # }
+        text = "Cart"
+        keyboard = []
+        busket = user.busket
+
+        if busket.is_available:
+            for pr in busket.products:
+                controls=  []
+                if pr.count > 1:
+                    controls.append(
+                        InlineKeyboardButton(
+                            "-", callback_data=f"cart_item_count:-:{pr.id}"
+                        )
+                    )
+                controls.append(InlineKeyboardButton(str(pr.count), callback_data="just"))
+                controls.append(InlineKeyboardButton(
+                    "❌", callback_data=f"remove_from_cart:{pr.id}"))
+                controls.append(
+                    InlineKeyboardButton(
+                        "+", callback_data=f"cart_item_count:+:{pr.id}"
+                    )
+                )
+                keyboard.append(controls)
+            keyboard.append([
+                InlineKeyboardButton(
+                    "🔙", callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
+                        InlineKeyboardButton("🛒", callback_data=f"order_cart"),
+
+            ])
+        else:
+            text = "Cart is empty"
+        return {
+            "text": text,
+            "reply_markup": InlineKeyboardMarkup(keyboard)
+        }
+            
+
 
     def menu(self):
         return [
@@ -315,3 +392,41 @@ class User(models.Model):
                 self.text('questions_and_adds'),
             ]
         ]
+    @property
+    def busket(self) -> "Busket":
+        res = Busket.objects.filter(user=self).first()
+        return res if res else Busket.objects.create(user=self)
+
+
+class Busket(models.Model):
+    user: User = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def is_available(self):
+        return bool(self.products.count())
+
+    @property
+    def products(self) -> list["BusketItem"]:
+        return BusketItem.objects.filter(busket=self)
+    
+    def add(self, product: Product, count:int):
+        x:BusketItem = self.products.filter(product=product).first()
+        if not x:
+            return BusketItem.objects.create(busket=self, product=product, _count=count)
+        else:
+            x.count = count
+            return x
+
+
+class BusketItem(models.Model):
+    busket: Busket = models.ForeignKey(Busket, on_delete=models.CASCADE)
+    product: Product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    _count: int = models.IntegerField()
+
+
+    def set_count(self, other):
+        self._count = other
+        self.save()
+    def get_count(self): return self._count
+
+    count = property(get_count, set_count)

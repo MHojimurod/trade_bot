@@ -36,7 +36,12 @@ class ReplyKeyboardMarkup(x):
 def remove_temp_message(func: callable) -> callable:
     def wrapper(self, update: Update, context: CallbackContext):
         if context.user_data['temp_message']:
-            context.user_data['temp_message'].delete()
-        (update.message if update.message else update.callback_query.messge).delete()
+            try:
+                context.user_data['temp_message'].delete()
+            except:
+                pass
+            try:
+                (update.message if update.message else update.callback_query.messge).delete()
+            except: pass
         return func(self, update, context)
     return wrapper

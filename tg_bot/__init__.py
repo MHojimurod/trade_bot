@@ -1,6 +1,6 @@
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    CART, ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -31,7 +31,8 @@ class Bot(Updater, Basehandlers, Order):
                     MessageHandler(
                         Filters.regex(
                             ("^(" "Buyurtma berish" "|" "заказать " "|" "Order" ")$") ), self.order
-                        )
+                        ),
+                    MessageHandler(Filters.regex("^Savatcha$"), self.cart)
                 ],
                 ORDER: [ 
                     CallbackQueryHandler(
@@ -47,10 +48,28 @@ class Bot(Updater, Basehandlers, Order):
                     CallbackQueryHandler(
                         self.back_to_category_from_category, pattern="^back_to_category_from_category"),
                     CallbackQueryHandler(
+                        self.product_creadit_month, pattern="^product_creadit_month"
+                    ),
+                    CallbackQueryHandler(
                         self.add_to_cart, pattern="add_to_cart"),
                     CallbackQueryHandler(
                         self.cart, pattern="^cart"),
-                 ]
+                 ],
+                CART: [
+                    # controls counts
+                    CallbackQueryHandler(
+                        self.cart_product_count, pattern="^cart_product_count:"),
+                    
+                    CallbackQueryHandler(
+                        self.remove_from_cart, pattern="^remove_from_cart:"),
+                    CallbackQueryHandler(
+                        self.back_to_category_from_cart, pattern="^back_to_category_from_cart"),
+                    CallbackQueryHandler(
+                        self.order, pattern="^order"),
+                    CallbackQueryHandler(
+                        self.back_to_category_from_category, pattern="^back_to_category_from_category"),
+                    
+                ]
 
             },
             [
