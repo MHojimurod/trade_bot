@@ -15,7 +15,7 @@ from admin_panel.models import Fillials, Operators
 @login_required_decorator
 def home(request):
     ctx = {"home":"active"}
-    return render(request, 'dashboard/fillials/one_fillial.html',ctx)
+    return render(request, 'dashboard/settings/bot_settings.html',ctx)
 
 
 
@@ -34,6 +34,7 @@ def account(request):
         messages.success(request, "Ma'lumotlar muvoffaqiyatli o'zgartirildi!")
         return redirect("account")
     data = Operators.objects.all().first()
+    print(data)
     return render(request, 'dashboard/operators/account.html', {'user_account': data})
 
 

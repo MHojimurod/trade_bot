@@ -18,8 +18,10 @@
         <table class="table">
           <thead>
             <tr>
-              <th>Nomi Uz </th>
-              <th>Nomi Ru </th>
+              <th>Ismi</th>
+              <th>Familyasi</th>
+              <th>Username</th>
+              <th>Telefon</th>
               <th>Holati</th>
               <th>Actions</th>
             </tr>
@@ -29,10 +31,16 @@
             <tr>
               <td>
                <a href=""><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <strong>{{i.name_uz}}</strong></a>
+                <strong>{{i.name}}</strong></a>
               </td>
               <td>
-                <a href=""><strong>{{i.name_ru}}</strong></a>
+                <a href=""><strong>{{i.surname}}</strong></a>
+              </td>
+              <td>
+                <a href=""><strong>{{i.username}}</strong></a>
+              </td>
+              <td>
+                <a href=""><strong>+998{{i.phone}}</strong></a>
               </td>
               {%  if i.active %}
               <td><span class="badge bg-label-primary me-1">Faol</span></td>
@@ -64,8 +72,10 @@
           </tbody>
           <tfoot>
             <tr>
-              <th>Nomi Uz</th>
-              <th>Nomi Ru</th>
+              <th>Ismi</th>
+              <th>Familyasi</th>
+              <th>Username</th>
+              <th>Telefon</th>
               <th>Holati</th>
               <th>Actions</th>
             </tr>
