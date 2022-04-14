@@ -23,6 +23,10 @@ def update_currency(request):
         else:
             return {}
     x = BotSettings.objects.first()
+<<<<<<< HEAD
     print(x)
     return {"money": x.money if x else 0}
 
+=======
+    return {"money": x.money if x else 0}
+>>>>>>> f49575ad76bb11bf24c1cb3744f26a48eae298b2
