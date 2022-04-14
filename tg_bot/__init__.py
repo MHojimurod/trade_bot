@@ -1,6 +1,7 @@
+from email.message import Message
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    CART, ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -32,7 +33,8 @@ class Bot(Updater, Basehandlers, Order):
                         Filters.regex(
                             ("^(" "Buyurtma berish" "|" "заказать " "|" "Order" ")$") ), self.order
                         ),
-                    MessageHandler(Filters.regex("^Savatcha$"), self.cart)
+                    MessageHandler(Filters.regex("^Savatcha$"), self.cart),
+                    MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone)
                 ],
                 ORDER: [ 
                     CallbackQueryHandler(
@@ -65,10 +67,29 @@ class Bot(Updater, Basehandlers, Order):
                     CallbackQueryHandler(
                         self.back_to_category_from_cart, pattern="^back_to_category_from_cart"),
                     CallbackQueryHandler(
-                        self.order, pattern="^order"),
+                        self.order_cart, pattern="^order_cart"),
                     CallbackQueryHandler(
                         self.back_to_category_from_category, pattern="^back_to_category_from_category"),
-                    
+                ],
+                CART_ORDER_LOCATION: [
+                    MessageHandler(Filters.location, self.cart_order_location)
+                ],
+                CART_ORDER_SELF_IMAGE:[
+                    MessageHandler(Filters.photo, self.cart_order_self_image)
+                ],
+                CART_ORDER_PASSPORT_IMAGE: [
+                    MessageHandler(Filters.photo, self.cart_order_passport_image)
+                ],
+                CART_ORDER_SELF_PASSWORD_IMAGE: [
+                    MessageHandler(Filters.photo, self.cart_order_self_password_image)
+                ],
+                CART_ORDER_CHECK_NUMBER: [
+                    MessageHandler(
+                        Filters.regex("^(✅|❌)"), self.cart_order_check_number
+                    )
+                ],
+                GET_NUMBER_FOR_ORDER: [
+                    MessageHandler(Filters.text, self.get_number_for_order)
                 ]
 
             },

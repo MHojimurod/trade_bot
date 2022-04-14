@@ -255,7 +255,7 @@ class User(models.Model):
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
-    def product_info(self, context: CallbackContext):
+    def product_info(self, context: CallbackContext, photo:bool=True):
 
         text = ""
 
@@ -301,10 +301,17 @@ class User(models.Model):
                     "🛒", callback_data=f"add_to_cart"),
             ]
         )
-        return {
-            "text": "product",
-            "reply_markup": InlineKeyboardMarkup(keyboard)
-        }
+        if photo:
+            return {
+                "photo": open(f".{context.user_data['order']['current_product']['product'].photo.url}", 'rb'),
+                "caption": "product",
+                "reply_markup": InlineKeyboardMarkup(keyboard)
+            }
+        else:
+            return {
+                "caption": "product",
+                "reply_markup": InlineKeyboardMarkup(keyboard)
+            }
 
     def cart(self, context: CallbackContext, user:"User", back_to_category:bool=True):
         # text = "1"
@@ -409,10 +416,10 @@ class Busket(models.Model):
     def products(self) -> list["BusketItem"]:
         return BusketItem.objects.filter(busket=self)
     
-    def add(self, product: Product, count:int):
+    def add(self, product: Product, count:int,month:Percent):
         x:BusketItem = self.products.filter(product=product).first()
         if not x:
-            return BusketItem.objects.create(busket=self, product=product, _count=count)
+            return BusketItem.objects.create(busket=self, product=product, _count=count, month=month)
         else:
             x.count = count
             return x
@@ -421,6 +428,7 @@ class Busket(models.Model):
 class BusketItem(models.Model):
     busket: Busket = models.ForeignKey(Busket, on_delete=models.CASCADE)
     product: Product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    month: Percent = models.ForeignKey(Percent, on_delete=models.CASCADE)
     _count: int = models.IntegerField()
 
 

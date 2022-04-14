@@ -80,3 +80,7 @@ class Basehandlers():
         context.user_data['temp_message'] = user.send_message(
                           "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
         return MENU
+    
+    def contact_with_phone(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        user.send_message("Bizning raqam bilan aloqa qiling!")
