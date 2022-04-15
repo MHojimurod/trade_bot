@@ -1,9 +1,10 @@
 from telegram.ext import CallbackContext, Updater
-from telegram import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
-from admin_panel.models import Language, User
+from telegram import InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from admin_panel.models import Language, User, Fillials
 from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
-from .constants import  LANGUAGE, NAME, NUMBER, MENU
+from .constants import  LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
+
 
 from .utils import *
 class a(Update):
@@ -84,3 +85,32 @@ class Basehandlers():
     def contact_with_phone(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         user.send_message("Bizning raqam bilan aloqa qiling!")
+    
+    def our_addresses(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        text = "Bizning manzillarimiz:\n"
+        keyboard = []
+        address: Fillials
+        i = 1
+        for address in Fillials.objects.all():
+            text += f"{i}. {address.name(db.language)}"
+            keyboard.append(InlineKeyboardButton(str(i), callback_data=f"address:{address.id}"))
+            i += 1
+        
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup(distribute(keyboard,5) + [[InlineKeyboardButton("Orqaga", callback_data="back_to_menu_from_our_addresses")]]))
+        return OUR_ADDRESSES
+    
+    def address(self, update:Update, context:CallbackContext):
+        address: Fillials = Fillials.objects.get(id=int(update.callback_query.data.split(":")[1]))
+        user, db = get_user(update)
+        user.send_message(address.address(db.language), reply_markup=InlineKeyboardButton("ortga", callback_data="back_to_our_addresses"))
+    
+    def support(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        user.send_message("Iltimos savol yoki taklifingizni yozing!", reply_markup=ReplyKeyboardRemove())
+        return SUPPORT
+    
+    def support_message(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        user.send_message("Taklifingiz muvaffaqiyatli qabul qilindi!", reply_markup=ReplyKeyboardMarkup(*db.menu()))
+        return MENU

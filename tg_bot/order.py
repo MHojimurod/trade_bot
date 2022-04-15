@@ -164,6 +164,13 @@ class Order:
         context.user_data['temp_message'] = user.send_message(
             "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU
+    
+    def back_to_menu(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        update.callback_query.message.delete(  )
+        context.user_data['temp_message'] = user.send_message(
+            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+        return MENU
 
 
     def cart_product_count(self, update: Update, context: CallbackContext):

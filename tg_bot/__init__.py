@@ -1,7 +1,7 @@
 from email.message import Message
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, ORDER, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -34,7 +34,11 @@ class Bot(Updater, Basehandlers, Order):
                             ("^(" "Buyurtma berish" "|" "заказать " "|" "Order" ")$") ), self.order
                         ),
                     MessageHandler(Filters.regex("^Savatcha$"), self.cart),
-                    MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone)
+                    MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone),
+                    MessageHandler(Filters.regex("^Sozlamalar$"), self.settings),
+                    MessageHandler(Filters.regex(
+                        "^Bizning manzillar$"), self.our_addresses),
+                        MessageHandler(Filters.regex("^(Savol va takliflar)$"), self.support),
                 ],
                 ORDER: [ 
                     CallbackQueryHandler(
@@ -90,6 +94,30 @@ class Bot(Updater, Basehandlers, Order):
                 ],
                 GET_NUMBER_FOR_ORDER: [
                     MessageHandler(Filters.text, self.get_number_for_order)
+                ],
+                SETTINGS: [
+                    MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
+                    MessageHandler(Filters.regex("^(Tilni o'zgartirish)$"), self.settings_language),
+                    MessageHandler(Filters.regex("^(Raqamni o'zgartirish)$"), self.settings_number),
+                ],
+                SETTINGS_NAME: [
+                    MessageHandler(Filters.text, self.settings_name_change)
+                ],
+                SETTINGS_NUMBER: [
+                    MessageHandler(Filters.contact, self.settings_number_change)
+                ],
+                SETTINGS_LANGUAGE: [
+                    MessageHandler(Filters.text, self.settings_language_change)
+                ],
+                OUR_ADDRESSES: [
+                    CallbackQueryHandler(self.address, pattern="^address:"),
+                    CallbackQueryHandler(
+                        self.our_addresses, pattern="^back_to_our_addresses"),
+                    CallbackQueryHandler(
+                        self.back_toback_to_menu_from_category_menu, pattern="^back_to_menu_from_our_addresses"),
+                ],
+                SUPPORT: [
+                    MessageHandler(Filters.text, self.support_message)
                 ]
 
             },

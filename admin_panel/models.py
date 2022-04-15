@@ -85,6 +85,21 @@ class Fillials(models.Model):
     def __str__(self):
         return self.name_ru
 
+    def name(self, language: Language = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"name_{language.code}")
+
+    def desc(self, language: Language = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"desc_{language.code}")
+    
+    def address(self, language: Language = None) -> str:
+        return f"{self.name(language)}\n\n{self.desc(language)}"
+
+    
+
 
 class BotSettings(models.Model):
     id: int
@@ -401,6 +416,7 @@ class User(models.Model):
                 self.text('questions_and_adds'),
             ]
         ]
+    
     @property
     def busket(self) -> "Busket":
         res = Busket.objects.filter(user=self).first()
