@@ -19,7 +19,9 @@ def distribute(items, number) -> list:
         start += number
         end += number
     return res
-# Create your models here.
+
+
+
 
 
 class Language(models.Model):
@@ -407,6 +409,8 @@ class User(models.Model):
 
 class Busket(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_ordered: bool = models.BooleanField(default=False)
+    
 
     @property
     def is_available(self):
