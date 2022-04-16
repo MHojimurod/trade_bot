@@ -203,7 +203,7 @@ class Order:
         user, db = get_user(update)
         update.callback_query.message.delete()
         context.user_data['temp_message'] = user.send_message(
-            "Iltimos manzilingizni yuboring!", reply_markup=ReplyKeyboardMarkup(
+            db.text('send_location'), reply_markup=ReplyKeyboardMarkup(
                 [
                     [
                         KeyboardButton(
@@ -217,36 +217,46 @@ class Order:
     @remove_temp_message
     def cart_order_location(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
+        loc = update.message.location
+        b =  db.busket.set_location(loc.latitude, loc.longitude)
+
         context.user_data['order']['location'] = update.message.location.to_dict()
+
         context.user_data['temp_message'] = user.send_message(
-            "Iltimos o'zingizni rasmingizni yuboring!")
+            db.text('send_your_self_image'))
         return CART_ORDER_SELF_IMAGE
 
     @remove_temp_message
     def cart_order_self_image(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        context.user_data['order']['self_image'] = update.message.photo[-1].file_id
+        context.user_data['order']['self_image'] = update.message.photo[-1].get_file().download()
+        db.busket.set_self_image(
+            update.message.photo[-1].get_file().download())
         context.user_data['temp_message'] = user.send_message(
-            "Iltimos passportingizni rasmini yuboring!")
+            db.text('send_your_password_iamge'))
         return CART_ORDER_PASSPORT_IMAGE
 
     @remove_temp_message
     def cart_order_passport_image(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         context.user_data['order']['passport_image'] = update.message.photo[-1].file_id
+        db.busket.set_passport_image(
+            update.message.photo[-1].get_file().download())
         context.user_data['temp_message'] = user.send_message(
-            "Iltimos passportingiz bilan birga tushgan rasmingizni yuboring!")
+            db.text('send_your_self_and_passport_image'))
         return CART_ORDER_SELF_PASSWORD_IMAGE
 
     @remove_temp_message
     def cart_order_self_password_image(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         context.user_data['order']['self_passport_image'] = update.message.photo[-1].file_id
-        user.send_message("Shu sizning raqamingiz ekanligini tasdiqlaysizmi?\n\n%s" % (db.number), reply_markup=ReplyKeyboardMarkup(
+        db.busket.set_self_passport_image(
+            update.message.photo[-1].get_file().download())
+        user.send_message(db.text('is_your_number') % (db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
-                    "✅ Ha",
-                    "❌ Yo'q"
+                    db.text('yes'),
+                    db.text('no')
                 ]
             ],
             resize_keyboard=True
@@ -258,18 +268,22 @@ class Order:
         user, db = get_user(update)
         if update.message.text == "✅ Ha":
             user.send_message(
-                "Sizning buyurtmangiz qabul qilindi!\n\nOperatorlarimiz siz bilan tez orada bog'lanishadi!", reply_markup=ReplyKeyboardRemove())
+                db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove())
+            db.busket.order()
             user.send_message(
                 "Menu", reply_markup=ReplyKeyboardMarkup(**db.menu()))
             return MENU
         else:
             user.send_message(
-                "Iltimos raqamingizni text ko'rinishida yuboring!", reply_markup=ReplyKeyboardRemove())
+                db.text('send_number_as_text'), reply_markup=ReplyKeyboardRemove())
             return GET_NUMBER_FOR_ORDER
     
     def get_number_for_order(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         context.user_data['order']['number'] = update.message.text
-        user.send_message("Sizning buyurtmangiz qabul qilindi!\n\nOperatorlarimiz siz bilan tez orada bog'lanishadi!", reply_markup=ReplyKeyboardRemove())
+        db.busket.set_number(update.message.text)
+        db.busket.order()
+        user.send_message(db.text('yout_order_accepted'),
+                          reply_markup=ReplyKeyboardRemove())
         user.send_message(**db.menu())
         return MENU

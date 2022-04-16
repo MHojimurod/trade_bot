@@ -84,7 +84,7 @@ class Basehandlers():
     
     def contact_with_phone(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message("Bizning raqam bilan aloqa qiling!")
+        user.send_message(db.text('context_with_phone'))
     
     def our_addresses(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
@@ -107,10 +107,12 @@ class Basehandlers():
     
     def support(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message("Iltimos savol yoki taklifingizni yozing!", reply_markup=ReplyKeyboardRemove())
+        user.send_message(db.text('support'),
+                          reply_markup=ReplyKeyboardRemove())
         return SUPPORT
     
     def support_message(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message("Taklifingiz muvaffaqiyatli qabul qilindi!", reply_markup=ReplyKeyboardMarkup(*db.menu()))
+        user.send_message(db.text('support_accepted'),
+                          reply_markup=ReplyKeyboardMarkup(*db.menu()))
         return MENU

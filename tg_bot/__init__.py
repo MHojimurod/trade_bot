@@ -1,4 +1,5 @@
-from email.message import Message
+from email.message import EmailMessage
+from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
     CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
@@ -6,7 +7,7 @@ from .constants import (
 from .basehandlers import Basehandlers
 from .order import Order
 
-class Bot(Updater, Basehandlers, Order):
+class Bot(Updater, Basehandlers, Order, Settings):
     def __init__(self,*args, **kwargs):
 
         super().__init__(TOKEN, *args, **kwargs)
@@ -114,7 +115,7 @@ class Bot(Updater, Basehandlers, Order):
                     CallbackQueryHandler(
                         self.our_addresses, pattern="^back_to_our_addresses"),
                     CallbackQueryHandler(
-                        self.back_toback_to_menu_from_category_menu, pattern="^back_to_menu_from_our_addresses"),
+                        self.back_to_menu, pattern="^back_to_menu_from_our_addresses"),
                 ],
                 SUPPORT: [
                     MessageHandler(Filters.text, self.support_message)

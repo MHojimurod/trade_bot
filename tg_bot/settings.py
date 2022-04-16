@@ -1,13 +1,13 @@
 from telegram import *
 from telegram.ext import *
 from admin_panel.models import Language, distribute
-from tg_bot.constants import SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER
+from tg_bot.constants import SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER
 
 from tg_bot.utils import get_user
 
 
 class Settings:
-    def settings(update:Update, context:CallbackContext):
+    def settings(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         user.send_message("Settings", reply_markup=ReplyKeyboardMarkup(
             [
@@ -16,8 +16,9 @@ class Settings:
                     "Tilni o'zgartirish",
                     "Raqamni o'zgartirish",
                 ]
-            ]
+            ],True
         ))
+        return SETTINGS
     
     def settings_name(self, update:Update, context: CallbackContext):
         user, db=  get_user(update)
@@ -35,8 +36,9 @@ class Settings:
                     "Tilni o'zgartirish",
                     "Raqamni o'zgartirish",
                 ]
-            ]
+            ], True
         ))
+        return SETTINGS
 
 
     def settings_language(self, update: Update, context: CallbackContext):
@@ -67,8 +69,9 @@ class Settings:
                         "Tilni o'zgartirish",
                         "Raqamni o'zgartirish",
                     ]
-                ]
+                ],True
             ))
+            return SETTINGS
         else:
             user.send_message("Til topilmadi!", reply_markup=ReplyKeyboardMarkup(
                 distribute(
@@ -101,6 +104,7 @@ class Settings:
                     "Tilni o'zgartirish",
                     "Raqamni o'zgartirish",
                 ]
-            ]
+            ],True
         ))
+        return SETTINGS
     
