@@ -1,5 +1,3 @@
-from multiprocessing import parent_process
-from shutil import get_unpack_formats
 from django.db import models
 from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
@@ -84,6 +82,21 @@ class Fillials(models.Model):
 
     def __str__(self):
         return self.name_ru
+
+    def name(self, language: Language = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"name_{language.code}")
+
+    def desc(self, language: Language = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"desc_{language.code}")
+    
+    def address(self, language: Language = None) -> str:
+        return f"{self.name(language)}\n\n{self.desc(language)}"
+
+    
 
 
 class BotSettings(models.Model):
@@ -401,16 +414,27 @@ class User(models.Model):
                 self.text('questions_and_adds'),
             ]
         ]
+    
     @property
     def busket(self) -> "Busket":
-        res = Busket.objects.filter(user=self).first()
+        res = Busket.objects.filter(user=self, is_ordered=False).first()
         return res if res else Busket.objects.create(user=self)
 
+class Location(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
 class Busket(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     is_ordered: bool = models.BooleanField(default=False)
-    
+
+    self_image = models.ImageField(upload_to="busket", null=True, blank=True)
+    passport_image = models.ImageField(upload_to="busket", null=True, blank=True)
+    self_password_image = models.ImageField(upload_to="busket", null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.SET(
+        None), null=True, blank=True)
+    extra_number = models.CharField(max_length=20, null=True, blank=True)
 
     @property
     def is_available(self):
@@ -427,6 +451,31 @@ class Busket(models.Model):
         else:
             x.count = count
             return x
+    
+    def set_location(self, latitude:float, longitude:float):
+        self.location = Location.objects.create(user=self.user, latitude=latitude, longitude=longitude)
+        self.save()
+    
+    def set_self_image(self, image):
+        self.self_image = image
+        self.save()
+    
+    def set_passport_image(self, image):
+        self.passport_image = image
+        self.save()
+
+    def set_self_password_image(self, image):
+        self.self_password_image = image
+        self.save()
+    
+    def set_extra_number(self, number):
+        self.extra_number = number
+        self.save()
+    
+    def order(self):
+        self.is_ordered = True
+        self.save()
+
 
 
 class BusketItem(models.Model):
