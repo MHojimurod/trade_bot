@@ -432,7 +432,8 @@ class Busket(models.Model):
     self_image = models.ImageField(upload_to="busket", null=True, blank=True)
     passport_image = models.ImageField(upload_to="busket", null=True, blank=True)
     self_password_image = models.ImageField(upload_to="busket", null=True, blank=True)
-    location = models.ForeignKey(Location, on_delete=models.SET(None), null=True, blank=True)
+    location = models.ForeignKey(Location, on_delete=models.SET(
+        None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)
 
     @property
