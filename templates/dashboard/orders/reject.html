@@ -8,45 +8,45 @@
       <span class="text-muted fw-light">Tables /</span> Basic Tables
     </h4>
     <div class="card">
-      <a class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a>
+      <!-- <a class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a> -->
       <div class="table-responsive text-nowrap">
-        <table class="table">
+        <table class="table mt-3">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Client</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Buyurtma raqami</th>
+              <th>Haridor</th>
+              <th>Telefon</th>
+              <th>Maxsulot</th>
+              <th>Qabul qilish</th>
+              <th>Rad etish</th>
             </tr>
           </thead>
           <tbody class="table-border-bottom-0">
+            {% for i in orders %}
             <tr>
               <td>
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <strong>Angular Project</strong>
+                <strong>#{{i.order.id}}</strong>
               </td>
-              <td>Albert Cook</td>
-              <td><span class="badge bg-label-primary me-1">Active</span></td>
               <td>
-                <div class="dropdown">
-                  <button
-                    type="button"
-                    class="btn p-0 dropdown-toggle hide-arrow"
-                    data-bs-toggle="dropdown"
-                  >
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="javascript:void(0);"
-                      ><i class="bx bx-edit-alt me-1"></i> Edit</a
-                    >
-                    <a class="dropdown-item" href="javascript:void(0);"
-                      ><i class="bx bx-trash me-1"></i> Delete</a
-                    >
-                  </div>
-                </div>
+                {{i.order.user.name}}
               </td>
-            </tr>                       
+              <td>
+                <a href="tel:{{i.order.user.number}}">{{i.order.user.number}}</a>
+              </td>
+              <td>
+                <button onclick="Products()" >Maxsulotlar</button>
+                <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
+              </td>
+              <td>
+                <a class="btn btn-success btn-xs" href="">Qabul qilish</a>
+              </td>
+              <td>
+                <a class="btn btn-danger btn-xs" href="">Rad etish</a>
+              </td>
+              
+            </tr> 
+            {% endfor %}                      
           </tbody>
           <tfoot>
             <tr>
@@ -62,4 +62,28 @@
     <div class="content-backdrop fade"></div>
   </div>
 </div>
+<div id="card" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
+  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+    <div class="card-body">
+      <h5 class="card-title">Card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+  function Products(product) {
+    document.getElementById("card").style.display = "block";
+  }
+</script>
 {% endblock %}
