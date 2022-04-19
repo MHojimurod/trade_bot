@@ -7,6 +7,22 @@ from admin_panel.models import Category
 
 
 def list_category(request):
+    if request.POST:
+        data = request.POST
+        if len(data.getlist("results"))>0:
+            if data["action"] == "active":
+                for i in data.getlist("results"):
+                    Category.objects.filter(id=i).update(active=True)
+            if data["action"] == "not_active":
+                for i in data.getlist("results"):
+                    Category.objects.filter(id=i).update(active=False)
+            if data["action"] == "delete":
+                for i in data.getlist("results"):
+                    Category.objects.filter(id=i).delete()
+            return redirect('list_category')
+        else:
+            messages.error(request,"Siz hech narsa tanlamadingiz")
+            return redirect('list_category')
     category = Category.objects.filter(parent_id=None)
     print(category)
     ctx = {'category': category, "category_active":"active"}

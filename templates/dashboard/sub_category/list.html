@@ -15,67 +15,89 @@
         <li class="breadcrumb-item active">{{first_category.name_uz}}</li>
       </ol>
     </nav>
-    <div class="card">
-      <a href="{% url 'create_sub_category' first_category.id %}" class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a>
-      <div class="table-responsive text-nowrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Nomi Uz </th>
-              <th>Nomi Ru </th>
-              <th>Holati</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody class="table-border-bottom-0">
-            {% for i in sub_category %}
-            <tr>
-              <td>
-               <a href="{% url 'list_product' i.id %}"><i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <strong>{{i.name_uz}}</strong></a>
-              </td>
-              <td>
-                <a href="{% url 'list_product' i.id %}"><strong>{{i.name_ru}}</strong></a>
-              </td>
-              {%  if i.active %}
-              <td><span class="badge bg-label-primary me-1">Faol</span></td>
-              {% else %}
-              <td><span class="badge bg-label-danger me-1">Faol emas</span></td>
-              {% endif %}
-              <td>
-                <div class="dropdown">
-                  <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                  <button
-                    type="button"
-                    class="btn p-0 dropdown-toggle hide-arrow"
-                    data-bs-toggle="dropdown"
-                  >
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{% url 'edit_sub_category' i.id %}"
-                      ><i class="bx bx-edit-alt me-1"></i> Edit</a
+    <form method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
+          <div>
+            <button style="text-decoration: line-through;" type="button" class="btn-sm btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              ­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­            
+            </button>
+            <ul class="dropdown-menu">
+              <li><button type="submit" name="action" value="active" class="dropdown-item">Faol</button></li>
+              <li><button type="submit" name="action" value="not_active" class="dropdown-item">Faol emas</button></li>
+              <li><button type="submit" name="action" value="delete" class="dropdown-item">O'chirish</button></li>
+            </ul>
+          </div>
+        <div>
+          <!-- <a href="" class="btn btn-secondary btn-sm" style="color: white;">Ortga</a> -->
+          <a href="{% url 'create_sub_category' first_category.id %}" class="btn btn-primary btn-sm" style="color: white;">Qo'shish</a>
+        </div>
+        </div>
+        <div class="table-responsive text-nowrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>  </th>
+                <th>Nomi Uz </th>
+                <th>Nomi Ru </th>
+                <th>Holati</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+              {% for i in sub_category %}
+              <tr>
+                <td>
+                  <input class="form-check-input" name="results" value="{{i.id}}" type="checkbox" id="">
+                </td>
+                <td>
+                 <a href="{% url 'list_product' i.id %}"><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                  <strong>{{i.name_uz}}</strong></a>
+                </td>
+                <td>
+                  <a href="{% url 'list_product' i.id %}"><strong>{{i.name_ru}}</strong></a>
+                </td>
+                {%  if i.active %}
+                <td><span class="badge bg-label-primary me-1">Faol</span></td>
+                {% else %}
+                <td><span class="badge bg-label-danger me-1">Faol emas</span></td>
+                {% endif %}
+                <td>
+                  <div class="dropdown">
+                    <i class="fab fa-angular fa-lg text-danger me-3"></i>
+                    <button
+                      type="button"
+                      class="btn p-0 dropdown-toggle hide-arrow"
+                      data-bs-toggle="dropdown"
                     >
-                    <a class="dropdown-item" href="{% url 'delete_sub_category' i.id %}"
-                      ><i class="bx bx-trash me-1"></i> Delete</a
-                    >
+                      <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'edit_sub_category' i.id %}"
+                        ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                      >
+                      <a class="dropdown-item" href="{% url 'delete_sub_category' i.id %}"
+                        ><i class="bx bx-trash me-1"></i> Delete</a
+                      >
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>  
-          {% endfor %}                                          
-          </tbody>
-          <tfoot>
-            <tr>
-              <th>Nomi Uz</th>
-              <th>Nomi Ru</th>
-              <th>Holati</th>
-              <th>Actions</th>
-            </tr>
-          </tfoot>
-        </table>
+                </td>
+              </tr>  
+            {% endfor %}                                          
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Nomi Uz</th>
+                <th>Nomi Ru</th>
+                <th>Holati</th>
+                <th>Actions</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
-    </div>
+    </form>
     <div class="content-backdrop fade"></div>
   </div>
 </div>

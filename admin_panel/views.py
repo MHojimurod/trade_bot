@@ -9,13 +9,14 @@ from django.contrib import  messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from admin_panel.models import Fillials, Operators
+from django.contrib.auth.models import User
 # Create your views here.
 
 
 @login_required_decorator
 def home(request):
     ctx = {"home":"active"}
-    return render(request, 'dashboard/orders/list.html',ctx)
+    return render(request, 'dashboard/orders/one_order.html',ctx)
 
 
 
@@ -49,8 +50,20 @@ def create_operator(request):
     form = OperatorForm(request.POST,instance=model)
     if request.method == 'POST':
         if form.is_valid():
+            data = request.POST
             if request.POST['password'] == request.POST['confirm_password']:
-                form.save()
+                if User.objects.filter(username=data['username']).exists():
+                    messages.error(request, "Operator allaqachon bor")
+                else:
+                    user = User.objects.create_user(
+                        username=data["username"], password=data["password"], first_name=data["name"], last_name=data["surname"])
+                    user.save()
+                    print(user)
+                    Operators.objects.create(
+                        user=user,
+                        phone=data["phone"],
+                        active=True if data.get("active") else False,
+                    )
                 return redirect("list_operator")
     ctx = {"form": form,"operator_active":"active"}
     return render(request,"dashboard/operators/create.html",ctx)

@@ -27,3 +27,16 @@ def update_order_status(request,pk):
         return redirect("")
 
 
+def one_order(request,pk):
+    order = Busket.objects.get(pk=pk)
+    items:BusketItem = BusketItem.objects.filter(busket=order)
+    text = "" 
+    for i in items:
+        text += f"{i.product.name_uz}\n  {i.product.tan_price + i.product.tan_price*i.month.percent // 100/i.month.months}\n"
+
+
+    ctx = {"order_active":"active","order":order,"text":text}
+    return render(request, 'dashboard/orders/one_order.html',ctx)
+    
+
+

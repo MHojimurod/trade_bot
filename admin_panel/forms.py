@@ -24,6 +24,10 @@ class ProductForm(forms.ModelForm):
         fields = "__all__"
 
 class OperatorForm(forms.ModelForm):
+    name = forms.CharField(max_length=100)
+    surname = forms.CharField(max_length=100)
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(max_length=100)
     class Meta:
         model = Operators
         fields = ["name","surname","username","password","phone","active"]

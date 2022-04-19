@@ -4,9 +4,25 @@ from django.shortcuts import render, redirect
 from admin_panel.forms import CategoryForm, SubCategoryForm
 from django.db.models import Q
 from admin_panel.models import Category
-
+from django.contrib import messages
 
 def list_sub_category(request,pk):
+    if request.POST:
+        data = request.POST
+        if len(data.getlist("results"))>0:
+            if data["action"] == "active":
+                for i in data.getlist("results"):
+                    Category.objects.filter(pk=i).update(active=True)
+            if data["action"] == "not_active":
+                for i in data.getlist("results"):
+                    Category.objects.filter(pk=i).update(active=False)
+            if data["action"] == "delete":
+                for i in data.getlist("results"):
+                    Category.objects.filter(pk=i).delete()
+            return redirect(f'/sub_category/list/{pk}')
+        else:
+            messages.error(request,"Siz hech narsa tanlamadingiz")
+            return redirect(f'/sub_category/list/{pk}')
     category = Category.objects.filter(parent_id=pk)
     first_category =  Category.objects.filter(id=pk).first()
     ctx = {'sub_category': category,"first_category": first_category, "category_active":"active"}

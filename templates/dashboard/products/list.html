@@ -27,10 +27,10 @@
               ­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­            
             </button>
             <ul class="dropdown-menu">
-              <li><input type="hidden" name="fff" value="delete"><button type="submit" class="dropdown-item">O'chirish</button></li>
-              <li><input type="hidden" name="" value="yellow"><button type="submit" class="dropdown-item">Sariq</button></li>
-              <li><input type="hidden" name="" value="green"><button type="submit" class="dropdown-item">Yashil</button></li>
-              <li><input type="hidden" name="" value="red"><button type="submit" class="dropdown-item">Qizil</button></li>
+              <li><button type="submit" name="action" value="yellow" class="dropdown-item">Sariq</button></li>
+              <li><button type="submit" name="action" value="green" class="dropdown-item">Yashil</button></li>
+              <li><button type="submit" name="action" value="red" class="dropdown-item">Qizil</button></li>
+              <li><button type="submit" name="action" value="delete" class="dropdown-item">O'chirish</button></li>
              
             </ul>
           </div>
@@ -43,7 +43,7 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>check</th>
+                  <th>  </th>
                   <th>Kategoriya</th>
                   <th>Nomi Uz </th>
                   <th>Nomi Ru </th>
@@ -59,11 +59,11 @@
                     <input class="form-check-input" name="results" value="{{i.id}}" type="checkbox" id="">
                     </td>
                   <td>
-                   <a href=""><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                   <a href="{% url 'one_product' i.id %}"><i class="fab fa-angular fa-lg text-danger me-3"></i>
                     <strong>{{i.category.name_uz}}</strong></a>
                   </td>
                   <td>
-                   <a href=""><i class="fab fa-angular fa-lg text-danger me-3"></i>
+                   <a href="{% url 'one_product' i.id %}"><i class="fab fa-angular fa-lg text-danger me-3"></i>
                     <strong>{{i.name_uz}}</strong></a>
                   </td>
                   <td>
@@ -117,6 +117,7 @@
                 </tr>
               </tfoot>
             </table>
+          </div>
           </div>
     </form>
     </div>
