@@ -7,10 +7,18 @@ from admin_panel.models import Operators, Fillials, BotSettings,Product,Color,Ca
 admin.site.register(BotSettings)
 admin.site.register(Operators)
 admin.site.register(Fillials)
-admin.site.register(Category)
 admin.site.register(Product)
 admin.site.register(Busket)
 admin.site.register(BusketItem)
 
 
 
+
+class CategoryInline(admin.TabularInline):
+    model = Category
+    extra = 1
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = [CategoryInline]

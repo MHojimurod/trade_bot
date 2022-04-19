@@ -21,7 +21,6 @@ class Order:
         context.user_data['cart'] = []
         user.send_message(**db.category_list(context=context, user=db))
         return ORDER
-
     def category_list(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         data = update.callback_query.data.split(":")
@@ -59,11 +58,11 @@ class Order:
             context.user_data['order']['current_product'] = {
                 'count': 1 if not x else x.count,
                 'product': product,
-                'month': product.color.months.filter(months=3).first()
+                'month': None
             }
             update.callback_query.message.delete()
             user.send_photo(
-                **db.product_info(context))
+                **db.product_info(context, True, db), parse_mode="HTML")
         else:
             raise
 
@@ -80,7 +79,7 @@ class Order:
             context.user_data['order']['current_product']['count'] = int(
                 data[1])
         update.callback_query.message.edit_caption(
-            **db.product_info(context,False))
+            **db.product_info(context,False, db), parse_mode="HTML")
 
     def back_to_category_from_product(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
@@ -105,31 +104,45 @@ class Order:
     def add_to_cart(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         if context.user_data['order']['current_product']:
+            if context.user_data['order']['current_product']['month'] is None:
+                update.callback_query.answer("Iltimos kredit muddatini tallang!", True)
+                return
             product = context.user_data['order']['current_product']
 
             db.busket.add(product['product'], product['count'], product['month'])
             context.user_data['order']['current_product'] = None
+            update.callback_query.answer("Mahsulot savatga qo'shildi!",True)
             update.callback_query.message.delete()
             user.send_message(
                 **db.category_list(1,  None, context, user=db))
-            update.callback_query.answer("Mahsulot savatga qo'shildi!")
 
         else:
             raise
 
     def cart(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
+        if not context.user_data.get('order'):
+            context.user_data['order'] = {}
         if update.message:
             update.message.delete()
+            
             try:
                 context.user_data['temp_message'].delete()
             except:
                 pass
-            user.send_message(
-                **db.cart(context, db, False))
+            if db.busket.is_available:
+                user.send_message(
+                    **db.cart(context, db, False))
+            else:
+                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(db.menu()))
+                return MENU
         else:
-            update.callback_query.message.edit_text(
-                **db.cart(context, db))
+            if db.busket.is_available:
+                update.callback_query.message.edit_text(
+                    **db.cart(context, db))
+            else:
+                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(db.menu()))
+                return MENU
         return CART
 
     def remove_from_cart(self, update: Update, context: CallbackContext):
@@ -141,7 +154,7 @@ class Order:
             update.callback_query.message.edit_text(
                 **db.cart(context, db))
         else:
-            update.callback_query.answer("savatda hech nimaqomadi!")
+            update.callback_query.answer("savatda hech nimaqomadi!", True)
             update.callback_query.message.edit_text(
                 **db.category_list(1,  None, context, user=db))
             return ORDER
@@ -167,7 +180,7 @@ class Order:
     
     def back_to_menu(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        update.callback_query.message.delete(  )
+        (update.message if update.message else update.callback_query.message).delete()
         context.user_data['temp_message'] = user.send_message(
             "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU
@@ -177,11 +190,11 @@ class Order:
         user, db = get_user(update)
         data = update.callback_query.data.split(":")
         if data[1] == "+":
-            BusketItem.objects.filter(id=data[1]).first().count += 1
+            BusketItem.objects.filter(id=data[2]).first().count += 1
         elif data[1] == "-":
-            BusketItem.objects.filter(id=data[1]).first().count -= 1
+            BusketItem.objects.filter(id=data[2]).first().count -= 1
         update.callback_query.message.edit_text(
-            **db.cart(context))
+            **db.cart(context, db))
     
     def product_creadit_month(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
@@ -197,7 +210,7 @@ class Order:
         context.user_data['order']['current_product']['month'] = new
 
         update.callback_query.message.edit_caption(
-            **db.product_info(context, False))
+            **db.product_info(context, False, db), parse_mode="HTML")
 
     def order_cart(self, update: Update, context: CallbackContext):
         user, db = get_user(update)

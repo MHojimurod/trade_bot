@@ -6,7 +6,7 @@ from django.db.models.query import QuerySet
 # from tg_bot.utils import distribute
 
 
-def distribute(items, number) -> list:
+def distribute(items, number) -> list[list]:
     res = []
     start = 0
     end = number
@@ -137,9 +137,9 @@ class Product(models.Model):
     active: bool = models.BooleanField(default=False)
     tan_price: int = models.IntegerField()
     color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
-    
-    def price(self):
-        return self.tan_price + ((self.tan_price // 100) * self.color.base_percent)
+
+    def price(self, month: "Percent"):
+        return self.tan_price + ((self.tan_price // 100) * month.percent)
     
     def percents(self):
         pass
@@ -162,7 +162,7 @@ class Color(models.Model):
     base_percent: int = models.PositiveIntegerField()
 
     @property
-    def months(self) -> QuerySet:
+    def months(self) -> list["Percent"]:
         return Percent.objects.filter(color=self)
 
 
@@ -180,11 +180,13 @@ class User(models.Model):
     language: Language = models.ForeignKey(Language, on_delete=models.SET(1))
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
+    filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
 
     def text(self, name, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(
             name=name, language=self.language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+
 
     def category_list(self, page: int = 1, parent: int = None, context: CallbackContext = None, user:"User"=None):
         keyboard = []
@@ -270,13 +272,25 @@ class User(models.Model):
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
 
-    def product_info(self, context: CallbackContext, photo:bool=True):
+    def product_info(self, context: CallbackContext, photo:bool=True, user: "User"=None):
 
-        text = ""
 
         keyboard = []
         count_controls = []
         product: Product = context.user_data['order']['current_product']['product']
+        product.refresh_from_db()
+        text = f"<b>{product.name(user.language)}</b>\n"
+        if not context.user_data['order']['current_product']['month']:
+            for i in product.color.months:
+                text += f"        {product.price(i) // i.months} x {i.months} oy = {product.price(i)}\n"
+        else:
+            month: Percent = context.user_data['order']['current_product']['month']
+
+            text += f"    {product.price(month) // month.months}  x {month.months} = {product.price(month)}\n"
+
+            text += f"\numumiy summa\n    {product.price(month)} x {context.user_data['order']['current_product']['count']} = {product.price(month) * context.user_data['order']['current_product']['count']}"
+
+
         if context.user_data['order']['current_product']['count'] > 1:
             count_controls.append(
                 InlineKeyboardButton("-", callback_data=f"product_count:-"))
@@ -319,50 +333,26 @@ class User(models.Model):
         if photo:
             return {
                 "photo": open(f".{context.user_data['order']['current_product']['product'].photo.url}", 'rb'),
-                "caption": "product",
+                "caption": text,
                 "reply_markup": InlineKeyboardMarkup(keyboard)
             }
         else:
             return {
-                "caption": "product",
+                "caption": text,
                 "reply_markup": InlineKeyboardMarkup(keyboard)
             }
 
     def cart(self, context: CallbackContext, user:"User", back_to_category:bool=True):
-        # text = "1"
-        # keyboard: list = []
-        # if len(context.user_data['cart']) > 0:
-        #     for i in range(len(context.user_data['cart'])):
-        #         product = context.user_data['cart'][i]
-        #         controls = []
-        #         if product['count'] > 1:
-        #             controls.append(InlineKeyboardButton(
-        #                 "-", callback_data=f"cart_product_count:-:{i}"))
-        #         controls += [InlineKeyboardButton(
-        #                 str(product['count']), callback_data=f"just"),
-        #         InlineKeyboardButton(
-        #                 "+", callback_data=f"cart_product_count:+:{i}")]
-        #         keyboard.append(controls)
-        #     keyboard.append([
-        #         InlineKeyboardButton("🔙", callback_data=f"back_to_category_from_cart"),
-        #         InlineKeyboardButton("🛒", callback_data=f"order_cart"),
-        #     ])
-        # else:
-        #     text = "Корзина пуста"
-        #     keyboard.append([
-        #         InlineKeyboardButton(
-        #             "🔙", callback_data=f"back_to_category_from_cart"),
-        #     ])
-        # return {
-        #     "text": text,
-        #     "reply_markup": InlineKeyboardMarkup(keyboard)
-        # }
-        text = "Cart"
+        text = "Cart\n"
+        pr_texts = []
         keyboard = []
         busket = user.busket
 
         if busket.is_available:
             for pr in busket.products:
+                pr_texts.append(f"""    {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
+    {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
+    oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
                 controls=  []
                 if pr.count > 1:
                     controls.append(
@@ -385,9 +375,11 @@ class User(models.Model):
                         InlineKeyboardButton("🛒", callback_data=f"order_cart"),
 
             ])
+            text += "\n———————————————-".join(pr_texts)
         else:
             text = "Cart is empty"
         return {
+            
             "text": text,
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
@@ -464,7 +456,7 @@ class Busket(models.Model):
         self.passport_image = image
         self.save()
 
-    def set_self_password_image(self, image):
+    def set_self_passport_image(self, image):
         self.self_password_image = image
         self.save()
     
