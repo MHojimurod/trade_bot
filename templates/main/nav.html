@@ -22,6 +22,12 @@
         <div data-i18n="Analytics">Asosiy</div>
       </a>
     </li>
+    <li class="menu-item {{order_active}}">
+      <a href="{% url 'orders_list' %}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-collection"></i>
+        <div data-i18n="Basic">Buyurtmalar</div>
+      </a>
+    </li>
     <li class="menu-item {{category_active}}">
       <a href="/category/list" class="menu-link">
         <i class="menu-icon tf-icons bx bx-category"></i>
@@ -38,6 +44,12 @@
       <a href="/operator/list" class="menu-link">
         <i class="menu-icon tf-icons bx bx-support"></i>
         <div data-i18n="Analytics">Operatorlar</div>
+      </a>
+    </li>
+    <li class="menu-item {{statistics_active}}">
+      <a href="{% url 'statistics' %}" class="menu-link">
+        <i class='bx bx-chart tf-icons menu-icon '></i>
+        <div data-i18n="Analytics">Statistika</div>
       </a>
     </li>
 

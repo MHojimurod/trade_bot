@@ -3,6 +3,7 @@ from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
+from django.contrib.auth.models import User
 # from tg_bot.utils import distribute
 
 
@@ -55,10 +56,7 @@ class Text(models.Model):
 
 class Operators(models.Model):
     id: int
-    name: str = models.CharField(max_length=200, null=True, blank=True)
-    surname: str = models.CharField(max_length=200, null=True, blank=True)
-    username: str = models.CharField(max_length=200)
-    password: str = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     phone: int = models.IntegerField()
     photo = models.ImageField(
         upload_to='images/', default='/static/dashboard/assets/img/default.png')
@@ -67,9 +65,8 @@ class Operators(models.Model):
     token: str = models.CharField(max_length=200)
     active: bool = models.BooleanField(default=False)
     is_have: bool = models.BooleanField(default=False)
-
     def __str__(self):
-        return self.name
+        return self.user.name
 
 
 class Fillials(models.Model):

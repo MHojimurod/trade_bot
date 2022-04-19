@@ -12,28 +12,18 @@ def login_required_decorator(f):
 def dashboard_login(request):
     if request.POST:
         username = request.POST.get("username")
+        operator = Operators.objects.filter(user__username__contains=username)
         password = request.POST.get("password")
-        try:
-            user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
+        if operator:
+            if user is not None and operator.first().active:
+                login(request, user)
+                return redirect("home")
+        else:
             if user is not None:
                 login(request, user)
-              
                 return redirect("home")
-            else:
-
-                return render(request,"login/login.html")
-        except:
-            print('bbb')
-            usertye = Operators.objects.filter(username=username)
-            if usertye:
-                if usertye.first().active:
-                    login(request, user)
-                    return redirect("home")
-            else:
-                if user is not None:
-                    login(request, user)
-                    return redirect("home")
-    return render(request,"login/login.html")
+    return render(request, "login/login.html")
 
 
 @login_required_decorator
@@ -42,3 +32,19 @@ def dashboard_logout(request):
     res = redirect("login")
     res.delete_cookie("sessionid")
     return res
+
+
+
+def check_admin(request):
+    if request.user:
+        user = request.user
+        if user is not None and  not user.is_anonymous:
+            data = Operators.objects.filter(user=user)
+            if data:
+                access = data.first().accesses
+                ctx = {
+                    "access_types":access
+                }
+                return ctx
+        return {}
+    return {}

@@ -12,7 +12,6 @@ from django.contrib import messages
 def list_product(request,pk):
     if request.method == "POST":
         if request.POST["fff"] == "delete":
-            print(len(request.POST.getlist("results")))
             if len(request.POST.getlist("results"))>0:
                 for i in request.POST.getlist("results"):
                     Product.objects.filter(id=i).delete()
@@ -61,3 +60,16 @@ def delete_product(request, pk):
     data = category.parent_id
     category.delete()
     return redirect(f'/product/list/{data}')
+
+
+def one_product(request, pk):
+    product = Product.objects.get(pk=pk)
+    sub:Category = Category.objects.filter(id=product.category_id).first()
+    main_category:Category = Category.objects.filter(id=sub.parent_id).first()
+    ctx = {
+        "product": product,
+        "category_active":"active",
+        "main_category": main_category,
+        "sub":sub
+    }
+    return render(request, 'dashboard/products/one_product.html', ctx)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from admin_panel.forms import FillialsForm
 from admin_panel.models import Fillials
-
+from django.contrib import messages
 
 
 def create_fillial(request):
@@ -14,6 +14,23 @@ def create_fillial(request):
     return render(request, 'dashboard/fillials/create.html', ctx)
 
 def list_fillial(request):
+    if request.POST:
+        data = request.POST
+        if len(data.getlist("results"))>0:
+            if data["action"] == "active":
+                for i in data.getlist("results"):
+                    Fillials.objects.filter(id=i).update(active=True)
+            if data["action"] == "not_active":
+                for i in data.getlist("results"):
+                    Fillials.objects.filter(id=i).update(active=False)
+            if data["action"] == "delete":
+                for i in data.getlist("results"):
+                    Fillials.objects.filter(id=i).delete()
+            return redirect('list_fillial')
+        else:
+            messages.error(request,"Siz hech narsa tanlamadingiz")
+            return redirect('list_fillial')
+
     fillials = Fillials.objects.all()
     ctx = {'fillials': fillials, "fillial_active":"active"}
     return render(request, 'dashboard/fillials/list.html', ctx)
