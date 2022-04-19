@@ -6,8 +6,9 @@ from admin_panel.views import account, home,list_operators,create_operator,edit_
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
 from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
 from admin_panel.clients.all_clients import clients_list,send_telegram
+from admin_panel.orders.order import orders_list, update_order_status
 urlpatterns = [
-    path('', home, name='home'),
+    path('', orders_list, name='home'),
 
     #login
     path('login', dashboard_login,name='login'),
@@ -47,6 +48,12 @@ urlpatterns = [
     #clients
     path('clients/list',clients_list,name="clients_list"),
     path('clients/send_msg/<int:pk>',send_telegram,name="send_telegram"),
+
+
+    #orders
+    path('orders/list',orders_list,name="orders_list"),
+    path('order/update/accept/<int:pk>',update_order_status,name="update_order"),
+
 
     #accounts
     path('account/', account, name='account'),
