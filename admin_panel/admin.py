@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from admin_panel.models import Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent
+from admin_panel.models import Aksiya, Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent
 
 
 admin.site.register(BotSettings)
@@ -20,6 +20,12 @@ class CategoryInline(admin.TabularInline):
     extra = 1
 
 
+class ProductInline(admin.TabularInline):
+    model = Product
+    extra = 1
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    inlines = [CategoryInline]
+    inlines = [CategoryInline, ProductInline]
+
+admin.site.register(Aksiya)

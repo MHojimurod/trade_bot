@@ -1,20 +1,9 @@
+import locale
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 
-
-class X:
-    _data: int = 1
-
-    def set_data(self, other):
-        print(other)
-    
-    def get_data(self):
-        return self._data
-
-    data= property(get_data, set_data)
+def money(number: int, grouping: bool = True, lang=1):
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
 
 
-
-b = X()
-
-
-b.data += 1
+print(money(1_000_000, grouping=True))

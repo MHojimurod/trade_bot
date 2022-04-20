@@ -1,9 +1,9 @@
 from telegram.ext import CallbackContext, Updater
-from telegram import InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
-from admin_panel.models import Language, User, Fillials
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from admin_panel.models import Aksiya, Language, User, Fillials
 from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
-from .constants import  FILIAL, LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
+from .constants import  ADDRESS, AKSIYA, FILIAL, LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
 
 
 from .utils import *
@@ -111,19 +111,37 @@ class Basehandlers():
         text = "Bizning manzillarimiz:\n"
         keyboard = []
         address: Fillials
-        i = 1
         for address in Fillials.objects.all():
-            text += f"{i}. {address.name(db.language)}"
-            keyboard.append(InlineKeyboardButton(str(i), callback_data=f"address:{address.id}"))
-            i += 1
+        #     text += f"{i}. {address.name(db.language)}"
+        #     keyboard.append(InlineKeyboardButton(str(i), callback_data=f"address:{address.id}"))
+        #     i += 1
+            keyboard.append(address.name(db.language))
+                
         
-        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup(distribute(keyboard,5) + [[InlineKeyboardButton("Orqaga", callback_data="back_to_menu_from_our_addresses")]]))
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), ["Orqaga"]
+        ]))
         return OUR_ADDRESSES
     
     def address(self, update:Update, context:CallbackContext):
         address: Fillials = Fillials.objects.get(id=int(update.callback_query.data.split(":")[1]))
         user, db = get_user(update)
-        user.send_message(address.address(db.language), reply_markup=InlineKeyboardButton("ortga", callback_data="back_to_our_addresses"))
+        address: Fillials = Fillials.objects.filter(
+            **{
+                "name" + db.language.code: update.message.text
+            }
+        ).first()
+        if address:
+            user.send_message(address.address(db.language))
+            return ADDRESS
+        else:
+            keyboard = []
+            address: Fillials
+            for address in Fillials.objects.all():
+                keyboard.append(address.name(db.language))
+            user.send_message(text="Kechirasiz manzil topilmadi!", reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), ["Orqaga"]
+                                                                           ]))
+            return OUR_ADDRESSES
+
     
     def support(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
@@ -136,3 +154,34 @@ class Basehandlers():
         user.send_message(db.text('support_accepted'),
                           reply_markup=ReplyKeyboardMarkup(*db.menu()))
         return MENU
+    @remove_temp_message
+    def aksiya(self, update: Update,context: CallbackContext):
+        user, db = get_user(update)
+
+        context.user_data['temp_message'] = user.send_message("Aksiyalar", reply_markup=ReplyKeyboardMarkup(
+            [*distribute(Aksiya.keyboard(db.language), 2), ['Orqaga']]))
+        return AKSIYA
+
+    @remove_temp_message
+    def aksiya_select(self, update: Update, context: CallbackContext):
+        user, db = get_user(update)
+
+        aksiya:Aksiya = Aksiya.objects.filter(**{
+            "name_" + db.language.code: update.message.text
+        }).first()
+
+        if aksiya:
+            if aksiya.mode == 0:
+                context.user_data['temp_message'] = user.send_message(aksiya.caption, reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]))
+            elif aksiya.mode == 1:
+                context.user_data['temp_message'] = user.send_photo(photo=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]))
+                
+            elif aksiya.mode == 2:
+                context.user_data['temp_message'] = user.send_video(video=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]))
+        else:
+            context.user_data['temp_message'] = user.send_message("Kechirasiz aksiya topilmadi!", reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]))
+            return AKSIYA

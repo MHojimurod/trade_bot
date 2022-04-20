@@ -1,9 +1,11 @@
+import locale
 from django.db import models
 from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 # from tg_bot.utils import distribute
 
 
@@ -20,7 +22,18 @@ def distribute(items, number) -> list[list]:
     return res
 
 
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+
+def money(number: int, grouping: bool = True):
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
+
+
+class Name:
+    def name(self, language: "Language" = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"name_{language.code}")
 
 
 class Language(models.Model):
@@ -135,8 +148,12 @@ class Product(models.Model):
     tan_price: int = models.IntegerField()
     color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
 
+    @property
+    def p(self):
+        return self.tan_price * BotSettings.objects.first().money
+
     def price(self, month: "Percent"):
-        return self.tan_price + ((self.tan_price // 100) * month.percent)
+        return (self.p + ((self.p // 100) * month.percent))
     
     def percents(self):
         pass
@@ -279,13 +296,13 @@ class User(models.Model):
         text = f"<b>{product.name(user.language)}</b>\n"
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += f"        {product.price(i) // i.months} x {i.months} oy = {product.price(i)}\n"
+                text += f"        {money(product.price(i) // i.months)} x {i.months} oy = {money(product.price(i))}\n"
         else:
             month: Percent = context.user_data['order']['current_product']['month']
 
-            text += f"    {product.price(month) // month.months}  x {month.months} = {product.price(month)}\n"
+            text += f"    {money(product.price(month) // month.months)}  x {month.months} = {money(product.price(month))}\n"
 
-            text += f"\numumiy summa\n    {product.price(month)} x {context.user_data['order']['current_product']['count']} = {product.price(month) * context.user_data['order']['current_product']['count']}"
+            text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
 
 
         if context.user_data['order']['current_product']['count'] > 1:
@@ -340,17 +357,20 @@ class User(models.Model):
             }
 
     def cart(self, context: CallbackContext, user:"User", back_to_category:bool=True):
-        text = "Cart\n"
+        text = ""
+        obshiy_summa = 0
         pr_texts = []
         keyboard = []
         busket = user.busket
 
         if busket.is_available:
             for pr in busket.products:
-                pr_texts.append(f"""    {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
-    {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
-    oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
-                controls=  []
+                obshiy_summa += pr.product.price(pr.month) * pr.count
+                pr_texts.append(f"""{pr.product.name(user.language)}
+        {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
+        {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
+        oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
+                controls = []
                 if pr.count > 1:
                     controls.append(
                         InlineKeyboardButton(
@@ -372,7 +392,8 @@ class User(models.Model):
                         InlineKeyboardButton("🛒", callback_data=f"order_cart"),
 
             ])
-            text += "\n———————————————-".join(pr_texts)
+            text += "\n———————————————-\n".join(pr_texts)
+            text += f"\n\nUmumiy: {obshiy_summa}"
         else:
             text = "Cart is empty"
         return {
@@ -480,3 +501,38 @@ class BusketItem(models.Model):
     def get_count(self): return self._count
 
     count = property(get_count, set_count)
+
+
+
+
+
+
+
+
+
+class Aksiya(models.Model, Name):
+    name_uz = models.CharField(max_length=15)
+    name_ru = models.CharField(max_length=15)
+    mode = models.IntegerField(choices=[
+        (0, 'text'),
+        (1, "image"),
+        (2, 'video')
+
+    ])
+    media = models.FileField(null=True, blank=True)
+    caption = models.TextField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name_uz
+
+    @classmethod
+    def keyboard(self, language: Language):
+        res = []
+        i: Aksiya
+        for i in self.objects.all():
+            res.append(i.name(language))
+        return res
+    @property
+    def file(self):
+        return open(f".{self.media.url}", 'rb')

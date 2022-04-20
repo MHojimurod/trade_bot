@@ -284,7 +284,7 @@ class Order:
                 db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove())
             db.busket.order()
             user.send_message(
-                "Menu", reply_markup=ReplyKeyboardMarkup(**db.menu()))
+                "Menu", reply_markup=ReplyKeyboardMarkup(*db.menu()))
             return MENU
         else:
             user.send_message(
@@ -298,5 +298,5 @@ class Order:
         db.busket.order()
         user.send_message(db.text('yout_order_accepted'),
                           reply_markup=ReplyKeyboardRemove())
-        user.send_message(**db.menu())
+        user.send_message(*db.menu())
         return MENU
