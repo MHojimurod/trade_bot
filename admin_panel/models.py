@@ -4,6 +4,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
+from multiselectfield import MultiSelectField
 # from tg_bot.utils import distribute
 
 
@@ -55,6 +56,16 @@ class Text(models.Model):
 
 
 class Operators(models.Model):
+    access  =(
+        ("order","Buyurtmalar"),
+        ("statistic","Statistika"),
+        ("operators","Operatorlar"),
+        ("category","Kategoriya"),
+        ("Ad","Рассылки"),
+        ("fillial","Filliallar"),
+        ("settings","Bot Sozlamalari"),
+        ("followers","Foydalanuvchilar"),
+    )
     id: int
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     phone: int = models.IntegerField()
@@ -65,8 +76,9 @@ class Operators(models.Model):
     token: str = models.CharField(max_length=200)
     active: bool = models.BooleanField(default=False)
     is_have: bool = models.BooleanField(default=False)
+    pers = MultiSelectField(choices=access)
     def __str__(self):
-        return self.user.name
+        return self.user.first_name
 
 
 class Fillials(models.Model):
