@@ -2,7 +2,7 @@ from email.message import EmailMessage
 from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -29,19 +29,23 @@ class Bot(Updater, Basehandlers, Order, Settings):
                 NUMBER: [
                     MessageHandler(Filters.contact, self.number),
                 ],
+                FILIAL: [
+                    MessageHandler(Filters.text, self.filial)
+                ],
                 MENU: [
                     MessageHandler(
                         Filters.regex(
-                            ("^(" "Buyurtma berish" "|" "заказать " "|" "Order" ")$") ), self.order
+                            ("^(" "Buyurtma berish" "|" "Заказать" "|" "Order" ")$")), self.order
                         ),
                     MessageHandler(Filters.regex("^Savatcha$"), self.cart),
                     MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone),
-                    MessageHandler(Filters.regex("^Sozlamalar$"), self.settings),
+                    MessageHandler(Filters.regex(
+                        "^(Sozlamalar|Настройки)$"), self.settings),
                     MessageHandler(Filters.regex(
                         "^Bizning manzillar$"), self.our_addresses),
                         MessageHandler(Filters.regex("^(Savol va takliflar)$"), self.support),
                 ],
-                ORDER: [ 
+                ORDER: [
                     CallbackQueryHandler(
                         self.category_list, pattern="^category_pagination:"),
                     CallbackQueryHandler(
@@ -65,8 +69,7 @@ class Bot(Updater, Basehandlers, Order, Settings):
                 CART: [
                     # controls counts
                     CallbackQueryHandler(
-                        self.cart_product_count, pattern="^cart_product_count:"),
-                    
+                        self.cart_product_count, pattern="^cart_item_count:"),
                     CallbackQueryHandler(
                         self.remove_from_cart, pattern="^remove_from_cart:"),
                     CallbackQueryHandler(
@@ -100,12 +103,17 @@ class Bot(Updater, Basehandlers, Order, Settings):
                     MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
                     MessageHandler(Filters.regex("^(Tilni o'zgartirish)$"), self.settings_language),
                     MessageHandler(Filters.regex("^(Raqamni o'zgartirish)$"), self.settings_number),
+                    MessageHandler(Filters.regex("^Ortga$"), self.back_to_menu)
                 ],
                 SETTINGS_NAME: [
                     MessageHandler(Filters.text, self.settings_name_change)
                 ],
                 SETTINGS_NUMBER: [
-                    MessageHandler(Filters.contact, self.settings_number_change)
+                    MessageHandler(Filters.contact, self.settings_number_change),
+                    MessageHandler(Filters.regex(
+                        "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
+                        "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.settings_number_text),
+                    MessageHandler(Filters.text, self.settings_number_error)
                 ],
                 SETTINGS_LANGUAGE: [
                     MessageHandler(Filters.text, self.settings_language_change)
@@ -132,4 +140,5 @@ class Bot(Updater, Basehandlers, Order, Settings):
 
 
         self.start_polling()
+        print(self.bot.get_me())
         self.idle(  )

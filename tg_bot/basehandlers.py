@@ -3,7 +3,7 @@ from telegram import InlineKeyboardButton, KeyboardButton, ReplyKeyboardMarkup, 
 from admin_panel.models import Language, User, Fillials
 from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
-from .constants import  LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
+from .constants import  FILIAL, LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
 
 
 from .utils import *
@@ -76,10 +76,30 @@ class Basehandlers():
         user,db = get_user(update)
         number = update.message.contact.phone_number
         context.user_data['register']['number'] = number
-        new_user: User = User.objects.create(**context.user_data['register'])
-
-        context.user_data['temp_message'] = user.send_message(
-                          "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
+        filials: list[Fillials] = Fillials.objects.filter(active=True)
+        user.send_message("Ilitmnos filialli talla!", reply_markup=ReplyKeyboardMarkup(distribute([
+            f.name(context.user_data['register']['language']) for f in filials
+        ], 2)))
+        # context.user_data['temp_message'] = user.send_message(
+        #                   "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
+        return FILIAL
+    
+    def filial(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        filial = Fillials.objects.filter(**{
+            "name_" + context.user_data['register']['language'].code: update.message.text
+        })
+        if filial:
+            context.user_data['register']['filial'] = filial.first()
+            new_user: User = User.objects.create(**context.user_data['register'])
+            user.send_message(new_user.text('successfully_registered'),
+                                reply_markup=ReplyKeyboardMarkup(new_user.menu()))
+        else:
+            filials: list[Fillials] = Fillials.objects.filter(active=True)
+            user.send_message("Kechirasiz filial topilmadi!", reply_markup=ReplyKeyboardMarkup(distribute([
+                f.name(self.language) for f in filials
+            ], 2)))
+            return FILIAL
         return MENU
     
     def contact_with_phone(self, update:Update, context: CallbackContext):
