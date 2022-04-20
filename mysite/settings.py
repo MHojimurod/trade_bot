@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "admin_panel",
     "ckeditor",
-    'bot'
+    'bot',
+    "multiselectfield"
 ]
 
 MIDDLEWARE = [
@@ -66,7 +67,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "admin_panel.currency.get_currency.get_current_context",
-                "admin_panel.currency.get_currency.update_currency"
+                "admin_panel.currency.get_currency.update_currency",
+                "admin_panel.login.decorator.check_admin",
             ],
         },
     },
