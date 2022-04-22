@@ -18,7 +18,7 @@
             
              
 
-              <div class="input-group">
+              <!-- <div class="input-group">
                 <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username with two button addons">
                 <button class="btn btn-outline-primary" type="button"><i class="bx bxs-edit-alt"></i></button>
                 <button class="btn btn-outline-primary" type="button">Button</button>
@@ -27,92 +27,101 @@
                 <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username with two button addons">
                 <button class="btn btn-outline-primary" type="button"><i class="bx bxs-edit-alt"></i></button>
                 <button class="btn btn-outline-primary" type="button">Button</button>
-              </div>
+              </div> -->
               <div class="d-flex" style="justify-content: space-between;">
-                    <div class="col-3">
-                        <label for="lastName" class="form-label">Sariq</label>
+                <div class="col-3">
+                      <form method="post">
+                          {% csrf_token %}
+                          <label for="lastName" class="form-label">Sariq</label>
                        <div class="input-group" style="flex-wrap: nowrap; ">
-                        <input style="border-color:#e69a00"  type="text" class="form-control" value="{{red}}">
-                        <button class="btn btn-outline-warning" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-warning" type="button"><i class='bx bx-check-circle'></i></button>
+                        <input style="border-color:#e69a00" value="{{yellow.color.base_percent}}" name="yellow"  type="number" class="form-control">
+                        <!-- <button class="btn btn-outline-warning" type="button"><i class="bx bxs-edit-alt"></i></button> -->
+                        <!-- <button class="btn btn-outline-warning" type="submit"><i class='bx bx-check-circle'></i></button> -->
                        </div>
                        
                        <div class="d-flex mt-2">
-                           
+                         
                            <div class="col-3" style="padding-right:3px;">
                             <label for="lastName" class="form-label">3 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
+                               <input style="border-color:#e69a00;" name="month"  value="{{yellow.3.percent}}" class="form-control" type="text">
                            </div>
                            <div class="col-3" style="padding: 0 3px;">
                             <label for="lastName" class="form-label">6 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
+                               <input style="border-color:#e69a00;" name="month" value="{{yellow.6.percent}}"  class="form-control" type="text">
                            </div>
                            <div class="col-3" style="padding: 0 3px;">
                             <label for="lastName" class="form-label">12 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
+                               <input style="border-color:#e69a00;" name="month" value="{{yellow.12.percent}}"  class="form-control" type="text">
                            </div>
                            <div class="col-3" style="padding-left:3px;">
                             <label for="lastName" class="form-label">24 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
+                               <input style="border-color:#e69a00;" name="month"  value="{{yellow.24.percent}}" class="form-control" type="text">
                            </div>
                        </div>
-                            <button class="mt-2 btn btn-outline-warning d-block" style="width: 100%;" type="button">Saqlash</button>
-                    </div>
-                    <div class="col-3">
-                        <label for="lastName" class="form-label">Yashil</label>
+                            <button class="mt-2 btn btn-outline-warning d-block" style="width: 100%;" type="submit">Saqlash</button>
+                          </form>
+                          </div>
+                          <div class="col-3">
+                            <form method="post">
+                              {% csrf_token %}
+                          <label for="lastName" class="form-label">Yashil</label>
                        <div class="input-group" style="flex-wrap: nowrap; ">
-                        <input style="border-color:#71dd37" type="text" class="form-control" value="{{red}}">
+                        <input style="border-color:#71dd37" name="green" value="{{green.color.base_percent}}" type="number" class="form-control">
                         <button class="btn btn-outline-success" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-success" type="button"><i class='bx bx-check-circle'></i></button>
+                        <button class="btn btn-outline-success" type="submit"><i class='bx bx-check-circle'></i></button>
                        </div>
+                        </form>
                        <div class="d-flex mt-2">
                            
                         <div class="col-3" style="padding-right:3px;">
                          <label for="lastName" class="form-label">3 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
+                            <input style="border-color:#71dd37;"  class="form-control" value="{{green.3.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding: 0 3px;">
                          <label for="lastName" class="form-label">6 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
+                            <input style="border-color:#71dd37;"  class="form-control" value="{{green.6.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding: 0 3px;">
                          <label for="lastName" class="form-label">12 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
+                            <input style="border-color:#71dd37;"  class="form-control" value="{{green.12.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding-left:3px;">
                          <label for="lastName" class="form-label">24 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
+                            <input style="border-color:#71dd37;"  class="form-control" value="{{green.24.percent}}"  type="text">
                         </div>
                     </div>
-                    <button class="mt-2 btn btn-outline-success d-block" style="width: 100%;" type="button">Saqlash</button>
+                    <button class="mt-2 btn btn-outline-success d-block" style="width: 100%;" type="submit">Saqlash</button>
                 </div>
                     <div class="col-3">
-                        <label for="lastName" class="form-label">Familya</label>
+                        <form method="post">
+                          {% csrf_token %}
+                          <label for="lastName" class="form-label">Qizil</label>
                        <div class="input-group" style="flex-wrap: nowrap;">
-                        <input style="border-color:#ff3e1d" type="text" class="form-control" value="{{red}}">
+                        <input style="border-color:#ff3e1d" value="{{red.color.base_percent}}" name="red" type="number" class="form-control">
                         <button class="btn btn-outline-danger" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-danger" type="button"><i class='bx bx-check-circle'></i></button>
+                        <button class="btn btn-outline-danger" type="submit"><i class='bx bx-check-circle'></i></button>
                        </div>
+                        </form>
                        <div class="d-flex mt-2">
                            
                         <div class="col-3" style="padding-right:3px;">
                          <label for="lastName" class="form-label">3 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
+                            <input style="border-color:#ff3e1d;"  class="form-control" value="{{red.3.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding: 0 3px;">
                          <label for="lastName" class="form-label">6 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
+                            <input style="border-color:#ff3e1d;"  class="form-control" value="{{red.6.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding: 0 3px;">
                          <label for="lastName" class="form-label">12 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
+                            <input style="border-color:#ff3e1d;"  class="form-control" value="{{red.12.percent}}"  type="text">
                         </div>
                         <div class="col-3" style="padding-left:3px;">
                          <label for="lastName" class="form-label">24 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
+                            <input style="border-color:#ff3e1d;"  class="form-control" value="{{red.24.percent}}"  type="text">
                         </div>
                     </div>
-                    <button class="mt-2 btn btn-outline-danger d-block" style="width: 100%;" type="button">Saqlash</button>
+                    <button class="mt-2 btn btn-outline-danger d-block" style="width: 100%;" type="submit">Saqlash</button>
                 </div>
 
               </div>

@@ -8,6 +8,7 @@ from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fil
 from admin_panel.clients.all_clients import clients_list,send_telegram
 from admin_panel.orders.order import orders_list, update_order_status, one_order, reject_order
 from admin_panel.statistics.statistika import all_statistika
+from admin_panel.settings.bot_settings import texts,settings
 urlpatterns = [
     path('', home, name='home'),
 
@@ -66,4 +67,9 @@ urlpatterns = [
 
     #statistics
     path('statistics/', all_statistika, name='statistics'),
+
+
+    #settings
+    path("settings",settings,name="settings"),
+    path("texts",texts,name="texts"),
 ]

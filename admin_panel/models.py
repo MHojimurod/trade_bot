@@ -70,11 +70,12 @@ class Text(models.Model):
 
 class Operators(models.Model):
     access  =(
+        ("main","Asosiy"),
         ("order","Buyurtmalar"),
         ("statistic","Statistika"),
         ("operators","Operatorlar"),
         ("category","Kategoriya"),
-        ("Ad","Рассылки"),
+        ("ads","Reklama"),
         ("fillial","Filliallar"),
         ("settings","Bot Sozlamalari"),
         ("followers","Foydalanuvchilar"),
@@ -86,7 +87,6 @@ class Operators(models.Model):
         upload_to='images/', default='/static/dashboard/assets/img/default.png')
     region: str = models.CharField(max_length=200, null=True, blank=True)
     address: str = models.CharField(max_length=200, null=True, blank=True)
-    token: str = models.CharField(max_length=200)
     active: bool = models.BooleanField(default=False)
     is_have: bool = models.BooleanField(default=False)
     pers = MultiSelectField(choices=access)
