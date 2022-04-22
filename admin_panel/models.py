@@ -5,11 +5,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from django.core.validators import FileExtensionValidator
-=======
 from multiselectfield import MultiSelectField
->>>>>>> f0d58b2711499a7a15a2413c64b6b2a292d455c8
 # from tg_bot.utils import distribute
 
 
@@ -103,6 +100,29 @@ class Fillials(models.Model):
     name_ru: str = models.CharField(max_length=200)
     desc_uz: str = RichTextField()
     desc_ru: str = RichTextField()
+
+
+
+    def desc_uz_get(self):
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>")
+
+    def desc_ru_get(self):
+        return self.desc_ru
+    
+    
+    def desc_uz_set(self, new):
+        self.desc_uz = new
+        self.save()
+
+    def desc_ru_set(self, new):
+        self.desc_ru = new
+        self.save()
+    
+    _desc_uz = property(desc_uz_get, desc_uz_set)
+    _desc_ru = property(desc_ru_get, desc_ru_set)
+
+
+
     active: bool = models.BooleanField(default=False)
 
     def __str__(self):
@@ -460,6 +480,16 @@ class Busket(models.Model):
     location = models.ForeignKey(Location, on_delete=models.SET(
         None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)
+
+    status = models.IntegerField(choices=(
+        (0, "Kutilmoqda"),
+        (1, "Qabul qilindi"),
+        (2, "Rad etildi"),
+        (3, "Tasdiqlandi"),
+        (4, "Tasdiqlanmadi"),
+        (5, "Arxiv"),
+
+    ))
 
     @property
     def is_available(self):

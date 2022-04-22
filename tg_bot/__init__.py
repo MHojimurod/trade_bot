@@ -35,7 +35,7 @@ class Bot(Updater, Basehandlers, Order, Settings):
                 MENU: [
                     MessageHandler(
                         Filters.regex(
-                            ("^(" "Buyurtma berish" "|" "Заказать" "|" "Order" ")$")), self.order
+                            ("^(" "Buyurtma berish" "|" "Заказать" "|" "Order" "|" "order" ")$")), self.order
                         ),
                     MessageHandler(Filters.regex(
                         "^Savatcha|Корзина$"), self.cart),

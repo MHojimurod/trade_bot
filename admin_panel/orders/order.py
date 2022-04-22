@@ -37,6 +37,13 @@ def one_order(request,pk):
 
     ctx = {"order_active":"active","order":order,"text":text}
     return render(request, 'dashboard/orders/one_order.html',ctx)
-    
 
 
+def reject_order(request, pk):
+    request.user.is_have = True
+    request.user.save()
+    order = Busket.objects.get(pk=pk)
+    order.status = 2
+    order.save()
+
+    return redirect('orders_list')

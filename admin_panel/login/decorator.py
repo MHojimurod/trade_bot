@@ -39,9 +39,9 @@ def check_admin(request):
     if request.user:
         user = request.user
         if user is not None and  not user.is_anonymous:
-            data = Operators.objects.filter(user=user)
+            data:Operators = Operators.objects.filter(user=user).first()
             if data:
-                access = data.first().pers
+                access = data.pers
                 ctx = {
                     "access_types":access
                 }
