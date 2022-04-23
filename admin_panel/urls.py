@@ -6,9 +6,10 @@ from admin_panel.views import account, home,list_operators,create_operator,edit_
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
 from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
 from admin_panel.clients.all_clients import clients_list,send_telegram
-from admin_panel.orders.order import orders_list, update_order_status, one_order, reject_order
+from admin_panel.orders.order import order_accept, order_accepted, order_archive, order_not_accept, order_not_accepted, orders_list, update_order_status, one_order, reject_order
 from admin_panel.statistics.statistika import all_statistika
-from admin_panel.settings.bot_settings import texts,settings
+from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
+
 urlpatterns = [
     path('', home, name='home'),
 
@@ -55,11 +56,18 @@ urlpatterns = [
 
     #orders
     path('orders/list',orders_list,name="orders_list"),
-    path('order/update/accept/<int:pk>',update_order_status,name="update_order"),
+    path('orders/accepted/', order_accepted, name="order_accepted"),
+    path('orders/not_accepted/', order_not_accepted, name="order_not_accepted"),
+    path('orders/archive/', order_archive, name="order_archive"),
+
+    path('orders/update/accept/<int:pk>',update_order_status,name="update_order"),
     path('orders/one/<int:pk>',one_order,name="one_order"),
 
 
+
     path('orders/reject/<int:pk>', reject_order),
+    path('orders/accept/<int:pk>', order_accept, name="order_accept"),
+    path('orders/not_accept/<int:pk>', order_not_accept, name="order_not_accept"),
 
     #accounts
     path('account/', account, name='account'),
@@ -72,4 +80,6 @@ urlpatterns = [
     #settings
     path("settings",settings,name="settings"),
     path("texts",texts,name="texts"),
+    path("dashboard/texts/update", text_update),
+    path("colors/update", colors_update)
 ]

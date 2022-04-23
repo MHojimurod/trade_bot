@@ -4,7 +4,7 @@ from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
 from django.core.validators import FileExtensionValidator
 from multiselectfield import MultiSelectField
 # from tg_bot.utils import distribute
@@ -43,11 +43,41 @@ class Language(models.Model):
     code = models.CharField(max_length=3, unique=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.name + " (" + str(self.id) + ")"
 
     def _(self, name: str, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(name=name, language=self).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+    
+    def texts(self) -> QuerySet:
+        return Text.objects.filter(language=self)
+    
+    def save(self):
+        super().save()
+        self.sync()
+    
+    def sync(self):
+        print("xxx")
+        text_names = []
+        text: Text
+
+        for text in Text.objects.all():
+            if text.name not in text_names:
+                text_names.append({
+                    "name": text.name,
+                    "data": text.data,
+                })
+                # print(text.name, self)
+
+        for text_name in text_names:
+            if Text.objects.filter(name=text_name["name"], language=self).first() is None:
+                Text.objects.create(
+                    name=text_name["name"],
+                    data=text_name["data"],
+                    language=self
+                )
+        
+            
 
 
 class Text(models.Model):
@@ -66,7 +96,25 @@ class Text(models.Model):
             res: Text = Text.objects.filter(
                 name=name, language=language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+    
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        Text.objects.filter(name=self.name).delete()
+    
+    def save(self, *args, **kwargs):
+        # super().save(*args, **kwargs)
+        if self.pk is not None:
+            initial = Text.objects.get(pk=self.pk)
+            if initial:
+                if self.name != initial.name:
+                    Text.objects.filter(name=initial.name).delete()
+        super().save(*args, **kwargs)
 
+        for lang in Language.objects.all():
+            lang.sync()
+            
+
+    
 
 class Operators(models.Model):
     access  =(
@@ -80,8 +128,13 @@ class Operators(models.Model):
         ("settings","Bot Sozlamalari"),
         ("followers","Foydalanuvchilar"),
     )
+    
     id: int
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DjangoUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    surname = models.CharField(max_length=100)
+    username=  models.CharField(max_length=100)
+
     phone: int = models.IntegerField()
     photo = models.ImageField(
         upload_to='images/', default='/static/dashboard/assets/img/default.png')
@@ -489,6 +542,8 @@ class Busket(models.Model):
         (5, "Arxiv"),
 
     ))
+    actioner = models.ForeignKey(
+        DjangoUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="actioner")
 
     @property
     def is_available(self):

@@ -1,54 +1,89 @@
 {% extends 'main/base.html' %} {% load static %}
 {% block style %} {% endblock %}
- {% block content %}
+{% block content %}
 
- {% include 'main/messages.html' %}
+{% include 'main/messages.html' %}
 <div class="content-wrapper">
     <!-- Content -->
-{{text_uz}}
+    {{text_uz}}
     <div class="container-xxl flex-grow-1 container-p-y">
-      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
 
-      <div class="row">
-            <div class="col-6">
-                <h5 class="card-header">Text Uz</h5>
-            </div>
-                <div class="col-6">
+        <form id="texts_form">
+        <div class="row">
 
-                <h5 class="card-header">Text Ru</h5>
-            </div>
 
-                {% for i in text_uz %}
-                <div class="col-6">
-                    <div class="card-body">
+            {% for lang in languages %}
+            <div class="col">
+                <h5 class="card-header">{{lang.name}}</h5>
+                {% for text in lang.texts %}
+
+                <div class="card-body">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
-                        <label for="floatingInput">{{i.data}}</label>
+                        <input type="text"  class="form-control text_val" required id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp" data-lang="{{ lang.id }}" data-name="{{ text.name }}" value="{{ text.data }}">
+                        <label for="floatingInput">{{text.name}}</label>
                     </div>
-                    </div>
-                    </div>
+                </div>
+
                 {% endfor %}
-                <div class="col-6">
-                <div class="card-body">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
-                    <label for="floatingInput">ru</label>
-                </div>
-                </div>
-                </div>
-                <div class="col-6">
-                <div class="card-body">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="John Doe" aria-describedby="floatingInputHelp">
-                    <label for="floatingInput">ru</label>
-                </div>
-                </div>
-                </div>
+            </div>
+           
+
+            {% endfor %}
+            
+
+
+
+
+
 
         </div>
-      </div>
+        <button type="submit" class="btn btn-success me-2 " style="float: right;margin-right: 23px !important;">Saqlash</button>
+        </form>
     </div>
+</div>
 
-    <div class="content-backdrop fade"></div>
-  </div>
-  {% endblock %}
+<div class="content-backdrop fade"></div>
+</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+    document.getElementById("texts_form").addEventListener('submit', async (e) => {
+        e.preventDefault();
+        let values = {};
+        $(".text_val").each((i, el) => {
+            let lang = $(el).data('lang');
+            let name = $(el).data('name');
+            let value = $(el).val();
+            
+            if(!values[name]){
+                let res = {};
+                res[lang] = value
+                values[name] =res;
+
+            }
+            else{
+                values[name][lang.toString()] = value;
+            }
+        });
+
+        let req = await fetch('/dashboard/texts/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify(values)
+        });
+        if (req.status==200){
+            location.reload();
+        }
+    });
+
+    
+</script>
+{% endblock %}

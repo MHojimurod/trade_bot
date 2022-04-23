@@ -24,6 +24,7 @@ class Basehandlers():
         context.user_data['register'] = {
             "chat_id": user.id
         }
+
         if not db:
             context.user_data['temp_message'] = user.send_message("Iltimos tilni tanlang!", reply_markup=ReplyKeyboardMarkup(
                 distribute(
@@ -36,20 +37,20 @@ class Basehandlers():
             return LANGUAGE
         else:
             context.user_data['temp_message'] = user.send_message(
-                "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
+                db.text("mainMenu"), reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
             return MENU
     
     @remove_temp_message
     def language(self, update:Update, context: CallbackContext):
         user,db = get_user(update)
         language = update.message.text
-        lang = Language.objects.filter(name=language).first()
+        lang:Language = Language.objects.filter(name=language).first()
 
 
         if lang:
             context.user_data['register']['language'] = lang
             context.user_data['temp_message'] = user.send_message(
-                "Iltimos ismingizni va familyangizni kiriting!", reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                lang._("send_name_and_surname"), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return NAME
         else:
             context.user_data['temp_message'] = user.send_message(
@@ -59,9 +60,10 @@ class Basehandlers():
     def name(self, update:Update, context:CallbackContext):
         user,db = get_user(update)
         name = update.message.text
+        lang = context.user_data['register']['language']
         if len(name.split()) >= 2:
             context.user_data['register']['name'] = name
-            context.user_data['temp_message'] = user.send_message("Iltimos telefon raqamingizni kiriting!", reply_markup=ReplyKeyboardMarkup(
+            context.user_data['temp_message'] = user.send_message( lang._("send_number_register"), reply_markup=ReplyKeyboardMarkup(
                 [
                     [
                         KeyboardButton('Send number', request_contact=True)
@@ -80,9 +82,11 @@ class Basehandlers():
         number = update.message.contact.phone_number
         context.user_data['register']['number'] = number
         filials: list[Fillials] = Fillials.objects.filter(active=True)
-        user.send_message("Ilitmnos filialli talla!", reply_markup=ReplyKeyboardMarkup(distribute([
+        lang:Language = context.user_data['register']['language']
+        user.send_message(lang._("select_filial"), reply_markup=ReplyKeyboardMarkup(distribute([
             f.name(context.user_data['register']['language']) for f in filials
         ], 2)), parse_mode="HTML")
+
         # context.user_data['temp_message'] = user.send_message(
         #                   "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
         return FILIAL
@@ -92,6 +96,7 @@ class Basehandlers():
         filial = Fillials.objects.filter(**{
             "name_" + context.user_data['register']['language'].code: update.message.text
         })
+        lang: Language = context.user_data['register']['language']
         if filial:
             context.user_data['register']['filial'] = filial.first()
             new_user: User = User.objects.create(**context.user_data['register'])
@@ -107,17 +112,14 @@ class Basehandlers():
     
     def contact_with_phone(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message(db.text('context_with_phone'), parse_mode="HTML")
+        user.send_message(db.text('contact_with_phone'), parse_mode="HTML")
     
     def our_addresses(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        text = "Bizning manzillarimiz:\n"
+        text = "Bizning manzillarimiz\n"
         keyboard = []
         address: Fillials
         for address in Fillials.objects.all():
-        #     text += f"{i}. {address.name(db.language)}"
-        #     keyboard.append(InlineKeyboardButton(str(i), callback_data=f"address:{address.id}"))
-        #     i += 1
             keyboard.append(address.name(db.language))
                 
         

@@ -1,5 +1,7 @@
 
+import json
 from django.shortcuts import render,redirect
+from django.http import HttpResponse
 
 from admin_panel.models import Color,Percent,Text,Language
 
@@ -45,11 +47,55 @@ def settings(request):
 
 
 def texts(request):
-    text_uz = Text.objects.filter(language=Language.objects.filter(code="uz").first())
-    text_ru = Text.objects.filter(language=Language.objects.filter(code="ru").first())
-    ctx = {
-        "text_uz":text_uz,
-        "text_ru":text_ru,
-        "settings_active":"active"
-    }
-    return render(request,"dashboard/settings/text.html",ctx)
+    
+
+    languages: list[Language] = Language.objects.all()
+
+
+
+
+    return render(request,"dashboard/settings/text.html",{
+        "languages":languages
+    })
+
+
+def text_update(request):
+    if request.body:
+        body = json.loads(request.body.decode('utf-8'))
+
+        for name, lang_val in body.items():
+            for lang, val in lang_val.items():
+                Text.objects.filter(name=name,language_id=lang).update(data=val)
+    
+        return HttpResponse("xxx")
+
+def colors_update(request):
+    color = request.POST.get("color")
+    percent = request.POST.get(color)
+    c = Color.objects.get(color=color)
+
+    if c:
+        three, six, twelve, twentyfour = request.POST.getlist("months")
+        c.base_percent = percent
+        c.save()
+    
+        percents = {
+            "3":three,
+            "6":six,
+            "12":twelve,
+            "24":twentyfour
+
+        }
+        for month, percent in percents.items():
+            p = Percent.objects.filter(color_id=c.id,months=month).first()
+            if p:
+                p.percent = percent
+                p.save()
+            else:
+                p = Percent(color_id=c.id,months=month,percent=percent)
+                p.save()
+    
+    
+    
+    return redirect("settings")
+    

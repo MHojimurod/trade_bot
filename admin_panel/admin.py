@@ -1,7 +1,8 @@
+from typing import Text
 from django.contrib import admin
 
 # Register your models here.
-from admin_panel.models import Aksiya, Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent
+from admin_panel.models import Aksiya, Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent, Text
 
 
 admin.site.register(BotSettings)
@@ -11,6 +12,8 @@ admin.site.register(Product)
 admin.site.register(Busket)
 admin.site.register(BusketItem)
 admin.site.register(Percent)
+admin.site.register(Text)
+
 
 
 
