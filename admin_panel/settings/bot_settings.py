@@ -87,7 +87,7 @@ def colors_update(request):
 
         }
         for month, percent in percents.items():
-            p = Percent.objects.filter(color_id=c.id,months=month).first()
+            p = Percent.objects.filter(color_id=c.id,months=month)
             if p:
                 p.percent = percent
                 p.save()

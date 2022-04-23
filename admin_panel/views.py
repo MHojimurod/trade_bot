@@ -20,8 +20,7 @@ from django.contrib.auth.models import User
 @login_required_decorator
 def home(request):
     ctx = {"home":"active"}
-    print("xxxx")
-    return render(request, 'dashboard/orders/one_order.html',ctx)
+    return render(request, 'dashboard/index.html',ctx)
 
 def account(request):
     if request.method == 'POST':

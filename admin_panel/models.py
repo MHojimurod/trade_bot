@@ -266,6 +266,8 @@ class Color(models.Model):
     @property
     def months(self) -> list["Percent"]:
         return Percent.objects.filter(color=self)
+    def __str__(self) -> str:
+        return self.color
 
 
 class Percent(models.Model):

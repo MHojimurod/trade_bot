@@ -40,7 +40,6 @@ def create_product(request,pk):
     return render(request, 'dashboard/products/create.html',ctx)
 
 
-
 def edit_product(request, pk):
     
     category = Product.objects.get(id=pk)

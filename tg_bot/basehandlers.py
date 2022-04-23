@@ -156,7 +156,7 @@ class Basehandlers():
     def support_message(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         user.send_message(db.text('support_accepted'),
-                          reply_markup=ReplyKeyboardMarkup(*db.menu()))
+                          reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU
     @remove_temp_message
     def aksiya(self, update: Update,context: CallbackContext):

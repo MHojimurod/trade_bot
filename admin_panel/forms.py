@@ -22,6 +22,13 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = "__all__"
+        widgets = {
+            'color': forms.Select(attrs={
+                'class': "form-control",
+                
+                }),
+        }
+
 
 class OperatorForm(forms.ModelForm):
     name = forms.CharField(max_length=100)

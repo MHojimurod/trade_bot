@@ -50,6 +50,10 @@
                       <input type="file"  class="form-control" name="photo" id="id_photo">
                     </div>
                   </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label"  for="basic-default-fullname">Nomi Uz</label>
+                    <input type="text" required class="form-control" id="id_name_uz" name="name_uz" value="{{data.name_uz}}">
+                  </div>
                 </div>
                 <div class="form-check form-switch mb-2">
                   <input {% if data.active %} checked {% endif %} name="active" type="checkbox"  id="id_active"
