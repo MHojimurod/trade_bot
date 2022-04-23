@@ -1,0 +1,28 @@
+<mxfile host="65bd71144e">
+    <diagram id="2RqsvWwIdW_0A-mfjJOD" name="Page-1">
+        <mxGraphModel dx="1005" dy="520" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="aksiyalar degan model ochish kere prosta text areadan malumot olini yuboriladi 1 ta bosa bitta ikkita bosa ikkita faqat aktivlarini" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="40" width="120" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="keyin bazadan anut &amp;lt;strong&amp;gt; &amp;lt;em&amp;gt;&amp;nbsp; shunga oxshashalar bor ediku oshalani html ga otkazish kerak bu bizning manzillarimiz degan knopkada filiallarni birini borsez o'shatta uchratasiz" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="280" y="40" width="120" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="reklama jo'natadigan qilishimi kere tekst video rasm + caption bo'lishi mumkin&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="40" width="120" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="hisob kitobni qayta ko'rib chiqing adashishimiz mumknmas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="40" width="120" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="operatorlaga websoket yozib berishiz kere" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="150" width="120" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="shulani qib yozvoring ungacha yana topib qoyaman faqat tezlashaiyli uka max 2 kunda polni bitishi kere" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="240" width="580" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
