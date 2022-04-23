@@ -1,12 +1,9 @@
 
 from django.shortcuts import render,redirect
 
-from admin_panel.models import Color,Percent
+from admin_panel.models import Color,Percent,Text,Language
 
 
-
-def texts(request):
-    return render(request, "dashboard/settings/text.html")
 
 def settings(request):
     if request.POST:
@@ -43,3 +40,16 @@ def settings(request):
                 }
     }
     return render(request, "dashboard/settings/bot_settings.html",ctx)
+
+
+
+
+def texts(request):
+    text_uz = Text.objects.filter(language=Language.objects.filter(code="uz").first())
+    text_ru = Text.objects.filter(language=Language.objects.filter(code="ru").first())
+    ctx = {
+        "text_uz":text_uz,
+        "text_ru":text_ru,
+        "settings_active":"active"
+    }
+    return render(request,"dashboard/settings/text.html",ctx)

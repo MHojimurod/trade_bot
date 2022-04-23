@@ -1,4 +1,5 @@
-from admin_panel.models import Busket, BusketItem
+from pyexpat.errors import messages
+from admin_panel.models import Busket, BusketItem, Operators
 from django.shortcuts import redirect, render
 def orders_list(request):
     orders = Busket.objects.filter(is_ordered=True)
@@ -28,11 +29,15 @@ def update_order_status(request,pk):
 
 
 def one_order(request,pk):
+    try:
+        Operators.objects.filter(user=request.user).update(is_have=True)
+    except:
+        pass
     order = Busket.objects.get(pk=pk)
     items:BusketItem = BusketItem.objects.filter(busket=order)
     text = "" 
     for i in items:
-        text += f"{i.product.name_uz}\n  {i.product.tan_price + i.product.tan_price*i.month.percent // 100/i.month.months}\n"
+        text += f"{i.product.name_uz}<br> {i.product.p + i.product.p*i.month.percent // 100/i.month.months}\n"
 
 
     ctx = {"order_active":"active","order":order,"text":text}
@@ -40,7 +45,7 @@ def one_order(request,pk):
 
 
 def reject_order(request, pk):
-    request.user.is_have = True
+    request.user.is_have = False
     request.user.save()
     order = Busket.objects.get(pk=pk)
     order.status = 2

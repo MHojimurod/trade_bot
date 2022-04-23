@@ -480,12 +480,11 @@ class Busket(models.Model):
     location = models.ForeignKey(Location, on_delete=models.SET(
         None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)
-
     status = models.IntegerField(choices=(
         (0, "Kutilmoqda"),
         (1, "Qabul qilindi"),
         (2, "Rad etildi"),
-        (3, "Tasdiqlandi"),
+        (3, "Tasdiqlandi!"),
         (4, "Tasdiqlanmadi"),
         (5, "Arxiv"),
 

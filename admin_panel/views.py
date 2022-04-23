@@ -19,9 +19,6 @@ from django.contrib.auth.models import User
 
 @login_required_decorator
 def home(request):
-    if not permission_requied(request,"main"):
-        messages.error(request,"Kechirasiz sizga ruxsat yo'q")
-        return redirect(request. META['HTTP_REFERER'])
     ctx = {"home":"active"}
     return render(request, 'dashboard/orders/one_order.html',ctx)
 
