@@ -98,7 +98,7 @@ class Order:
         else:
             update.callback_query.message.delete()
             context.user_data['temp_message'] = user.send_message(
-                "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
+                db.text("mainMenu"), reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
             return MENU
 
     def add_to_cart(self, update: Update, context: CallbackContext):
@@ -177,14 +177,14 @@ class Order:
         user, db = get_user(update)
         update.callback_query.message.delete(  )
         context.user_data['temp_message'] = user.send_message(
-            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
+            db.text("mainMenu"), reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
         return MENU
     
     def back_to_menu(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         (update.message if update.message else update.callback_query.message).delete()
         context.user_data['temp_message'] = user.send_message(
-            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
+            db.text("mainMenu"), reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
         return MENU
 
 
@@ -270,8 +270,8 @@ class Order:
         user.send_message(db.text('is_your_number', number=db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
-                    db.text('yes'),
-                    db.text('no')
+                    "✅" + db.text('yes'),
+                   "❌" + db.text('no')
                 ]
             ],
             resize_keyboard=True

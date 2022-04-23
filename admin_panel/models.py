@@ -189,7 +189,7 @@ class Fillials(models.Model):
     def desc(self, language: Language = None) -> str:
         if language is None:
             return self.name_uz
-        return self.__getattribute__(f"desc_{language.code}")
+        return self.__getattribute__(f"desc_{language.code}_get")()
     
     def address(self, language: Language = None) -> str:
         return f"{self.name(language)}\n\n{self.desc(language)}"
@@ -543,7 +543,7 @@ class Busket(models.Model):
         (4, "Tasdiqlanmadi"),
         (5, "Arxiv"),
 
-    ))
+    ), default=0)
     actioner = models.ForeignKey(
         DjangoUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="actioner")
 

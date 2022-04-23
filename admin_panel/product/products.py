@@ -33,7 +33,9 @@ def create_product(request,pk):
     main_category = Category.objects.filter(id=sub.parent_id).first()
     model = Product()
     form = ProductForm(request.POST,request.FILES,instance=model)
+    print(form.errors)
     if form.is_valid():
+
         form.save()
         return redirect(f'/product/list/{pk}')
     ctx = {'form': form,"category": pk,"main_category": main_category,"sub":sub,"category_active":"active"}

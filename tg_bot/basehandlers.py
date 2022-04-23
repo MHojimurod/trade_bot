@@ -66,7 +66,7 @@ class Basehandlers():
             context.user_data['temp_message'] = user.send_message( lang._("send_number_register"), reply_markup=ReplyKeyboardMarkup(
                 [
                     [
-                        KeyboardButton('Send number', request_contact=True)
+                        KeyboardButton(lang._("send_number_register_button"), request_contact=True)
                     ]
                 ]
             ), parse_mode="HTML")
@@ -123,7 +123,7 @@ class Basehandlers():
             keyboard.append(address.name(db.language))
                 
         
-        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), ["Orqaga"]
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [db.text("Orqaga")]
                                                                        ]), parse_mode="HTML")
         return OUR_ADDRESSES
     
@@ -142,7 +142,7 @@ class Basehandlers():
             address: Fillials
             for address in Fillials.objects.all():
                 keyboard.append(address.name(db.language))
-            user.send_message(text="Kechirasiz manzil topilmadi!", reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), ["Orqaga"]
+            user.send_message(text="Kechirasiz manzil topilmadi!", reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), [db.text("Orqaga")]
                                                                                                      ]), parse_mode="HTML")
             return OUR_ADDRESSES
 
@@ -150,7 +150,11 @@ class Basehandlers():
     def support(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         user.send_message(db.text('support'),
-                          reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                          reply_markup=ReplyKeyboardMarkup([
+                              [
+                                 db.text("Orqaga")
+                              ]
+                          ]), parse_mode="HTML")
         return SUPPORT
     
     def support_message(self, update:Update, context: CallbackContext):
@@ -163,7 +167,7 @@ class Basehandlers():
         user, db = get_user(update)
 
         context.user_data['temp_message'] = user.send_message("Aksiyalar", reply_markup=ReplyKeyboardMarkup(
-            [*distribute(Aksiya.keyboard(db.language), 2), ['Orqaga']]), parse_mode="HTML")
+            [*distribute(Aksiya.keyboard(db.language), 2), [db.text("Orqaga")]]), parse_mode="HTML")
         return AKSIYA
 
     @remove_temp_message
@@ -177,15 +181,16 @@ class Basehandlers():
         if aksiya:
             if aksiya.mode == 0:
                 context.user_data['temp_message'] = user.send_message(aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
             elif aksiya.mode == 1:
                 context.user_data['temp_message'] = user.send_photo(photo=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
                 
             elif aksiya.mode == 2:
                 context.user_data['temp_message'] = user.send_video(video=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]))
+                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]))
         else:
             context.user_data['temp_message'] = user.send_message("Kechirasiz aksiya topilmadi!", reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton('Orqaga', callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
             return AKSIYA
+

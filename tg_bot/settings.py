@@ -9,7 +9,7 @@ from tg_bot.utils import get_user
 class Settings:
     def settings(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
-        user.send_message("Settings", reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})"), reply_markup=ReplyKeyboardMarkup(
             [
                 [
                     "Ismni o'zgartirish",
@@ -20,7 +20,7 @@ class Settings:
                     "Ortga"
                 ]
             ],True
-        ))
+        ), parse_mode="HTML")
         return SETTINGS
     
     def settings_name(self, update:Update, context: CallbackContext):
@@ -43,6 +43,7 @@ class Settings:
                     ["Ortga"]
                 ], True
             ))
+            self.settings(update, context)
             return SETTINGS
         else:
             user.send_message("Iltimos ismni to'g'ri kiriting!", reply_markup=ReplyKeyboardRemove())
@@ -82,6 +83,7 @@ class Settings:
                     ]
                 ],True
             ))
+            self.settings(update, context)
             return SETTINGS
         else:
             user.send_message("Til topilmadi!", reply_markup=ReplyKeyboardMarkup(
@@ -121,6 +123,7 @@ class Settings:
                 ]
             ],True
         ))
+        self.settings(update, context)
         return SETTINGS
     
     def settings_number_text(self, update: Update, context: CallbackContext):
@@ -139,6 +142,7 @@ class Settings:
                 ]
             ],True
         ))
+        self.settings(update, context)
         return SETTINGS
     
     def settings_number_error(self, update:Update, context: CallbackContext):
