@@ -3,28 +3,30 @@ from ast import operator
 from calendar import c
 from pyexpat import model
 import re
+from django.http import HttpResponse
+
+from requests import request
 from admin_panel.forms import OperatorForm
-from admin_panel.login.decorator import dashboard_login, login_required_decorator
+from admin_panel.login.decorator import dashboard_login, login_required_decorator,permission_requied
 from django.contrib import  messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from admin_panel.models import Fillials, Operators
 from django.contrib.auth.models import User
-# Create your views here.
+# Create your views here.   
+
 
 
 @login_required_decorator
 def home(request):
     ctx = {"home":"active"}
+    print("xxxx")
     return render(request, 'dashboard/orders/one_order.html',ctx)
-
-
 
 def account(request):
     if request.method == 'POST':
         data = request.POST
         image = request.FILES
-        print(data,"aaa")
         name = data["firstName"]
         surname = data["lastName"]
         username = data["username"]
@@ -62,6 +64,7 @@ def create_operator(request):
                     Operators.objects.create(
                         user=user,
                         phone=data["phone"],
+                        pers=request.POST.getlist("pers"),
                         active=True if data.get("active") else False,
                     )
                 return redirect("list_operator")

@@ -1,9 +1,11 @@
+import locale
 from django.db import models
 from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as DjangoUser
+from django.core.validators import FileExtensionValidator
 from multiselectfield import MultiSelectField
 # from tg_bot.utils import distribute
 
@@ -21,7 +23,18 @@ def distribute(items, number) -> list[list]:
     return res
 
 
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+
+def money(number: int, grouping: bool = True):
+    return f"{locale.currency(number, grouping=grouping).split('.')[0][1:]}"
+
+
+class Name:
+    def name(self, language: "Language" = None) -> str:
+        if language is None:
+            return self.name_uz
+        return self.__getattribute__(f"name_{language.code}")
 
 
 class Language(models.Model):
@@ -30,11 +43,41 @@ class Language(models.Model):
     code = models.CharField(max_length=3, unique=True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.name + " (" + str(self.id) + ")"
 
     def _(self, name: str, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(name=name, language=self).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+    
+    def texts(self) -> QuerySet:
+        return Text.objects.filter(language=self)
+    
+    def save(self):
+        super().save()
+        self.sync()
+    
+    def sync(self):
+        print("xxx")
+        text_names = []
+        text: Text
+
+        for text in Text.objects.all():
+            if text.name not in text_names:
+                text_names.append({
+                    "name": text.name,
+                    "data": text.data,
+                })
+                # print(text.name, self)
+
+        for text_name in text_names:
+            if Text.objects.filter(name=text_name["name"], language=self).first() is None:
+                Text.objects.create(
+                    name=text_name["name"],
+                    data=text_name["data"],
+                    language=self
+                )
+        
+            
 
 
 class Text(models.Model):
@@ -53,27 +96,50 @@ class Text(models.Model):
             res: Text = Text.objects.filter(
                 name=name, language=language).first()
         return res.data.format(*args, **kwargs) if res is not None else name
+    
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        Text.objects.filter(name=self.name).delete()
+    
+    def save(self, *args, **kwargs):
+        # super().save(*args, **kwargs)
+        if self.pk is not None:
+            initial = Text.objects.get(pk=self.pk)
+            if initial:
+                if self.name != initial.name:
+                    Text.objects.filter(name=initial.name).delete()
+        super().save(*args, **kwargs)
 
+        for lang in Language.objects.all():
+            lang.sync()
+            
+
+    
 
 class Operators(models.Model):
     access  =(
+        ("main","Asosiy"),
         ("order","Buyurtmalar"),
         ("statistic","Statistika"),
         ("operators","Operatorlar"),
         ("category","Kategoriya"),
-        ("Ad","Рассылки"),
+        ("ads","Reklama"),
         ("fillial","Filliallar"),
         ("settings","Bot Sozlamalari"),
         ("followers","Foydalanuvchilar"),
     )
+    
     id: int
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(DjangoUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    surname = models.CharField(max_length=100)
+    username=  models.CharField(max_length=100)
+
     phone: int = models.IntegerField()
     photo = models.ImageField(
         upload_to='images/', default='/static/dashboard/assets/img/default.png')
     region: str = models.CharField(max_length=200, null=True, blank=True)
     address: str = models.CharField(max_length=200, null=True, blank=True)
-    token: str = models.CharField(max_length=200)
     active: bool = models.BooleanField(default=False)
     is_have: bool = models.BooleanField(default=False)
     pers = MultiSelectField(choices=access)
@@ -87,6 +153,29 @@ class Fillials(models.Model):
     name_ru: str = models.CharField(max_length=200)
     desc_uz: str = RichTextField()
     desc_ru: str = RichTextField()
+
+
+
+    def desc_uz_get(self):
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>")
+
+    def desc_ru_get(self):
+        return self.desc_ru
+    
+    
+    def desc_uz_set(self, new):
+        self.desc_uz = new
+        self.save()
+
+    def desc_ru_set(self, new):
+        self.desc_ru = new
+        self.save()
+    
+    _desc_uz = property(desc_uz_get, desc_uz_set)
+    _desc_ru = property(desc_ru_get, desc_ru_set)
+
+
+
     active: bool = models.BooleanField(default=False)
 
     def __str__(self):
@@ -147,8 +236,12 @@ class Product(models.Model):
     tan_price: int = models.IntegerField()
     color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
 
+    @property
+    def p(self):
+        return self.tan_price * BotSettings.objects.first().money
+
     def price(self, month: "Percent"):
-        return self.tan_price + ((self.tan_price // 100) * month.percent)
+        return (self.p + ((self.p // 100) * month.percent))
     
     def percents(self):
         pass
@@ -291,13 +384,13 @@ class User(models.Model):
         text = f"<b>{product.name(user.language)}</b>\n"
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += f"        {product.price(i) // i.months} x {i.months} oy = {product.price(i)}\n"
+                text += f"        {money(product.price(i) // i.months)} x {i.months} oy = {money(product.price(i))}\n"
         else:
             month: Percent = context.user_data['order']['current_product']['month']
 
-            text += f"    {product.price(month) // month.months}  x {month.months} = {product.price(month)}\n"
+            text += f"    {money(product.price(month) // month.months)}  x {month.months} = {money(product.price(month))}\n"
 
-            text += f"\numumiy summa\n    {product.price(month)} x {context.user_data['order']['current_product']['count']} = {product.price(month) * context.user_data['order']['current_product']['count']}"
+            text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
 
 
         if context.user_data['order']['current_product']['count'] > 1:
@@ -352,17 +445,20 @@ class User(models.Model):
             }
 
     def cart(self, context: CallbackContext, user:"User", back_to_category:bool=True):
-        text = "Cart\n"
+        text = ""
+        obshiy_summa = 0
         pr_texts = []
         keyboard = []
         busket = user.busket
 
         if busket.is_available:
             for pr in busket.products:
-                pr_texts.append(f"""    {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
-    {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
-    oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
-                controls=  []
+                obshiy_summa += pr.product.price(pr.month) * pr.count
+                pr_texts.append(f"""{pr.product.name(user.language)}
+        {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
+        {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
+        oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
+                controls = []
                 if pr.count > 1:
                     controls.append(
                         InlineKeyboardButton(
@@ -384,7 +480,8 @@ class User(models.Model):
                         InlineKeyboardButton("🛒", callback_data=f"order_cart"),
 
             ])
-            text += "\n———————————————-".join(pr_texts)
+            text += "\n———————————————-\n".join(pr_texts)
+            text += f"\n\nUmumiy: {obshiy_summa}"
         else:
             text = "Cart is empty"
         return {
@@ -436,6 +533,17 @@ class Busket(models.Model):
     location = models.ForeignKey(Location, on_delete=models.SET(
         None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)
+    status = models.IntegerField(choices=(
+        (0, "Kutilmoqda"),
+        (1, "Qabul qilindi"),
+        (2, "Rad etildi"),
+        (3, "Tasdiqlandi!"),
+        (4, "Tasdiqlanmadi"),
+        (5, "Arxiv"),
+
+    ))
+    actioner = models.ForeignKey(
+        DjangoUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="actioner")
 
     @property
     def is_available(self):
@@ -492,3 +600,38 @@ class BusketItem(models.Model):
     def get_count(self): return self._count
 
     count = property(get_count, set_count)
+
+
+
+
+
+
+
+
+
+class Aksiya(models.Model, Name):
+    name_uz = models.CharField(max_length=15)
+    name_ru = models.CharField(max_length=15)
+    mode = models.IntegerField(choices=[
+        (0, 'text'),
+        (1, "image"),
+        (2, 'video')
+
+    ])
+    media = models.FileField(null=True, blank=True)
+    caption = models.TextField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name_uz
+
+    @classmethod
+    def keyboard(self, language: Language):
+        res = []
+        i: Aksiya
+        for i in self.objects.all():
+            res.append(i.name(language))
+        return res
+    @property
+    def file(self):
+        return open(f".{self.media.url}", 'rb')

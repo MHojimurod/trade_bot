@@ -1,131 +1,140 @@
 {% extends 'main/base.html' %} {% load static %}
 {% block style %} {% endblock %}
- {% block content %}
+{% block content %}
 
- {% include 'main/messages.html' %}
+{% include 'main/messages.html' %}
 <div class="content-wrapper">
-    <!-- Content -->
+  <!-- Content -->
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-      <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Input groups</h4>
-      <!-- Button with dropdowns & addons -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card mb-4">
-            <h5 class="card-header">Button with dropdowns &amp; addons</h5>
-            <div class="card-body demo-vertical-spacing demo-only-element">
-              <small class="text-light fw-semibold d-block">Button addons</small>
-            
-             
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Input groups</h4>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <h5 class="card-header">Button with dropdowns &amp; addons</h5>
+          <div class="card-body demo-vertical-spacing demo-only-element">
+            <small class="text-light fw-semibold d-block">Button addons</small>
 
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username with two button addons">
-                <button class="btn btn-outline-primary" type="button"><i class="bx bxs-edit-alt"></i></button>
-                <button class="btn btn-outline-primary" type="button">Button</button>
-              </div>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username with two button addons">
-                <button class="btn btn-outline-primary" type="button"><i class="bx bxs-edit-alt"></i></button>
-                <button class="btn btn-outline-primary" type="button">Button</button>
-              </div>
-              <div class="d-flex" style="justify-content: space-between;">
-                    <div class="col-3">
-                        <label for="lastName" class="form-label">Sariq</label>
-                       <div class="input-group" style="flex-wrap: nowrap; ">
-                        <input style="border-color:#e69a00"  type="text" class="form-control" value="{{red}}">
-                        <button class="btn btn-outline-warning" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-warning" type="button"><i class='bx bx-check-circle'></i></button>
-                       </div>
-                       
-                       <div class="d-flex mt-2">
-                           
-                           <div class="col-3" style="padding-right:3px;">
-                            <label for="lastName" class="form-label">3 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
-                           </div>
-                           <div class="col-3" style="padding: 0 3px;">
-                            <label for="lastName" class="form-label">6 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
-                           </div>
-                           <div class="col-3" style="padding: 0 3px;">
-                            <label for="lastName" class="form-label">12 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
-                           </div>
-                           <div class="col-3" style="padding-left:3px;">
-                            <label for="lastName" class="form-label">24 oy</label>
-                               <input style="border-color:#e69a00;"  class="form-control" type="text">
-                           </div>
-                       </div>
-                            <button class="mt-2 btn btn-outline-warning d-block" style="width: 100%;" type="button">Saqlash</button>
+            <div class="d-flex" style="justify-content: space-between;">
+
+
+              <div class="col-3">
+                <form method="post" action="colors/update">
+
+                  {% csrf_token %}
+
+                  <input type="hidden" name="color" value="sariq">
+                  <label for="lastName" class="form-label">Sariq</label>
+                  <div class="input-group" style="flex-wrap: nowrap; ">
+                    <input style="border-color:#e69a00" value="{{yellow.color.base_percent}}" name="sariq"
+                      type="number" class="form-control">
+                    <!-- <button class="btn btn-outline-warning" type="button"><i class="bx bxs-edit-alt"></i></button> -->
+                    <!-- <button class="btn btn-outline-warning" type="submit"><i class='bx bx-check-circle'></i></button> -->
+                  </div>
+
+                  <div class="d-flex mt-2">
+
+                    <div class="col-3" style="padding-right:3px;">
+                      <label for="lastName" class="form-label">3 oy</label>
+                      <input style="border-color:#e69a00;" name="months" value="{{yellow.3.percent}}"
+                        class="form-control" type="text">
                     </div>
-                    <div class="col-3">
-                        <label for="lastName" class="form-label">Yashil</label>
-                       <div class="input-group" style="flex-wrap: nowrap; ">
-                        <input style="border-color:#71dd37" type="text" class="form-control" value="{{red}}">
-                        <button class="btn btn-outline-success" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-success" type="button"><i class='bx bx-check-circle'></i></button>
-                       </div>
-                       <div class="d-flex mt-2">
-                           
-                        <div class="col-3" style="padding-right:3px;">
-                         <label for="lastName" class="form-label">3 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding: 0 3px;">
-                         <label for="lastName" class="form-label">6 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding: 0 3px;">
-                         <label for="lastName" class="form-label">12 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding-left:3px;">
-                         <label for="lastName" class="form-label">24 oy</label>
-                            <input style="border-color:#71dd37;"  class="form-control" type="text">
-                        </div>
+                    <div class="col-3" style="padding: 0 3px;">
+                      <label for="lastName" class="form-label">6 oy</label>
+                      <input style="border-color:#e69a00;" name="months" value="{{yellow.6.percent}}"
+                        class="form-control" type="text">
                     </div>
-                    <button class="mt-2 btn btn-outline-success d-block" style="width: 100%;" type="button">Saqlash</button>
+                    <div class="col-3" style="padding: 0 3px;">
+                      <label for="lastName" class="form-label">12 oy</label>
+                      <input style="border-color:#e69a00;" name="months" value="{{yellow.12.percent}}"
+                        class="form-control" type="text">
+                    </div>
+                    <div class="col-3" style="padding-left:3px;">
+                      <label for="lastName" class="form-label">24 oy</label>
+                      <input style="border-color:#e69a00;" name="months" value="{{yellow.24.percent}}"
+                        class="form-control" type="text">
+                    </div>
+                  </div>
+                  <button class="mt-2 btn btn-outline-warning d-block" style="width: 100%;"
+                    type="submit">Saqlash</button>
+
+                </form>
+              </div>
+
+              <div class="col-3">
+                <form method="post" action="colors/update">
+                  {% csrf_token %}
+                  <input type="hidden" name="color" value="yashil">
+                  <label for="lastName" class="form-label">Yashil</label>
+                  <div class="input-group" style="flex-wrap: nowrap; ">
+                    <input style="border-color:#71dd37" name="yashil" value="{{green.color.base_percent}}" type="number"
+                      class="form-control">
+                  </div>
+                
+                <div class="d-flex mt-2">
+
+                  <div class="col-3" style="padding-right:3px;">
+                    <label for="lastName" class="form-label">3 oy</label>
+                    <input style="border-color:#71dd37;" name="months" class="form-control" value="{{green.3.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding: 0 3px;">
+                    <label for="lastName" class="form-label">6 oy</label>
+                    <input style="border-color:#71dd37;" name="months" class="form-control" value="{{green.6.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding: 0 3px;">
+                    <label for="lastName" class="form-label">12 oy</label>
+                    <input style="border-color:#71dd37;" name="months" class="form-control" value="{{green.12.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding-left:3px;">
+                    <label for="lastName" class="form-label">24 oy</label>
+                    <input style="border-color:#71dd37;" name="months" class="form-control" value="{{green.24.percent}}" type="text">
+                  </div>
                 </div>
-                    <div class="col-3">
-                        <label for="lastName" class="form-label">Familya</label>
-                       <div class="input-group" style="flex-wrap: nowrap;">
-                        <input style="border-color:#ff3e1d" type="text" class="form-control" value="{{red}}">
-                        <button class="btn btn-outline-danger" type="button"><i class="bx bxs-edit-alt"></i></button>
-                        <button class="btn btn-outline-danger" type="button"><i class='bx bx-check-circle'></i></button>
-                       </div>
-                       <div class="d-flex mt-2">
-                           
-                        <div class="col-3" style="padding-right:3px;">
-                         <label for="lastName" class="form-label">3 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding: 0 3px;">
-                         <label for="lastName" class="form-label">6 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding: 0 3px;">
-                         <label for="lastName" class="form-label">12 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
-                        </div>
-                        <div class="col-3" style="padding-left:3px;">
-                         <label for="lastName" class="form-label">24 oy</label>
-                            <input style="border-color:#ff3e1d;"  class="form-control" type="text">
-                        </div>
-                    </div>
-                    <button class="mt-2 btn btn-outline-danger d-block" style="width: 100%;" type="button">Saqlash</button>
-                </div>
-
+                <button class="mt-2 btn btn-outline-success d-block" style="width: 100%;" type="submit">Saqlash</button>
+                </form>
               </div>
-
               
+              <div class="col-3">
+                <form method="post" action="colors/update">
+                  {% csrf_token %}
+                  <input type="hidden" name="color" value="qizil">
+                  <label for="lastName" class="form-label">Qizil</label>
+                  <div class="input-group" style="flex-wrap: nowrap;">
+                    <input style="border-color:#ff3e1d" value="{{red.color.base_percent}}" name="qizil" type="number"
+                      class="form-control">
+                  </div>
+                
+                <div class="d-flex mt-2">
+
+                  <div class="col-3" style="padding-right:3px;">
+                    <label for="lastName" class="form-label">3 oy</label>
+                    <input style="border-color:#ff3e1d;" class="form-control" name="months" value="{{red.3.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding: 0 3px;">
+                    <label for="lastName" class="form-label">6 oy</label>
+                    <input style="border-color:#ff3e1d;" class="form-control" name="months" value="{{red.6.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding: 0 3px;">
+                    <label for="lastName" class="form-label">12 oy</label>
+                    <input style="border-color:#ff3e1d;" class="form-control" name="months" value="{{red.12.percent}}" type="text">
+                  </div>
+                  <div class="col-3" style="padding-left:3px;">
+                    <label for="lastName" class="form-label">24 oy</label>
+                    <input style="border-color:#ff3e1d;" class="form-control" name="months" value="{{red.24.percent}}" type="text">
+                  </div>
+                </div>
+                <button class="mt-2 btn btn-outline-danger d-block" style="width: 100%;" type="submit">Saqlash</button>
+                </form>
+              </div>
+
+
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Custom file input -->
-    
-    <!-- / Content -->
+
 
     <div class="content-backdrop fade"></div>
   </div>

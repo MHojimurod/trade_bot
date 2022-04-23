@@ -5,7 +5,6 @@ from tkinter import E
 from admin_panel.models import Busket, BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
-
 from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, MENU, ORDER
 from tg_bot.utils import get_user, remove_temp_message
 
@@ -19,7 +18,8 @@ class Order:
             'current_category': None
         }
         context.user_data['cart'] = []
-        user.send_message(**db.category_list(context=context, user=db))
+        user.send_message(**db.category_list(context=context,
+                          user=db), parse_mode="HTML")
         return ORDER
     def category_list(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
@@ -87,7 +87,7 @@ class Order:
         print(context.user_data['order'])
         update.callback_query.message.delete()
         user.send_message(
-            **db.product_list(1,  context.user_data['order']['current_category']))
+            **db.product_list(1,  context.user_data['order']['current_category']), parse_mode="HTML")
 
     def back_to_category_from_category(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
@@ -98,7 +98,7 @@ class Order:
         else:
             update.callback_query.message.delete()
             context.user_data['temp_message'] = user.send_message(
-                "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+                "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
             return MENU
 
     def add_to_cart(self, update: Update, context: CallbackContext):
@@ -114,7 +114,7 @@ class Order:
             update.callback_query.answer("Mahsulot savatga qo'shildi!",True)
             update.callback_query.message.delete()
             user.send_message(
-                **db.category_list(1,  None, context, user=db))
+                **db.category_list(1,  None, context, user=db), parse_mode="HTML")
 
         else:
             raise
@@ -132,16 +132,18 @@ class Order:
                 pass
             if db.busket.is_available:
                 user.send_message(
-                    **db.cart(context, db, False))
+                    **db.cart(context, db, False), parse_mode="HTML")
             else:
-                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(db.menu()))
+                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(
+                    db.menu()), parse_mode="HTML")
                 return MENU
         else:
             if db.busket.is_available:
                 update.callback_query.message.edit_text(
                     **db.cart(context, db))
             else:
-                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(db.menu()))
+                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(
+                    db.menu()), parse_mode="HTML")
                 return MENU
         return CART
 
@@ -175,14 +177,14 @@ class Order:
         user, db = get_user(update)
         update.callback_query.message.delete(  )
         context.user_data['temp_message'] = user.send_message(
-            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
         return MENU
     
     def back_to_menu(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         (update.message if update.message else update.callback_query.message).delete()
         context.user_data['temp_message'] = user.send_message(
-            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()))
+            "Salom", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
         return MENU
 
 
@@ -224,7 +226,7 @@ class Order:
                     ]
                 ],
                 resize_keyboard=True
-            ))
+            ), parse_mode="HTML")
         return CART_ORDER_LOCATION
 
     @remove_temp_message
@@ -236,7 +238,7 @@ class Order:
         context.user_data['order']['location'] = update.message.location.to_dict()
 
         context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_image'))
+            db.text('send_your_self_image'), parse_mode="HTML")
         return CART_ORDER_SELF_IMAGE
 
     @remove_temp_message
@@ -246,7 +248,7 @@ class Order:
         db.busket.set_self_image(
             update.message.photo[-1].get_file().download())
         context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_password_iamge'))
+            db.text('send_your_password_iamge'), parse_mode="HTML")
         return CART_ORDER_PASSPORT_IMAGE
 
     @remove_temp_message
@@ -256,7 +258,7 @@ class Order:
         db.busket.set_passport_image(
             update.message.photo[-1].get_file().download())
         context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_and_passport_image'))
+            db.text('send_your_self_and_passport_image'), parse_mode="HTML")
         return CART_ORDER_SELF_PASSWORD_IMAGE
 
     @remove_temp_message
@@ -265,7 +267,7 @@ class Order:
         context.user_data['order']['self_passport_image'] = update.message.photo[-1].file_id
         db.busket.set_self_passport_image(
             update.message.photo[-1].get_file().download())
-        user.send_message(db.text('is_your_number') % (db.number), reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text('is_your_number', number=db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
                     db.text('yes'),
@@ -273,7 +275,7 @@ class Order:
                 ]
             ],
             resize_keyboard=True
-        ))
+        ), parse_mode="HTML")
 
         return CART_ORDER_CHECK_NUMBER
     
@@ -281,22 +283,22 @@ class Order:
         user, db = get_user(update)
         if update.message.text == "✅ Ha":
             user.send_message(
-                db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove())
+                db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             db.busket.order()
             user.send_message(
-                "Menu", reply_markup=ReplyKeyboardMarkup(**db.menu()))
+                "Menu", reply_markup=ReplyKeyboardMarkup(*db.menu()), parse_mode="HTML")
             return MENU
         else:
             user.send_message(
-                db.text('send_number_as_text'), reply_markup=ReplyKeyboardRemove())
+                db.text('send_number_as_text'), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             return GET_NUMBER_FOR_ORDER
     
     def get_number_for_order(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         context.user_data['order']['number'] = update.message.text
-        db.busket.set_number(update.message.text)
+        db.busket.set_extra_number(update.message.text)
         db.busket.order()
         user.send_message(db.text('yout_order_accepted'),
-                          reply_markup=ReplyKeyboardRemove())
-        user.send_message(**db.menu())
+                          reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+        user.send_message(*db.menu(), parse_mode="HTML")
         return MENU

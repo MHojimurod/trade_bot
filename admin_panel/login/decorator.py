@@ -1,7 +1,8 @@
+from email import message
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib import messages
 from admin_panel.models import Operators
 
 
@@ -39,12 +40,18 @@ def check_admin(request):
     if request.user:
         user = request.user
         if user is not None and  not user.is_anonymous:
-            data = Operators.objects.filter(user=user)
+            data:Operators = Operators.objects.filter(user=user).first()
             if data:
-                access = data.first().pers
+                access = data.pers
                 ctx = {
                     "access_types":access
                 }
                 return ctx
         return {}
     return {}
+
+
+def permission_requied(request,data):
+    if data in check_admin(request)["access_types"]:
+        return True
+    return False

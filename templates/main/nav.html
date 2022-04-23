@@ -22,12 +22,42 @@
         <div data-i18n="Analytics">Asosiy</div>
       </a>
     </li>
+
     <li class="menu-item {{order_active}}">
-      <a href="{% url 'orders_list' %}" class="menu-link">
+      <!-- <a href="{% url 'orders_list' %}" class="menu-link"> -->
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+
         <i class="menu-icon tf-icons bx bx-collection"></i>
         <div data-i18n="Basic">Buyurtmalar</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+                <a href="{% url 'orders_list' %}" class="menu-link">
+            <div data-i18n="Without menu">Buyurtmalar</div>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a href="{% url 'order_accepted' %}" class="menu-link">
+            <div data-i18n="Without navbar">Tasdiqlangan</div>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a href="{% url 'order_not_accepted' %}" class="menu-link">
+            <div data-i18n="Without navbar">Tasdiqlanmagan</div>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a href="{% url 'order_archive' %}" class="menu-link">
+            <div data-i18n="Without navbar">Arxiv</div>
+          </a>
+        </li>
+
+      </ul>
     </li>
+
     <li class="menu-item {{category_active}}">
       <a href="/category/list" class="menu-link">
         <i class="menu-icon tf-icons bx bx-category"></i>
@@ -52,38 +82,29 @@
         <div data-i18n="Analytics">Statistika</div>
       </a>
     </li>
+    <li class="menu-item {{users_active}}">
+      <a href="{% url 'clients_list' %}" class="menu-link">
+        <i class='bx bx-chart tf-icons menu-icon '></i>
+        <div data-i18n="Analytics">Foydalanuvchilar</div>
+      </a>
+    </li>
 
     <!-- Layouts -->
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-layout"></i>
-        <div data-i18n="Layouts">Layouts</div>
+        <div data-i18n="Layouts">Sozlamalar</div>
       </a>
 
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="layouts-without-menu.html" class="menu-link">
-            <div data-i18n="Without menu">Without menu</div>
+          <a href="{% url 'texts' %}" class="menu-link">
+            <div data-i18n="Without menu">Textlar</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="layouts-without-navbar.html" class="menu-link">
-            <div data-i18n="Without navbar">Without navbar</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="layouts-container.html" class="menu-link">
-            <div data-i18n="Container">Container</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="layouts-fluid.html" class="menu-link">
-            <div data-i18n="Fluid">Fluid</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="layouts-blank.html" class="menu-link">
-            <div data-i18n="Blank">Blank</div>
+          <a href="{% url 'settings' %}" class="menu-link">
+            <div data-i18n="Without navbar">Bot sozlamalari</div>
           </a>
         </li>
       </ul>
