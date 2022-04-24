@@ -5,7 +5,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton,
 from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User as DjangoUser
-from django.core.validators import FileExtensionValidator
 from multiselectfield import MultiSelectField
 # from tg_bot.utils import distribute
 
