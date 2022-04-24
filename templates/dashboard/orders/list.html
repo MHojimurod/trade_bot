@@ -39,7 +39,7 @@
                 <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
               <td>
-                <a href="{% url 'one_order' i.order.id %}" class="btn btn-success btn-xs" >Qabul qilish</a>
+                <a href="{% url 'update_order' pk=i.order.id status=1 %}" class="btn btn-success btn-xs" >Qabul qilish</a>
               </td>
               <td>
                 <button class="btn btn-danger btn-xs" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
@@ -50,10 +50,12 @@
           </tbody>
           <tfoot>
             <tr>
-              <th>Project</th>
-              <th>Client</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Buyurtma raqami</th>
+              <th>Haridor</th>
+              <th>Telefon</th>
+              <th>Maxsulot</th>
+              <th>Qabul qilish</th>
+              <th>Rad etish</th>
             </tr>
           </tfoot>
         </table>
@@ -80,7 +82,7 @@
     <div class="card-body">
       <h5>Kamentariya qoldirish</h5>
       <textarea class="form-control"  name="" id="description_data" cols="50" rows="5"></textarea>
-      <a href="#" id="reject_order" class="btn btn-primary mt-2">Yuborish</a>
+      <a href="{% url 'update_order' 1 2 %}" id="reject_order" class="btn btn-primary mt-2">Yuborish</a>
       <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a>
     </div>
   

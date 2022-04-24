@@ -157,7 +157,7 @@ class Fillials(models.Model):
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>")
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
 
     def desc_ru_get(self):
         return self.desc_ru
@@ -286,10 +286,9 @@ class User(models.Model):
     number: str = models.CharField(max_length=200)
     filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
 
-    def text(self, name, *args, **kwargs) -> str:
-        res: Text = Text.objects.filter(
-            name=name, language=self.language).first()
-        return res.data.format(*args, **kwargs) if res is not None else name
+    def text(self, namee, *args, **kwargs) -> str:
+        res: Text = Text.objects.filter(name=namee, language=self.language).first()
+        return res.data.format(*args, **kwargs) if res is not None else namee
 
 
     def category_list(self, page: int = 1, parent: int = None, context: CallbackContext = None, user:"User"=None):
@@ -535,6 +534,7 @@ class Busket(models.Model):
     location = models.ForeignKey(Location, on_delete=models.SET(
         None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)
+    comment = models.TextField(null=True,blank=True)
     status = models.IntegerField(choices=(
         (0, "Kutilmoqda"),
         (1, "Qabul qilindi"),
@@ -545,7 +545,7 @@ class Busket(models.Model):
 
     ), default=0)
     actioner = models.ForeignKey(
-        DjangoUser, on_delete=models.SET_NULL, null=True, blank=True, related_name="actioner")
+        Operators, on_delete=models.SET_NULL, null=True, blank=True, related_name="actioner")
 
     @property
     def is_available(self):

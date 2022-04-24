@@ -60,7 +60,7 @@ urlpatterns = [
     path('orders/not_accepted/', order_not_accepted, name="order_not_accepted"),
     path('orders/archive/', order_archive, name="order_archive"),
 
-    path('orders/update/accept/<int:pk>',update_order_status,name="update_order"),
+    path('orders/update/<int:pk>/<int:status>/',update_order_status,name="update_order"),
     path('orders/one/<int:pk>',one_order,name="one_order"),
 
 

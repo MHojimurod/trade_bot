@@ -1,7 +1,11 @@
-from pyexpat.errors import messages
 from admin_panel.models import Busket, BusketItem, Operators
 from django.shortcuts import redirect, render
 def orders_list(request):
+    if not request.user.is_superuser:
+        operator = Operators.objects.get(user=request.user)
+        if operator.is_have:
+            order = Busket.objects.order_by('-id').filter(is_ordered=True,status=1,actioner=operator).first()
+            return redirect('one_order',order.id)
     orders = Busket.objects.filter(is_ordered=True,status=0)
     data = []
     for i in orders:
@@ -16,16 +20,29 @@ def orders_list(request):
     return render(request, 'dashboard/orders/list.html', ctx)
 
  
-def update_order_status(request,pk):
+def update_order_status(request,pk,status):
     order = Busket.objects.get(pk=pk)
-    if pk == 1:
-        return redirect('accept_order')
-    if pk == 2:
+    operator = Operators.objects.get(user=request.user)
+    if status == 1:
+        order.status = 1
+        order.actioner = operator
+        operator.is_have = True
+        operator.save()
+        order.save()
+        return redirect('one_order',pk)
+    if status == 2:
         if request.POST:
             commet = request.POST.get('commet')
-            if commet:
-                pass
-        return redirect("")
+            order.comment = commet
+            order.status = 2
+            order.save()
+            return redirect("order_list")
+    if status == 3:
+        order.status = 3
+    
+
+    order.save()
+    return redirect("")
 
 
 def one_order(request,pk):
