@@ -23,7 +23,8 @@
           </thead>
           <tbody class="table-border-bottom-0">
             {% for i in orders %}
-            <tr>
+
+            <tr data-order="{{i.order.id}}" class="all_product_for_socket">
               <td>
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
                 <strong>#{{i.order.id}}</strong>
@@ -39,7 +40,7 @@
                 <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
               <td>
-                <a href="{% url 'update_order' pk=i.order.id status=1 %}" class="btn btn-success btn-xs" >Qabul qilish</a>
+                <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-xs" >Qabul qilish</a>
               </td>
               <td>
                 <button class="btn btn-danger btn-xs" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
@@ -124,6 +125,19 @@
     }
     document.getElementById("reject").style.display = "block";
   }
+
+  const socket = new WebSocket(`ws://${location.hostname}:8001`);
+
+  console.log(socket);
+  socket.onmessage = (ev) => {
+    console.log(ev.data);
+    $(".all_product_for_socket").each((i,e) =>{
+      if ($(e).data('order') == ev.data) {
+        $(e).remove();
+      }
+    } );
+  }
+  console.log(socket)
 </script>
 
 {% endblock %}

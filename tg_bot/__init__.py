@@ -1,13 +1,17 @@
 from email.message import EmailMessage
+
+from flask import Flask, request
+
+from tg_bot.myorders import myOrders
 from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
 from .constants import (
-    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
 
-class Bot(Updater, Basehandlers, Order, Settings):
+class Bot(Updater, Basehandlers, Order, Settings, myOrders):
     def __init__(self,*args, **kwargs):
 
         super().__init__(TOKEN, *args, **kwargs)
@@ -41,6 +45,10 @@ class Bot(Updater, Basehandlers, Order, Settings):
                         Filters.regex(
                             ("^(" "Buyurtma berish" "|" "Заказать" "|" "Order" "|" "order" ")$")), self.order
                         ),
+                    MessageHandler(
+                        Filters.regex(
+                            ("^(" "Mening buyurtmalarim" "|" "Мои заказы" "|" "My orders" "|" "order" ")$")), self.my_orders
+                    ),
                     MessageHandler(Filters.regex(
                         "^Savatcha|Корзина$"), self.cart),
                     MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone),
@@ -142,12 +150,16 @@ class Bot(Updater, Basehandlers, Order, Settings):
                     MessageHandler(Filters.text & not_start & ~Filters.regex("^(Orqaga)"), self.aksiya_select),
                     CallbackQueryHandler(
                         self.aksiya, pattern="^back_to_aksiyas"),
+                ],
+                MY_ORDERS: [
+                    CallbackQueryHandler(self.my_orders, pattern="my_orders")
                 ]
 
             },
             [
                 CommandHandler('start', self.start),
-                MessageHandler(Filters.all, self.start)
+                MessageHandler(Filters.all, self.start),
+                CallbackQueryHandler(self.back_to_menu, pattern="^back_to_menu"),
             ]
         )
         
@@ -156,5 +168,14 @@ class Bot(Updater, Basehandlers, Order, Settings):
 
 
         self.start_polling()
-        print(self.bot.get_me())
+        server = Flask(__name__)
+
+        server.route('/send_ads')(self.send_ads)
+
+        server.run(port=6002)
+        
         self.idle()
+    
+    def send_ads(self):
+        data = request.get_json()
+        print(data)

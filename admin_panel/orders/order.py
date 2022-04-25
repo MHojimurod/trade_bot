@@ -1,3 +1,4 @@
+import requests
 from admin_panel.models import Busket, BusketItem, Operators
 from django.shortcuts import redirect, render
 def orders_list(request):
@@ -6,6 +7,7 @@ def orders_list(request):
         if operator.is_have:
             order = Busket.objects.order_by('-id').filter(is_ordered=True,status=1,actioner=operator).first()
             return redirect('one_order',order.id)
+            
     orders = Busket.objects.filter(is_ordered=True,status=0)
     data = []
     for i in orders:
@@ -22,12 +24,17 @@ def orders_list(request):
  
 def update_order_status(request,pk,status):
     order = Busket.objects.get(pk=pk)
+    print(request.user)
     operator = Operators.objects.get(user=request.user)
+    requests.get(f"http://localhost:8002/act", json={
+            'order': order.id
+        })
     if status == 1:
         order.status = 1
         order.actioner = operator
         operator.is_have = True
         operator.save()
+        
         order.save()
         return redirect('one_order',pk)
     if status == 2:
@@ -109,7 +116,7 @@ def order_not_accepted(request):
 def order_accept(request,pk):
     order = Busket.objects.get(pk=pk)
     order.status = 3
-    order.actioner = request.user
+    order.actioner = Operators.objects.get(user=request.user)
     order.save()
     return redirect('orders_list')
 
