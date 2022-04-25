@@ -23,20 +23,26 @@ def home(request):
     return render(request, 'dashboard/index.html',ctx)
 
 def account(request):
-    if request.method == 'POST':
+    if request.POST or request.FILES:
         data = request.POST
-        image = request.FILES
+        image = request.FILES.get("photo")
+        print(type(image))
         name = data["firstName"]
         surname = data["lastName"]
-        username = data["username"]
         phone = data["phoneNumber"]
         country = data["country"]
         address = data["address"]
-        Operators.objects.all().update(name=name, surname=surname, username=username, phone=phone, region=country, address=address)
+        operator = Operators.objects.get(user=request.user)
+        operator.name=name
+        operator.surname=surname
+        operator.phone=phone
+        operator.region=country
+        operator.address=address
+        operator.photo = image
+        operator.save()
         messages.success(request, "Ma'lumotlar muvoffaqiyatli o'zgartirildi!")
         return redirect("account")
-    data = Operators.objects.all().first()
-    print(data)
+    data = Operators.objects.get(user=request.user)
     return render(request, 'dashboard/operators/account.html', {'user_account': data})
 
 

@@ -27,12 +27,12 @@
 
               <div class="card-body">
                 <div class="d-flex align-items-start align-items-sm-center gap-4">
-                  <img src="{{user_account.photo.url}}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                  <img src="{% if user_account.photo %}{{user_account.photo.url}}{% else %}/static/dashboard/assets/default.png{% endif %}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
                   <div class="button-wrapper">
                     <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                       <span class="d-none d-sm-block">Yangi rasm yuklash</span>
                       <i class="bx bx-upload d-block d-sm-none"></i>
-                      <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg">
+                      <input type="file" id="upload" class="account-file-input" name="photo" hidden="" accept="image/png, image/jpeg">
                     </label>
                     <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
                       <i class="bx bx-reset d-block d-sm-none"></i>
@@ -48,15 +48,15 @@
                 <div class="row">
                   <div class="mb-3 col-md-6">
                     <label for="firstName" class="form-label">Ism</label>
-                    <input class="form-control" type="text" id="firstName" name="firstName" value="{{user_account.name}}" autofocus="">
+                    <input class="form-control" type="text" id="firstName" name="firstName" value="{{user_account.user.first_name}}" autofocus="">
                   </div>
                   <div class="mb-3 col-md-6">
                     <label for="lastName" class="form-label">Familya</label>
-                    <input class="form-control" type="text" name="lastName" id="lastName" value="{{user_account.surname}}">
+                    <input class="form-control" type="text" name="lastName" id="lastName" value="{{user_account.user.last_name}}">
                   </div>
                   <div class="mb-3 col-md-6">
                     <label for="username" class="form-label">Username</label>
-                    <input readonly class="form-control" type="text" name="username" id="username" value="{{user_account.username}}">
+                    <input readonly class="form-control" type="text" name="username" id="username" value="{{user_account.user.username}}">
                   </div>
                   <div class="mb-3 col-md-6">
                     <label class="form-label" for="phoneNumber">Telefon</label>
@@ -88,7 +88,7 @@
                   </div>
                   <div class="mb-3 col-md-6">
                     <label for="address" class="form-label">Manzil</label>
-                    <input type="text" class="form-control" id="address" value="{{user_account.address}}" name="address" placeholder="Address">
+                    <input type="text" class="form-control" id="address" value="{% if user_account.address %}{{user_account.address}} {% else %} ''  {% endif %}" name="address" placeholder="Address">
                   </div>
                 </div>
                 <div class="mt-2">
