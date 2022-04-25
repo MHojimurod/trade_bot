@@ -281,12 +281,12 @@ class Order:
     
     def cart_order_check_number(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        if update.message.text == "✅ Ha":
+        if update.message.text.startswith("✅"):
             user.send_message(
                 db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             db.busket.order()
             user.send_message(
-                "Menu", reply_markup=ReplyKeyboardMarkup(*db.menu()), parse_mode="HTML")
+                "Menu", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
             return MENU
         else:
             user.send_message(
@@ -300,5 +300,5 @@ class Order:
         db.busket.order()
         user.send_message(db.text('yout_order_accepted'),
                           reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-        user.send_message(*db.menu(), parse_mode="HTML")
+        user.send_message(*db.menu())
         return MENU

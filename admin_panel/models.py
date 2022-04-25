@@ -242,7 +242,8 @@ class Product(models.Model):
         return self.tan_price * BotSettings.objects.first().money
 
     def price(self, month: "Percent"):
-        return (self.p + ((self.p // 100) * month.percent))
+        print(self.p)
+        return (self.p + (((self.p // 100) * month.percent)))
     
     def percents(self):
         pass
@@ -301,6 +302,14 @@ class User(models.Model):
                 self.text('back')
             ]
         ]
+    
+    def get_orders(self) -> list["Busket"]:
+        bs: list[Busket] = Busket.objects.filter(user=self, bis_ordered=True)
+        res = []
+        for b in bs:
+            if b.products.count() > 0:
+                res.append(b)
+        return res
 
     def text(self, namee, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(name=namee, language=self.language).first()
@@ -351,6 +360,7 @@ class User(models.Model):
             "text": text,
             "reply_markup": InlineKeyboardMarkup(keyboard)
         }
+    
 
     def product_list(self, page: int = 1, category: Category = None):
         keyboard = []
@@ -542,7 +552,13 @@ class Location(models.Model):
 
 class Busket(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_ordered: bool = models.BooleanField(default=False)
+    bis_ordered: bool = models.BooleanField(default=False)
+
+    def get_is_ordered(self):
+        return self.bis_ordered and self.products.count() > 0
+    def set_is_ordered(self, value): self.bis_ordered = value
+
+    is_ordered = property(get_is_ordered, set_is_ordered)
 
     self_image = models.ImageField(upload_to="busket", null=True, blank=True)
     passport_image = models.ImageField(upload_to="busket", null=True, blank=True)
