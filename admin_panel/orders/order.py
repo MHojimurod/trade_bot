@@ -5,10 +5,10 @@ def orders_list(request):
     if not request.user.is_superuser:
         operator = Operators.objects.get(user=request.user)
         if operator.is_have:
-            order = Busket.objects.order_by('-id').filter(is_ordered=True,status=1,actioner=operator).first()
+            order = Busket.objects.order_by('-id').filter(bis_ordered=True,status=1,actioner=operator).first()
             return redirect('one_order',order.id)
             
-    orders = Busket.objects.filter(is_ordered=True,status=0)
+    orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = []
     for i in orders:
         data.append(
@@ -132,11 +132,11 @@ def order_not_accept(request, pk):
 
 
 def reject_order(request, pk):
+
     request.user.is_have = False
     request.user.save()
     order = Busket.objects.get(pk=pk)
     order.status = 2
     order.actioner = request.user
     order.save()
-
     return redirect('orders_list')
