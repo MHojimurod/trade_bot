@@ -135,8 +135,12 @@ def reject_order(request, pk):
 
     request.user.is_have = False
     request.user.save()
+    
     order = Busket.objects.get(pk=pk)
     order.status = 2
-    order.actioner = request.user
+    order.actioner = Operators.objects.filter(user=request.user).first()
     order.save()
+    requests.get(f"http://localhost:8002/act", json={
+            'order': pk
+        })
     return redirect('orders_list')

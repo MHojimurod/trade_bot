@@ -542,7 +542,7 @@ class User(models.Model):
     
     @property
     def busket(self) -> "Busket":
-        res = Busket.objects.filter(user=self, is_ordered=False).first()
+        res = Busket.objects.filter(user=self, bis_ordered=False).first()
         return res if res else Busket.objects.create(user=self)
 
 class Location(models.Model):
@@ -556,7 +556,9 @@ class Busket(models.Model):
 
     def get_is_ordered(self):
         return self.bis_ordered and self.products.count() > 0
-    def set_is_ordered(self, value): self.bis_ordered = value
+    def set_is_ordered(self, value):
+        self.bis_ordered = value
+        self.save()
 
     is_ordered = property(get_is_ordered, set_is_ordered)
 

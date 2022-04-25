@@ -1,5 +1,6 @@
 
 import json
+from turtle import st
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 
@@ -87,9 +88,9 @@ def colors_update(request):
 
         }
         for month, percent in percents.items():
-            p = Percent.objects.filter(color_id=c.id,months=month)
+            p = Percent.objects.filter(color_id=c.id,months=month).first()
             if p:
-                p.percent = percent
+                p.percent = percent if percent else 0
                 p.save()
             else:
                 p = Percent(color_id=c.id,months=month,percent=percent)

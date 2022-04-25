@@ -58,7 +58,7 @@ class Order:
             context.user_data['order']['current_product'] = {
                 'count': 1 if not x else x.count,
                 'product': product,
-                'month': None
+                'month': None if not x else x.month
             }
             update.callback_query.message.delete()
             user.send_photo(

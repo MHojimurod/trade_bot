@@ -22,9 +22,9 @@ async def main(handler):
 
 class Socket:
     def __init__(self):
-        for lang in Language.objects.all():
-            for i in ['send_name_and_surname', 'send_number_register', 'send_number_register_button', 'select_filial', 'successfully_registered', 'order', 'busket', 'settings', 'our_addresses', 'my_orders', 'offers', 'questions_and_adds', 'communications', 'mainMenu', 'settings_info', 'change_name', 'change_number', 'change_language', 'back']:
-                Text.objects.get_or_create(language=lang, name=i, data=i)
+        # for lang in Language.objects.all():
+        #     for i in ['send_name_and_surname', 'send_number_register', 'send_number_register_button', 'select_filial', 'successfully_registered', 'order', 'busket', 'settings', 'our_addresses', 'my_orders', 'offers', 'questions_and_adds', 'communications', 'mainMenu', 'settings_info', 'change_name', 'change_number', 'change_language', 'back']:
+        #         Text.objects.get_or_create(language=lang, name=i, data=i)
         self.client = set()
         asyncio.run(self.start_server())
     
