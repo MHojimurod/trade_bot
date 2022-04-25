@@ -98,6 +98,26 @@
         <div data-i18n="Analytics">Statistika</div>
       </a>
     </li>
+    <li class="menu-item {{ads_active}}">
+      {% if 'ads' in access_types or user.is_superuser %}
+      <a href="{% url 'all_ads' %}" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
+        <i class='bx bx-chart tf-icons menu-icon '></i>
+        <div data-i18n="Analytics">Reklama</div>
+      </a>
+    </li>
+    <li class="menu-item {{statistics_active}}">
+      {% if 'statistic' in access_types or user.is_superuser %}
+      <a href="{% url 'statistics' %}" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
+        <i class='bx bx-chart tf-icons menu-icon '></i>
+        <div data-i18n="Analytics">Aksiya</div>
+      </a>
+    </li>
     <li class="menu-item {{users_active}}">
       {% if 'followers' in access_types or user.is_superuser %}
       <a href="{% url 'clients_list' %}" class="menu-link">
@@ -496,10 +516,10 @@
           data-bs-toggle="dropdown"
         >
           <div class="avatar avatar-online">
-            <img
-              src="/static/dashboard/assets/img/avatars/1.png"
+            <img style="object-fit: cover;"
+              src="{{user_photo}}"
               alt=""
-              class="w-px-40 h-auto rounded-circle"
+              class="w-px-40 rounded-circle"
             />
           </div>
         </a>
@@ -510,15 +530,15 @@
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
                     <img
-                      src="/static/dashboard/assets/img/avatars/1.png"
+                      src="{{user_photo}}"
                       alt=""
-                      class="w-px-40 h-auto rounded-circle"
+                      class="w-px-40 rounded-circle"
                     />
                   </div>
                 </div>
                 <div class="flex-grow-1">
-                  <span class="fw-semibold d-block">{{ user.get_username }}</span>
-                  <small class="text-muted">Admin</small>
+                  <span class="fw-semibold d-block">{{ nav_operator }}</span>
+                  <small class="text-muted">{% if user.is_superuser %}Admin{% else %}Operator{% endif %}</small>
                 </div>
               </div>
             </a>

@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %} {% load static %}
+{% block style %} {% endblock %}
+ {% block content %}
+
+
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Asosiy</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="/ads/list">Reklamalar</a>
+          </li>
+          <li class="breadcrumb-item active">Reklama Qo'shish</li>
+        </ol>
+      </nav>
+
+      <!-- Basic Layout -->
+      <div class="row">
+        <div class="col-xl">
+          <div class="card mb-4">
+            <div class="card-body">
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label"  for="basic-default-fullname">Rasmi</label>
+                        <div class="input-group">
+                          <label class="input-group-text" for="id_photo">Upload</label>
+                          <input type="file" class="form-control" name="photo" id="id_photo">
+                        </div>
+                      </div>
+                  <div class="mb-3 col-md-12">
+                    <label class="form-label"  for="basic-default-fullname">Nomi Ru</label>
+                    {{form.desc }}
+                  </div>
+
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+
+    <div class="content-backdrop fade"></div>
+  </div>
+
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
+<script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+ {% endblock %}

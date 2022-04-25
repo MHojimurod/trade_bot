@@ -1,6 +1,6 @@
 import requests
 from django.shortcuts import redirect
-from admin_panel.models import BotSettings
+from admin_panel.models import BotSettings, Operators
 
 
 def get_current_context(request):
@@ -26,3 +26,17 @@ def update_currency(request):
     x = BotSettings.objects.first()
     return {"money": x.money if x else 0}
 
+def user_data(request):
+    if not request.user.is_anonymous:
+        if not request.user.is_superuser:
+            operator = Operators.objects.get(user=request.user)
+            return {
+                "nav_operator":operator.user.first_name,
+                "user_photo":operator.photo.url if operator.photo else "./static/dashboard/assets/img/default.png"
+            }
+        else:
+            return  {
+                "nav_operator":request.user.username,
+                "user_photo":"/static/dashboard/assets/img/default.png"
+            }
+    return {}

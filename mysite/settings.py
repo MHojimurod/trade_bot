@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "admin_panel.currency.get_currency.get_current_context",
                 "admin_panel.currency.get_currency.update_currency",
+                "admin_panel.currency.get_currency.user_data",
                 "admin_panel.login.decorator.check_admin",
             ],
         },

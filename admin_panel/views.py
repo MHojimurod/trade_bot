@@ -26,7 +26,6 @@ def account(request):
     if request.POST or request.FILES:
         data = request.POST
         image = request.FILES.get("photo")
-        print(type(image))
         name = data["firstName"]
         surname = data["lastName"]
         phone = data["phoneNumber"]
@@ -38,7 +37,9 @@ def account(request):
         operator.phone=phone
         operator.region=country
         operator.address=address
-        operator.photo = image
+        if image:
+            operator.photo = image
+            operator.save()
         operator.save()
         messages.success(request, "Ma'lumotlar muvoffaqiyatli o'zgartirildi!")
         return redirect("account")

@@ -160,7 +160,8 @@ class Fillials(models.Model):
         return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
 
     def desc_ru_get(self):
-        return self.desc_ru
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+
     
     
     def desc_uz_set(self, new):
@@ -657,3 +658,10 @@ class Aksiya(models.Model, Name):
 class Support(models.Model):
     data = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class Ads(models.Model):
+    photo = models.ImageField(upload_to="images/")
+    desc = RichTextField()
+    def send_desc(self):
+        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")

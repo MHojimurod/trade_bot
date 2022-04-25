@@ -9,7 +9,7 @@ from admin_panel.clients.all_clients import clients_list,send_telegram
 from admin_panel.orders.order import order_accept, order_accepted, order_archive, order_not_accept, order_not_accepted, orders_list, update_order_status, one_order, reject_order
 from admin_panel.statistics.statistika import all_statistika
 from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
-
+from admin_panel.ads_and_present.main import add_ads, all_ads,delete_ads,send_ads
 urlpatterns = [
     path('', home, name='home'),
 
@@ -84,5 +84,11 @@ urlpatterns = [
     path("colors/update", colors_update),
 
     #error
-    path("error_message/",error_message,name="error_message")
+    path("error_message/",error_message,name="error_message"),
+
+    #ads
+    path("ads/list",all_ads,name="all_ads"),
+    path("add/ads",add_ads,name="add_ads"),
+    path("delete/ads/<int:pk>",delete_ads,name="delete_ads"),
+    path("send/ads/<int:pk>",send_ads,name="send_ads")
 ]
