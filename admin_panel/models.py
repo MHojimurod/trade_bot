@@ -85,6 +85,7 @@ class Text(models.Model):
     data: str = models.TextField()
     language: Language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
+
     def __str__(self) -> str:
         return self.name
 
@@ -284,6 +285,20 @@ class User(models.Model):
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
     filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
+    @property
+    def settings(self):
+        return [
+            [
+                self.text('change_name'),
+                self.text('change_number'),
+            ],
+            [
+                self.text('change_language'),
+            ],
+            [
+                self.text('back')
+            ]
+        ]
 
     def text(self, namee, *args, **kwargs) -> str:
         res: Text = Text.objects.filter(name=namee, language=self.language).first()
@@ -636,3 +651,8 @@ class Aksiya(models.Model, Name):
     @property
     def file(self):
         return open(f".{self.media.url}", 'rb')
+
+
+class Support(models.Model):
+    data = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
