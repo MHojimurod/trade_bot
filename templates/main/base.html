@@ -82,7 +82,9 @@
       <div class="layout-container">
         <div class="layout-page">
           <!-- Menu -->
-          {% include "main/nav.html" %} {% block content %}{% endblock %}
+          {% include "main/nav.html" %}
+          {% include 'main/messages.html' %}
+           {% block content %}{% endblock %}
         </div>
       </div>
 

@@ -2,7 +2,7 @@ from django.urls import path
 from admin_panel.category.categories import create_category, delete_category, edit_category, list_category
 from admin_panel.product.products import create_product, delete_product, edit_product, list_product, one_product
 from admin_panel.sub_category.sub_categories import create_sub_category, delete_sub_category, edit_sub_category, list_sub_category
-from admin_panel.views import account, home,list_operators,create_operator,edit_operator,delete_operator
+from admin_panel.views import account, home,list_operators,create_operator,edit_operator,delete_operator,error_message
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
 from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
 from admin_panel.clients.all_clients import clients_list,send_telegram
@@ -81,5 +81,8 @@ urlpatterns = [
     path("settings",settings,name="settings"),
     path("texts",texts,name="texts"),
     path("dashboard/texts/update", text_update),
-    path("colors/update", colors_update)
+    path("colors/update", colors_update),
+
+    #error
+    path("error_message/",error_message,name="error_message")
 ]

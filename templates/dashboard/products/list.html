@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %} {% load static %}
 {% block style %} {% endblock %}
  {% block content %}
- {% include 'main/messages.html' %}
+
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
     <nav aria-label="breadcrumb">
@@ -27,9 +27,9 @@
               ­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­            
             </button>
             <ul class="dropdown-menu">
-              <li><button type="submit" name="action" value="yellow" class="dropdown-item">Sariq</button></li>
-              <li><button type="submit" name="action" value="green" class="dropdown-item">Yashil</button></li>
-              <li><button type="submit" name="action" value="red" class="dropdown-item">Qizil</button></li>
+              <li><button type="submit" name="action" value="1" class="dropdown-item">Sariq</button></li>
+              <li><button type="submit" name="action" value="2" class="dropdown-item">Yashil</button></li>
+              <li><button type="submit" name="action" value="3" class="dropdown-item">Qizil</button></li>
               <li><button type="submit" name="action" value="delete" class="dropdown-item">O'chirish</button></li>
              
             </ul>
@@ -48,6 +48,7 @@
                   <th>Nomi Uz </th>
                   <th>Nomi Ru </th>
                   <th>Photo</th>
+                  <th>Rangi</th>
                   <th>Holati</th>
                   <th>Actions</th>
                 </tr>
@@ -76,7 +77,13 @@
                       </div>
                     </a>
                   </td>
-                  
+                  {% if i.color.id == 1 %}
+                  <td><span class="badge bg-warning">      </span></td>
+                  {% elif i.color.id == 2 %}
+                  <td><span class="badge bg-success">      </span></td>
+                  {% else %}
+                  <td><span class="badge bg-danger">      </span></td>
+                  {% endif %}
                   {%  if i.active %}
                   <td><span class="badge bg-label-primary me-1">Faol</span></td>
                   {% else %}
@@ -112,6 +119,7 @@
                   <th>Nomi Uz </th>
                   <th>Nomi Ru </th>
                   <th>Photo</th>
+                  <th>Rangi</th>
                   <th>Holati</th>
                   <th>Actions</th>
                 </tr>
