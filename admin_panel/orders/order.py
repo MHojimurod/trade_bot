@@ -69,14 +69,27 @@ def one_order(request,pk):
 
 
 def order_accepted(request):
-    orders = Busket.objects.filter(is_ordered=True, status=3)
     data = []
-    for i in orders:
-        data.append(
-            {
-                "order": i,
-                "items": BusketItem.objects.filter(busket=i)
-            })
+    if request.user.is_superuser:
+        orders = Busket.objects.filter(bis_ordered=True, status=3)
+        for i in orders:
+            data.append(
+                {
+                    "order": i,
+                    "items": BusketItem.objects.filter(busket=i)
+                })
+    else:
+        orders = Busket.objects.filter(bis_ordered=True, status=3,actioner=Operators.objects.get(user=request.user))
+        for i in orders:
+            text = ""
+            for j in BusketItem.objects.filter(busket=i):
+                text+= f"""<b>{j.product.name_uz}</b><br>    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}<br>umumiy narxi<br>    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}<br><br>"""
+            data.append(
+                {
+                    "order": i,
+                    "items":text
+                })
+
 
     print(data)
     ctx = {"orders": data, "order_active": "active"}
@@ -84,48 +97,76 @@ def order_accepted(request):
 
 
 def order_archive(request):
-    orders = Busket.objects.filter(is_ordered=True, status=5)
     data = []
-    for i in orders:
-        data.append(
-            {
-                "order": i,
-                "items": BusketItem.objects.filter(busket=i)
-            })
+    if request.user.is_superuser:
+        orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5])
+        for i in orders:
+            data.append(
+                {
+                    "order": i,
+                    "items": BusketItem.objects.filter(busket=i)
+                })
+    else:
+        orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5],actioner=Operators.objects.get(user=request.user))
+        for i in orders:
+            data.append(
+                {
+                    "order": i,
+                    "items": BusketItem.objects.filter(busket=i)
+                })
+        
 
-    print(data)
     ctx = {"orders": data, "order_active": "active"}
     return render(request, 'dashboard/orders/archive.html', ctx)
 
 
 def order_not_accepted(request):
-    orders = Busket.objects.filter(is_ordered=True, status=4)
     data = []
-    for i in orders:
-        data.append(
-            {
-                "order": i,
-                "items": BusketItem.objects.filter(busket=i)
-            })
+    if request.user.is_superuser:
+        orders = Busket.objects.filter(bis_ordered=True, status=4)
+        for i in orders:
+            data.append(
+                {
+                    "order": i,
+                    "items": BusketItem.objects.filter(busket=i)
+                })
+    else:
+        orders = Busket.objects.filter(bis_ordered=True, status=4,actioner=Operators.objects.get(user=request.user))
+        for i in orders:
+            text = ""
+            for j in BusketItem.objects.filter(busket=i):
+                text+= f"""<b>{j.product.name_uz}</b>\n    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}\numumiy narxi\n    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}\n\n"""
 
-    print(data)
-    ctx = {"orders": data, "order_active": "active"}
-    return render(request, 'dashboard/orders/archive.html', ctx)
+
+            data.append(
+                {
+                    "order": i,
+                    "items": text
+                })
+
+        ctx = {"orders": data, "order_active": "active"}
+    return render(request, 'dashboard/orders/reject.html', ctx)
 
 
 def order_accept(request,pk):
     order = Busket.objects.get(pk=pk)
     order.status = 3
-    order.actioner = Operators.objects.get(user=request.user)
+    operator = Operators.objects.get(user=request.user)
+    order.actioner = operator
+    operator.is_have = False
     order.save()
+    operator.save()
     return redirect('orders_list')
 
 
 def order_not_accept(request, pk):
     order = Busket.objects.get(pk=pk)
     order.status = 4
-    order.actioner = request.user
+    operator = Operators.objects.get(user=request.user)
+    order.actioner = operator
+    operator.is_have = False
     order.save()
+    operator.save()
     return redirect('orders_list')
 
 

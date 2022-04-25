@@ -4,9 +4,14 @@
 
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">
-      <span class="text-muted fw-light">Tables /</span> Basic Tables
-    </h4>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Asosiy</a>
+        </li>
+        <li class="breadcrumb-item active">Tasdiqlanganlar</li>
+      </ol>
+    </nav>
     <div class="card">
       <!-- <a class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a> -->
       <div class="table-responsive text-nowrap">
@@ -17,6 +22,7 @@
               <th>Haridor</th>
               <th>Telefon</th>
               <th>Maxsulot</th>
+              <th>Operator</th>
             </tr>
           </thead>
           <tbody class="table-border-bottom-0">
@@ -36,22 +42,18 @@
                 <button onclick="Products()" >Maxsulotlar</button>
                 <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
-              <!-- <td>
-                <a href="{% url 'one_order' i.order.id %}" class="btn btn-success btn-xs" >Qabul qilish</a>
-              </td>
-              <td>
-                <button class="btn btn-danger btn-xs" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
-              </td> -->
-              
+              <td>{{i.order.actioner.user.first_name}}</td>
+              <td>{{i.items|safe}}</td>
             </tr> 
             {% endfor %}                      
           </tbody>
           <tfoot>
             <tr>
-              <th>Project</th>
-              <th>Client</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>Buyurtma raqami</th>
+              <th>Haridor</th>
+              <th>Telefon</th>
+              <th>Maxsulot</th>
+              <th>Operator</th>
             </tr>
           </tfoot>
         </table>
