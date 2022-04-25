@@ -83,7 +83,7 @@
     <div class="card-body">
       <h5>Kamentariya qoldirish</h5>
       <textarea class="form-control"  name="" id="description_data" cols="50" rows="5"></textarea>
-      <a href="{% url 'update_order' 1 2 %}" id="reject_order" class="btn btn-primary mt-2">Yuborish</a>
+      <a  id="reject_order" class="btn btn-primary mt-2">Yuborish</a>
       <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a>
     </div>
   
@@ -109,7 +109,6 @@
     document.getElementById("reject").dataset['product'] = id;
     document.getElementById("reject_order").onclick = async (e) => {
 
-       console.log();
        let req = await (await fetch(`/orders/reject/${e.target.parentElement.parentElement.parentElement.dataset['product']}`, {
          method: "POST",
           headers: {
@@ -124,6 +123,7 @@
        console.log(this);
     }
     document.getElementById("reject").style.display = "block";
+
   }
 
   const socket = new WebSocket(`ws://${location.hostname}:8001`);
