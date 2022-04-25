@@ -1,6 +1,7 @@
 from email.message import EmailMessage
 
-from flask import Flask, request
+from flask import Flask, jsonify, request
+from admin_panel.models import Ads, User
 
 from tg_bot.myorders import myOrders
 from .settings import Settings
@@ -177,5 +178,14 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         self.idle()
     
     def send_ads(self):
-        data = request.get_json()
-        print(data)
+        data = request.get_json()['data']
+        ad = data['id']
+        ad: Ads = Ads.objects.filter(id=ad).first()
+        if ad:
+            for user in User.objects.all():
+                try:
+                    self.bot.send_photo(user.id, ad.photo.src, caption=ad.desc)
+                except:
+                    pass
+        else:
+            return jsonify({'status': 'error'})
