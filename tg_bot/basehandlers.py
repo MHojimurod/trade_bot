@@ -1,6 +1,6 @@
 from telegram.ext import CallbackContext, Updater
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
-from admin_panel.models import Aksiya, Language, User, Fillials
+from admin_panel.models import Aksiya, Language, Support, User, Fillials
 from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
 from .constants import  ADDRESS, AKSIYA, FILIAL, LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
@@ -79,7 +79,7 @@ class Basehandlers():
     @remove_temp_message
     def number(self, update:Update, context:CallbackContext):
         user,db = get_user(update)
-        number = update.message.contact.phone_number
+        number = update.message.contact.phone_number if update.message.contact else update.message.text
         context.user_data['register']['number'] = number
         filials: list[Fillials] = Fillials.objects.filter(active=True)
         lang:Language = context.user_data['register']['language']
@@ -159,6 +159,7 @@ class Basehandlers():
     
     def support_message(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
+        Support.objects.create(user=db, data=update.message.text)
         user.send_message(db.text('support_accepted'),
                           reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU

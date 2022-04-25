@@ -1,3 +1,4 @@
+from token import NUMBER
 from telegram import *
 from telegram.ext import *
 from admin_panel.models import Language, distribute
@@ -10,22 +11,20 @@ class Settings:
     def settings(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})"), reply_markup=ReplyKeyboardMarkup(
-            [
-                [
-                    "Ismni o'zgartirish",
-                    "Tilni o'zgartirish",
-                    "Raqamni o'zgartirish",
-                ],
-                [
-                    "Ortga"
-                ]
-            ],True
+            db.settings,True
         ), parse_mode="HTML")
         return SETTINGS
     
     def settings_name(self, update:Update, context: CallbackContext):
         user, db=  get_user(update)
-        user.send_message("Iltimos yangi ismingizni kiriting!", reply_markup=ReplyKeyboardRemove())
+        user.send_message("Iltimos yangi ismingizni kiriting!", reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    db.text("back")
+                ]
+            ],
+            True
+        ))
         return SETTINGS_NAME
     
     def settings_name_change(self, update: Update, context: CallbackContext):
@@ -34,14 +33,7 @@ class Settings:
             db.name = update.message.text
             db.save()
             user.send_message("Ism o'zgartirildi!", reply_markup=ReplyKeyboardMarkup(
-                [
-                    [
-                        "Ismni o'zgartirish",
-                        "Tilni o'zgartirish",
-                        "Raqamni o'zgartirish",
-                    ],
-                    ["Ortga"]
-                ], True
+                db.settings, True
             ))
             self.settings(update, context)
             return SETTINGS
@@ -53,12 +45,14 @@ class Settings:
     def settings_language(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         user.send_message("Iltimos yangi tilni kiriting!", reply_markup=ReplyKeyboardMarkup(
-            distribute(
+            [*distribute(
                 [
                     l.name for l in Language.objects.all()
                 ],
                 2
-            ),True
+            ), [
+                    db.text("back")
+                ]],True
         ))
         return SETTINGS_LANGUAGE
     
@@ -72,27 +66,20 @@ class Settings:
             db.language = lang
             db.save()
             user.send_message("Til o'zgartirildi!", reply_markup=ReplyKeyboardMarkup(
-                [
-                    [
-                        "Ismni o'zgartirish",
-                        "Tilni o'zgartirish",
-                        "Raqamni o'zgartirish",
-                    ],
-                    [
-                        "Ortga"
-                    ]
-                ],True
+                db.settings,True
             ))
             self.settings(update, context)
             return SETTINGS
         else:
             user.send_message("Til topilmadi!", reply_markup=ReplyKeyboardMarkup(
-                distribute(
+                [*distribute(
                     [
                         l.name for l in Language.objects.all()
                     ],
                     2
-                ),
+                ), [
+                    db.text("back")
+                ]],
                 True
             ))
             SETTINGS_LANGUAGE
@@ -103,7 +90,10 @@ class Settings:
         user.send_message("Iltimos yangi raqamni kiriting!", reply_markup=ReplyKeyboardMarkup([
             [
                 KeyboardButton("Raqamni yuborish", request_contact=True)
-            ]
+            ],
+            [
+                    db.text("back")
+                ]
         ], True))
         return SETTINGS_NUMBER
     
@@ -112,16 +102,9 @@ class Settings:
         db.number = update.message.contact.phone_number
         db.save()
         user.send_message("Raqam o'zgartirildi!", reply_markup=ReplyKeyboardMarkup(
-            [
-                [
-                    "Ismni o'zgartirish",
-                    "Tilni o'zgartirish",
-                    "Raqamni o'zgartirish",
-                ],
-                [
-                    "Ortga"
-                ]
-            ],True
+            
+                db.settings
+            ,True
         ))
         self.settings(update, context)
         return SETTINGS
@@ -131,16 +114,7 @@ class Settings:
         db.number = update.message.text
         db.save()
         user.send_message("Raqam o'zgartirildi!", reply_markup=ReplyKeyboardMarkup(
-            [
-                [
-                    "Ismni o'zgartirish",
-                    "Tilni o'zgartirish",
-                    "Raqamni o'zgartirish",
-                ],
-                [
-                    "Ortga"
-                ]
-            ],True
+            db.settings,True
         ))
         self.settings(update, context)
         return SETTINGS
@@ -153,3 +127,12 @@ class Settings:
             ]
         ], True))
         return SETTINGS_NUMBER
+    
+    def number_error(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        user.send_message("Iltimos raqamni to'g'ri yuboring!", reply_markup=ReplyKeyboardMarkup([
+            [
+                KeyboardButton("Raqamni yuborish", request_contact=True)
+            ]
+        ], True))
+        return NUMBER

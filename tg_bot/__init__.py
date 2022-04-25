@@ -28,9 +28,13 @@ class Bot(Updater, Basehandlers, Order, Settings):
                 ],
                 NUMBER: [
                     MessageHandler(Filters.contact, self.number),
+                    MessageHandler(Filters.regex(
+                        "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
+                        "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.number),
+                    MessageHandler(Filters.text, self.number_error)
                 ],
                 FILIAL: [
-                    MessageHandler(Filters.text, self.filial)
+                    MessageHandler(Filters.text & not_start, self.filial)
                 ],
                 MENU: [
                     MessageHandler(
@@ -108,17 +112,21 @@ class Bot(Updater, Basehandlers, Order, Settings):
                     MessageHandler(Filters.regex("^Ortga$"), self.back_to_menu)
                 ],
                 SETTINGS_NAME: [
-                    MessageHandler(Filters.text, self.settings_name_change)
+                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_name_change),
+                    MessageHandler(Filters.regex("^🔙"), self.settings)
                 ],
                 SETTINGS_NUMBER: [
                     MessageHandler(Filters.contact, self.settings_number_change),
                     MessageHandler(Filters.regex(
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.settings_number_text),
-                    MessageHandler(Filters.text, self.settings_number_error)
+                         MessageHandler(Filters.regex("^🔙"), self.settings),
+                    MessageHandler(Filters.text, self.settings_number_error),
+                    
                 ],
                 SETTINGS_LANGUAGE: [
-                    MessageHandler(Filters.text, self.settings_language_change)
+                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_language_change),
+                    MessageHandler(Filters.regex("^🔙"), self.settings)
                 ],
                 OUR_ADDRESSES: [
                     MessageHandler(Filters.regex("^(Orqaga)$"), self.back_to_menu),
