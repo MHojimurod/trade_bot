@@ -118,14 +118,14 @@ class Text(models.Model):
 
 class Operators(models.Model):
     access  =(
-        ("main","Asosiy"),
-        ("order","Buyurtmalar"),
         ("statistic","Statistika"),
         ("operators","Operatorlar"),
         ("category","Kategoriya"),
         ("ads","Reklama"),
         ("fillial","Filliallar"),
+        ("present","Aksiyalar"),
         ("settings","Bot Sozlamalari"),
+        ("text","Textlar"),
         ("followers","Foydalanuvchilar"),
     )
     
@@ -285,6 +285,7 @@ class User(models.Model):
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
     filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     @property
     def settings(self):
         return [

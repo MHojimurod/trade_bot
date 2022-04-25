@@ -59,31 +59,51 @@
     </li>
 
     <li class="menu-item {{category_active}}">
+      {% if 'category' in access_types or user.is_superuser %}
       <a href="/category/list" class="menu-link">
+        {% else %}
+        <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
         <i class="menu-icon tf-icons bx bx-category"></i>
         <div data-i18n="Analytics">Kategoriya</div>
       </a>
     </li>
     <li class="menu-item {{fillial_active}}">
+      {% if 'fillial' in access_types or user.is_superuser %}
       <a href="/fillials/list" class="menu-link">
+        {% else %}
+        <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
         <i class='menu-icon bx bx-map-pin  tf-icons' ></i>
         <div data-i18n="Analytics">Filliallar</div>
       </a>
     </li>
     <li class="menu-item {{operator_active}}">
+      {% if 'operators' in access_types or user.is_superuser %}
       <a href="/operator/list" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
         <i class="menu-icon tf-icons bx bx-support"></i>
         <div data-i18n="Analytics">Operatorlar</div>
       </a>
     </li>
     <li class="menu-item {{statistics_active}}">
+      {% if 'statistic' in access_types or user.is_superuser %}
       <a href="{% url 'statistics' %}" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
         <i class='bx bx-chart tf-icons menu-icon '></i>
         <div data-i18n="Analytics">Statistika</div>
       </a>
     </li>
     <li class="menu-item {{users_active}}">
+      {% if 'followers' in access_types or user.is_superuser %}
       <a href="{% url 'clients_list' %}" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
         <i class='bx bx-chart tf-icons menu-icon '></i>
         <div data-i18n="Analytics">Foydalanuvchilar</div>
       </a>
@@ -98,12 +118,20 @@
 
       <ul class="menu-sub">
         <li class="menu-item">
+          {% if 'text' in access_types or user.is_superuser %}
           <a href="{% url 'texts' %}" class="menu-link">
+            {% else %}
+          <a href="{% url 'error_message' %}" class="menu-link">
+            {%endif%}
             <div data-i18n="Without menu">Textlar</div>
           </a>
         </li>
         <li class="menu-item">
+          {% if 'settings' in access_types or user.is_superuser %}
           <a href="{% url 'settings' %}" class="menu-link">
+            {% else %}
+          <a href="{% url 'error_message' %}" class="menu-link">
+            {% endif %}
             <div data-i18n="Without navbar">Bot sozlamalari</div>
           </a>
         </li>

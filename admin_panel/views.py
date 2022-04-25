@@ -7,12 +7,12 @@ from django.http import HttpResponse
 
 from requests import request
 from admin_panel.forms import OperatorForm
-from admin_panel.login.decorator import dashboard_login, login_required_decorator,permission_requied
+from admin_panel.login.decorator import dashboard_login, login_required_decorator
 from django.contrib import  messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from admin_panel.models import Fillials, Operators
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User as Djangouser
 # Create your views here.   
 
 
@@ -53,10 +53,12 @@ def create_operator(request):
         if form.is_valid():
             data = request.POST
             if request.POST['password'] == request.POST['confirm_password']:
-                if User.objects.filter(username=data['username']).exists():
+                print(data["username"])
+                if Djangouser.objects.filter(username=data['username']).exists():
                     messages.error(request, "Operator allaqachon bor")
+                    return redirect("create_operator")
                 else:
-                    user = User.objects.create_user(
+                    user = Djangouser.objects.create_user(
                         username=data["username"], password=data["password"], first_name=data["name"], last_name=data["surname"])
                     user.save()
                     print(user)
@@ -82,5 +84,13 @@ def edit_operator(request,pk):
 
 def delete_operator(request,pk):
     model = Operators.objects.get(pk=pk)
+    user = Djangouser.objects.get(username=model.username)
     model.delete()
+    user.delete()
     return redirect("list_operator") 
+
+
+
+def error_message(request):
+    messages.error(request,"Kechirasiz sizga bu bo'limga kirishga ruxsat yo'q")
+    return redirect("home")

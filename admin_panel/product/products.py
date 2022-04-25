@@ -6,19 +6,28 @@ import re
 from django.shortcuts import render, redirect
 from admin_panel.forms import CategoryForm, ProductForm, SubCategoryForm
 from django.db.models import Q
-from admin_panel.models import Category, Product
+from admin_panel.models import Category, Color, Product
 from django.contrib import messages
 
 def list_product(request,pk):
     if request.method == "POST":
-        if request.POST["fff"] == "delete":
-            if len(request.POST.getlist("results"))>0:
-                for i in request.POST.getlist("results"):
+        data = request.POST
+        if len(data.getlist("results"))>0:
+            if data["action"] != "delete":
+                for i in data.getlist("results"):
+                    product = Product.objects.get(id=i)
+                    product.color = Color.objects.get(id=int(data["action"]))
+                    product.save()
+            if data["action"] == "delete":
+                for i in data.getlist("results"):
                     Product.objects.filter(id=i).delete()
+            messages.success(request,"Muvafaqqiyatli o'zgartirildi")
+            
                 
-            else:
-                messages.error(request,"Siz hech narsa tanlamadingiz")
+        else:
+            messages.error(request,"Siz hech narsa tanlamadingiz")
         return redirect(f'/product/list/{pk}')
+
                 
     products = Product.objects.filter(category_id=pk)
     sub = Category.objects.filter(id=pk).first()
@@ -35,7 +44,6 @@ def create_product(request,pk):
     form = ProductForm(request.POST,request.FILES,instance=model)
     print(form.errors)
     if form.is_valid():
-
         form.save()
         return redirect(f'/product/list/{pk}')
     ctx = {'form': form,"category": pk,"main_category": main_category,"sub":sub,"category_active":"active"}

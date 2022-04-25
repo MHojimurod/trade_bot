@@ -43,15 +43,12 @@ def check_admin(request):
             data:Operators = Operators.objects.filter(user=user).first()
             if data:
                 access = data.pers
+                print(type(access))
                 ctx = {
-                    "access_types":access
+                    "access_types":list(access)
                 }
                 return ctx
         return {}
     return {}
 
 
-def permission_requied(request,data):
-    if data in check_admin(request)["access_types"]:
-        return True
-    return False

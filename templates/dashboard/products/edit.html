@@ -54,6 +54,14 @@
                     <label class="form-label"  for="basic-default-fullname">Nomi Uz</label>
                     <input type="text" required class="form-control" id="id_name_uz" name="name_uz" value="{{data.name_uz}}">
                   </div>
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label"  for="basic-default-fullname">Tan Narxi</label>
+                    <input type="number" required class="form-control" id="id_tan_price" name="tan_price" value="{{data.tan_price}}">
+                  </div>  
+                  <div class="mb-3 col-md-6">
+                    <label class="form-label"  for="basic-default-fullname">Rangi</label>
+                    {{form.color}} 
+                  </div>  
                 </div>
                 <div class="form-check form-switch mb-2">
                   <input {% if data.active %} checked {% endif %} name="active" type="checkbox"  id="id_active"
