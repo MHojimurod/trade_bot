@@ -9,7 +9,7 @@ from multiselectfield import MultiSelectField
 # from tg_bot.utils import distribute
 
 
-def distribute(items, number) -> list[list]:
+def distribute(items, number):
     res = []
     start = 0
     end = number
@@ -266,7 +266,7 @@ class Color(models.Model):
     base_percent: int = models.PositiveIntegerField()
 
     @property
-    def months(self) -> list["Percent"]:
+    def months(self):
         return Percent.objects.filter(color=self)
     def __str__(self) -> str:
         return self.color
@@ -303,7 +303,7 @@ class User(models.Model):
             ]
         ]
     
-    def get_orders(self) -> list["Busket"]:
+    def get_orders(self):
         bs: list[Busket] = Busket.objects.filter(user=self, bis_ordered=True)
         res = []
         for b in bs:
@@ -589,7 +589,7 @@ class Busket(models.Model):
         return bool(self.products.count())
 
     @property
-    def products(self) -> list["BusketItem"]:
+    def products(self):
         return BusketItem.objects.filter(busket=self)
     
     def add(self, product: Product, count:int,month:Percent):

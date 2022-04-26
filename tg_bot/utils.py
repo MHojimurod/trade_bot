@@ -3,7 +3,7 @@ from admin_panel.models import User
 from telegram import ReplyKeyboardMarkup as x
 from telegram.ext import CallbackContext
 
-def get_user(update: Update) -> "tuple[tgUser, User]":
+def get_user(update: Update):
     user = update.message.from_user if update.message else update.callback_query.from_user
     
     return (user,
@@ -15,7 +15,7 @@ def is_odd(a):
     return bool(a - ((a >> 1) << 1))
 
 
-def distribute(items, number) -> list:
+def distribute(items, number):
     res = [  ]
     start = 0
     end = number
