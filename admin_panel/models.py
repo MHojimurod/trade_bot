@@ -501,10 +501,13 @@ class User(models.Model):
                     )
                 )
                 keyboard.append(controls)
+            keyboard.append([InlineKeyboardButton(
+                "➕" + user.text("add_more"), callback_data=f"cart_add_more")])
+            
             keyboard.append([
                 InlineKeyboardButton(
                     "🔙", callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
-                        InlineKeyboardButton("🛒", callback_data=f"order_cart"),
+                        InlineKeyboardButton("🛒" + self.text("clearance"), callback_data=f"order_cart"),
 
             ])
             text += "\n———————————————-\n".join(pr_texts)
@@ -681,5 +684,6 @@ class Support(models.Model):
 class Ads(models.Model):
     photo = models.ImageField(upload_to="images/")
     desc = RichTextField()
+
     def send_desc(self):
-        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")

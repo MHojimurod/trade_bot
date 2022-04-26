@@ -70,9 +70,77 @@
         </div>
       </div>
 
-      
-  <!-- / Content -->
 
-  <div class="content-backdrop fade"></div>
-</div>
-{% endblock %}
+
+
+
+
+
+      <!-- / Content -->
+
+      <div class="content-backdrop fade"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <canvas id="myChart" width="400" height="400"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  
+  
+    {% block javascript %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+      const labels = [
+        {% for operator in operators  %}'{{ operator.operator.name }}',{% endfor %}
+      ];
+    
+      let data = {
+        labels: labels,
+        datasets: [{
+          label: 'Tasdiqlangan',
+          backgroundColor: 'rgb(0, 0, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: [{% for operator in operators  %}'{{ operator.accept }}',{% endfor %}],
+        },
+        {
+          label: 'Rad etilgan',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: [{% for operator in operators  %}'{{ operator.not_accept }}',{% endfor %}],
+        }],
+        
+      };
+    
+      const confi2g = {
+        type: 'bar',
+        data: data,
+        options: {}
+      };
+
+      
+    </script>
+    <script>
+      const myChart = new Chart(
+        document.getElementById('myChart'),
+        confi2g
+      );
+    </script>
+     
+
+    {% endblock %}

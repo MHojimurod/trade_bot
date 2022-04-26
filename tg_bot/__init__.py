@@ -1,11 +1,14 @@
 from email.message import EmailMessage
+import time
 
 from flask import Flask, jsonify, request
-from admin_panel.models import Ads, User
+from telegram import Update
+from admin_panel.models import Ads, Busket, User
 
 from tg_bot.myorders import myOrders
+from tg_bot.utils import remove_temp_message
 from .settings import Settings
-from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler
+from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler, CallbackContext
 from .constants import (
     ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
@@ -84,6 +87,9 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 CART: [
                     # controls counts
                     CallbackQueryHandler(
+                        self.cart_add_more, pattern="^cart_add_more"),
+                    
+                    CallbackQueryHandler(
                         self.cart_product_count, pattern="^cart_item_count:"),
                     CallbackQueryHandler(
                         self.remove_from_cart, pattern="^remove_from_cart:"),
@@ -138,11 +144,8 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(Filters.regex("^🔙"), self.settings)
                 ],
                 OUR_ADDRESSES: [
-                    MessageHandler(Filters.regex("^(Orqaga)$"), self.back_to_menu),
+                    MessageHandler(Filters.regex("^🔙"), self.back_to_menu),
                     MessageHandler(Filters.text & not_start, self.address)
-                ],
-                ADDRESS: [
-                    MessageHandler(Filters.regex("^(Orqaga)$"), self.our_addresses),
                 ],
                 SUPPORT: [
                     MessageHandler(Filters.text, self.support_message)
@@ -172,20 +175,47 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         server = Flask(__name__)
 
         server.route('/send_ads')(self.send_ads)
+        server.route('/order_updated')(self.order_updated)
 
         server.run(port=6002)
         
         self.idle()
     
+    def order_updated(self):
+        data = request.get_json()
+        status, order = data['status'], data['order']
+        order:Busket = Busket.objects.filter(id=int(order)).first()
+        if order:
+            if status == 1:
+                self.bot.send_message(order.user.chat_id, order.user.text("order_checking")  )
+            elif status == 2:
+                self.bot.send_message(order.user.chat_id, order.user.text("order_rejected",cause=order.comment)  )
+            elif status == 3:
+                self.bot.send_message(order.user.chat_id, order.user.text("order_accepted") )
+            elif status == 4:
+                self.bot.send_message(order.user.chat_id, order.user.text("order_not_accepted",cause=order.comment)  )
+        return "ok"
+  
     def send_ads(self):
         data = request.get_json()['data']
         ad = data['id']
         ad: Ads = Ads.objects.filter(id=ad).first()
+        per = 0
         if ad:
             for user in User.objects.all():
                 try:
-                    self.bot.send_photo(user.id, ad.photo.src, caption=ad.desc)
-                except:
-                    pass
+                    self.bot.send_photo(user.chat_id, open(f".{ad.photo.url}", 'rb'), caption=ad.send_desc(), parse_mode="HTML")
+                except Exception as e:
+                    print('user not found', e)
+                per += 1
+                if per == 20:
+                    time.sleep(1)
+                    per = 0
+            return "ok"
         else:
             return jsonify({'status': 'error'})
+
+    # @remove_temp_message
+    def cart_add_more(self, update:Update, context:CallbackContext):
+        (update.message if update.message else update.callback_query.message).delete()
+        return self.order(update, context)

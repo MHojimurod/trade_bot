@@ -1,6 +1,6 @@
 from dataclasses import fields
 from django import forms
-from admin_panel.models import Ads, Category, Fillials, Operators, Product
+from admin_panel.models import Ads, Aksiya, Category, Fillials, Operators, Product
 import hashlib
 
 class  FillialsForm(forms.ModelForm):
@@ -46,3 +46,9 @@ class AdsForm(forms.ModelForm):
     class Meta:
         model = Ads
         fields = ["photo","desc"]
+
+
+class OffersForm(forms.ModelForm):
+    class Meta:
+        model = Aksiya
+        fields = ["name_uz","name_ru","media", 'mode', 'caption']

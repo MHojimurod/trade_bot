@@ -68,6 +68,18 @@
         <div data-i18n="Analytics">Kategoriya</div>
       </a>
     </li>
+
+    <li class="menu-item {{category_active}}">
+      {% if 'present' in access_types or user.is_superuser %}
+      <a href="/offers/list" class="menu-link">
+        {% else %}
+        <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
+        <i class="menu-icon tf-icons bx bx-category"></i>
+        <div data-i18n="Analytics">Aksiyalar</div>
+      </a>
+    </li>
+
     <li class="menu-item {{fillial_active}}">
       {% if 'fillial' in access_types or user.is_superuser %}
       <a href="/fillials/list" class="menu-link">

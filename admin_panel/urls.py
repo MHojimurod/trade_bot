@@ -1,5 +1,6 @@
 from django.urls import path
 from admin_panel.category.categories import create_category, delete_category, edit_category, list_category
+from admin_panel.offers.main import *
 from admin_panel.product.products import create_product, delete_product, edit_product, list_product, one_product
 from admin_panel.sub_category.sub_categories import create_sub_category, delete_sub_category, edit_sub_category, list_sub_category
 from admin_panel.views import account, home,list_operators,create_operator,edit_operator,delete_operator,error_message
@@ -10,6 +11,8 @@ from admin_panel.orders.order import order_accept, order_accepted, order_archive
 from admin_panel.statistics.statistika import all_statistika
 from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
 from admin_panel.ads_and_present.main import add_ads, all_ads,delete_ads,send_ads
+
+
 urlpatterns = [
     path('', home, name='home'),
 
@@ -90,5 +93,12 @@ urlpatterns = [
     path("ads/list",all_ads,name="all_ads"),
     path("add/ads",add_ads,name="add_ads"),
     path("delete/ads/<int:pk>",delete_ads,name="delete_ads"),
-    path("send/ads/<int:pk>",send_ads,name="send_ads")
+    path("send/ads/<int:pk>",send_ads,name="send_ads"),
+
+
+
+
+    path("offers/list",all_offers,name="all_offers"),
+    path("offers/add",add_offers,name="add_offers"),
+    path("offers/delete/<int:pk>",delete_offer,name="delete_offers"),
 ]

@@ -123,7 +123,7 @@ class Basehandlers():
             keyboard.append(address.name(db.language))
                 
         
-        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [db.text("Orqaga")]
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [ "🔙" +db.text("Orqaga")]
                                                                        ]), parse_mode="HTML")
         return OUR_ADDRESSES
     
@@ -136,7 +136,7 @@ class Basehandlers():
         ).first()
         if address:
             user.send_message(address.address(db.language), parse_mode="HTML")
-            return ADDRESS
+            return OUR_ADDRESSES
         else:
             keyboard = []
             address: Fillials

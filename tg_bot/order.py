@@ -300,5 +300,4 @@ class Order:
         db.busket.order()
         user.send_message(db.text('yout_order_accepted'),
                           reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
-        user.send_message(*db.menu())
-        return MENU
+        return self.back_to_menu(update, context)

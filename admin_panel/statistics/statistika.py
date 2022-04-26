@@ -17,20 +17,20 @@ def all_statistika(request):
     for i in operators:
         DATA.append({   
             "operator":i,
-            "accept":Busket.objects.filter(actioner=1,status=3).count(),
-            "not_accept":Busket.objects.filter(actioner=1,status=4).count(),
-
+            "accept":Busket.objects.filter(actioner=i,status=3).count(),
+            "not_accept":Busket.objects.filter(actioner=i,status=4).count(),
         })
     print(DATA)
 
     ctx = {
         "statistics_active": "active",
-        "today_user":today_user,
-        "all_user":all_user,
+        "today_user":today_user, #
+        "all_user":all_user, #
         "total_percent":total_percent,
         "uz_percent":uz_percent,
         "ru_percent":ru_percent,
-        "uz_user":uz_user,
-        "ru_user":ru_user
+        "uz_user":uz_user, #
+        "ru_user":ru_user, #,
+        "operators":DATA
     }
     return render(request, 'dashboard/statistics/statistic.html',ctx)

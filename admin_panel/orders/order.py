@@ -26,9 +26,12 @@ def update_order_status(request,pk,status):
     order = Busket.objects.get(pk=pk)
     print(request.user)
     operator = Operators.objects.get(user=request.user)
-    requests.get(f"http://localhost:8002/act", json={
+    try:
+        requests.get(f"http://localhost:8002/act", json={
             'order': order.id
         })
+    except:
+        pass
     if status == 1:
         order.status = 1
         order.actioner = operator
@@ -36,6 +39,10 @@ def update_order_status(request,pk,status):
         operator.save()
         
         order.save()
+        requests.get(f"http://localhost:6002/order_updated", json={
+            'order': order.id,
+            'status': 1
+        })
         return redirect('one_order',pk)
     if status == 2:
         if request.POST:
@@ -43,6 +50,10 @@ def update_order_status(request,pk,status):
             order.comment = commet
             order.status = 2
             order.save()
+            requests.get(f"http://localhost:6002/order_updated", json={
+            'order': order.id,
+            'status': 2
+            })
             return redirect("order_list")
     if status == 3:
         order.status = 3
@@ -83,7 +94,7 @@ def order_accepted(request):
         for i in orders:
             text = ""
             for j in BusketItem.objects.filter(busket=i):
-                text+= f"""<b>{j.product.name_uz}</b><br>    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}<br>umumiy narxi<br>    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}<br><br>"""
+                text+= f"""<b>{j.product.name_uz}</b><br>    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}<br>bir oylik narxi<br>    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}<br><br>"""
             data.append(
                 {
                     "order": i,
@@ -149,6 +160,7 @@ def order_not_accepted(request):
 
 
 def order_accept(request,pk):
+    print("xxxxxxxx")
     order = Busket.objects.get(pk=pk)
     order.status = 3
     operator = Operators.objects.get(user=request.user)
@@ -156,6 +168,10 @@ def order_accept(request,pk):
     operator.is_have = False
     order.save()
     operator.save()
+    requests.get(f"http://localhost:6002/order_updated", json={
+            'order': order.id,
+            'status': 3
+        })
     return redirect('orders_list')
 
 
@@ -167,6 +183,10 @@ def order_not_accept(request, pk):
     operator.is_have = False
     order.save()
     operator.save()
+    requests.get(f"http://localhost:6002/order_updated", json={
+            'order': order.id,
+            'status': 4
+        })
     return redirect('orders_list')
 
 
@@ -181,7 +201,14 @@ def reject_order(request, pk):
     order.status = 2
     order.actioner = Operators.objects.filter(user=request.user).first()
     order.save()
-    requests.get(f"http://localhost:8002/act", json={
+    try:
+        requests.get(f"http://localhost:8002/act", json={
             'order': pk
+        })
+    except:
+        pass
+    requests.get(f"http://localhost:6002/order_updated", json={
+            'order': order.id,
+            'status': 2
         })
     return redirect('orders_list')

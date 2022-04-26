@@ -15,16 +15,16 @@ class myOrders:
             context.user_data['my_orders_page'] = 0
             orders = db.get_orders()
             if orders:
-                order: Busket = orders.first()
+                order: Busket = orders[0]
                 # if not order.is_ordered:
                 #     update.message.reply_text("Sizning buyurtmalarimiz yo'q")
                 #     return MENU
                 text = ""
                 product: BusketItem
                 for product in order.products:
-                    text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\numumiy narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
+                    text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\nbir oylik narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
                 controls = []
-                if orders.count() > 1:
+                if len(orders) > 1:
                     controls.append(
                         [
                         InlineKeyboardButton("➡️", callback_data=f"my_orders:{1}")
@@ -57,8 +57,7 @@ class myOrders:
                         InlineKeyboardButton("⬅️", callback_data=f"my_orders:{index -1}")
                         
                     )
-                print(index, orders.count())
-                if index < orders.count() - 1:
+                if index < len(orders) - 1:
                     cont.append(
                         
                         InlineKeyboardButton("➡️", callback_data=f"my_orders:{index + 1}")
