@@ -53,8 +53,8 @@ def home(request):
 
 }
 
-    for i,j in data.items():
-        Text.objects.create(name=i,data=j,language_id=1)
+    # for i,j in data.items():
+    #     Text.objects.create(name=i,data=j,language_id=1)
     ctx = {"home":"active"}
     return render(request, 'dashboard/index.html',ctx)
 
