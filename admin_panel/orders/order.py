@@ -155,7 +155,7 @@ def order_not_accepted(request):
                     "items": text
                 })
 
-        ctx = {"orders": data, "order_active": "active"}
+    ctx = {"orders": data, "order_active": "active"}
     return render(request, 'dashboard/orders/reject.html', ctx)
 
 

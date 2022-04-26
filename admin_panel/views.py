@@ -3,6 +3,7 @@ from ast import operator
 from calendar import c
 from pyexpat import model
 import re
+from typing import Text
 from django.http import HttpResponse
 
 from requests import request
@@ -11,7 +12,7 @@ from admin_panel.login.decorator import dashboard_login, login_required_decorato
 from django.contrib import  messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from admin_panel.models import Fillials, Operators
+from admin_panel.models import Fillials, Operators,Text
 from django.contrib.auth.models import User as Djangouser
 # Create your views here.   
 
@@ -19,6 +20,41 @@ from django.contrib.auth.models import User as Djangouser
 
 @login_required_decorator
 def home(request):
+    data = {
+    "order":"Buyurtma berish",
+    "my_orders":"Mening buyurtmalarim",
+    "busket":"Savatcha",
+    "offers":"Telefon orqali aloqa",
+    "our_addresses":"Bizning manzillar",
+    "communications":"Aksiyalar",
+    "settings":"Sozlamalar",
+    "questions_and_adds":"Savol va takliflar",
+    "add_more":"Yana qo'shish",
+    "clearance":"Rasmiylashtirish",
+    "send_location":"Lakatsiyangizni yuboring",
+    "send_your_self_image":"Rasmingizni yuboring",
+    "send_your_password_iamge":"Pasportingizni rasmini yuboring",
+    "send_your_self_and_passport_image":"Pasportingizni ushlab turgan rasmini yiboring",
+    "is_your_number":"{number} Shu raqamingiz to'g'rimi?",
+    "yout_order_accepted":"Sizning buyurtmangiz qabul qilinde tez orada javobini aytamiz",
+    "mainMenu":"Quyidagilarni birini tanlang",
+    "send_name_and_surname":"Ism Familyangizni kiritng",
+    "send_number_register":"Telefon raqamingizni yuboring",
+    "send_number_register_button":"Yuborish",
+    "select_filial":"Filliallardan birini tanlang",
+    "successfully_registered":"Ro'yhatdan muvoffaqiyatli o'tdingiz",
+    "support":"Savol yoki shikoyatingizni yo;llashingiz mumkin",
+    "support_accepted":"Savol yoki shikoyatingiz qabul qilindi tez orada sizga javobini aytamiz",
+    "contact_with_phone":"Biz bilan bog'lanish +998999999999",
+    "settings_info":"Ismi: {_name}\nTelefon:{numher}\nTil:{lang}",
+    "change_name":"Ismni o'zgartirish",
+    "change_number":"Raqamni o'zgartirish",
+    "change_language":"Tilni o'zgartirish"
+
+}
+
+    # for i,j in data.items():
+    #     Text.objects.create(name=i,data=j,language_id=1)
     ctx = {"home":"active"}
     return render(request, 'dashboard/index.html',ctx)
 

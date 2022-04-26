@@ -677,7 +677,8 @@ class Aksiya(models.Model, Name):
 
 
 class Support(models.Model):
-    data = models.TextField()
+    data = models.TextField(blank=True)
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

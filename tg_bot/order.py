@@ -267,7 +267,7 @@ class Order:
         context.user_data['order']['self_passport_image'] = update.message.photo[-1].file_id
         db.busket.set_self_passport_image(
             update.message.photo[-1].get_file().download())
-        user.send_message(db.text('is_your_number', number=db.number), reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text('is_your_number',number=db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
                     "✅" + db.text('yes'),
