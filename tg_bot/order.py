@@ -1,6 +1,3 @@
-from math import prod
-from os import remove
-from tkinter import E
 
 from admin_panel.models import Busket, BusketItem, Category, Product
 from telegram import *
