@@ -7,7 +7,7 @@ def all_offers(request):
     ads = Aksiya.objects.order_by("-id").all()
     ctx = {
         "ads":ads,
-        "ads_active":"active"
+        "present_active":"active"
     }
     return render(request,"dashboard/offers/ads.html",ctx)
 
