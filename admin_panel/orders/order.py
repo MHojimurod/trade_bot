@@ -110,7 +110,9 @@ def order_accepted(request):
 
     print(data)
     ctx = {"orders": data, "order_active": "active"}
-    return render(request, 'dashboard/orders/accepted.html', ctx)
+    return render(
+        request, 'dashboard/orders/accepted.html', ctx
+        )
 
 
 def order_archive(request):

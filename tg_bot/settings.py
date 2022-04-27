@@ -1,8 +1,8 @@
 from token import NUMBER
 from telegram import *
 from telegram.ext import *
-from admin_panel.models import Language, distribute
-from tg_bot.constants import SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER
+from admin_panel.models import Fillials, Language, distribute
+from tg_bot.constants import SETTINGS, SETTINGS_FILIAL, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER
 
 from tg_bot.utils import get_user
 
@@ -136,3 +136,24 @@ class Settings:
             ]
         ], True))
         return NUMBER
+    
+    def settings_change_filial(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        user.send_message(db.text("select_filial"), reply_markup=ReplyKeyboardMarkup(distribute([
+            f.name(context.user_data['register']['language']) for f in Fillials.objects.filter(active=True)
+        ], 2)), parse_mode="HTML")
+        return SETTINGS_FILIAL
+    
+    def settings_change_filial_change(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        filial = Fillials.objects.filter(name=update.message.text).first()
+        if filial:
+            db.filial = filial
+            db.save()
+            user.send_message(db.text("filial_changed"), reply_markup=ReplyKeyboardMarkup(db.settings, True), parse_mode="HTML")
+            self.settings(update, context)
+            return SETTINGS
+        else:
+            user.send_message(db.text("filial_not_found"), reply_markup=ReplyKeyboardMarkup(db.settings, True), parse_mode="HTML")
+            self.settings_change_filial(update, context)
+            return SETTINGS_FILIAL

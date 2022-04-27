@@ -101,16 +101,21 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         self.back_to_category_from_category, pattern="^back_to_category_from_category"),
                 ],
                 CART_ORDER_LOCATION: [
-                    MessageHandler(Filters.location, self.cart_order_location)
+                    MessageHandler(Filters.location, self.cart_order_location),
+                    MessageHandler(Filters.regex("^(O'tkazib yuborish)$"), self.skip_location),
+                    MessageHandler(Filters.text, self.error_location)
                 ],
                 CART_ORDER_SELF_IMAGE:[
-                    MessageHandler(Filters.photo, self.cart_order_self_image)
+                    MessageHandler(Filters.photo, self.cart_order_self_image),
+                    MessageHandler(Filters.text, self.error_self_image)
                 ],
                 CART_ORDER_PASSPORT_IMAGE: [
-                    MessageHandler(Filters.photo, self.cart_order_passport_image)
+                    MessageHandler(Filters.photo, self.cart_order_passport_image),
+                    MessageHandler(Filters.text, self.error_passport_image)
                 ],
                 CART_ORDER_SELF_PASSWORD_IMAGE: [
-                    MessageHandler(Filters.photo, self.cart_order_self_password_image)
+                    MessageHandler(Filters.photo, self.cart_order_self_password_image),
+                    MessageHandler(Filters.text, self.error_self_passport_image)
                 ],
                 CART_ORDER_CHECK_NUMBER: [
                     MessageHandler(
@@ -118,12 +123,15 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     )
                 ],
                 GET_NUMBER_FOR_ORDER: [
-                    MessageHandler(Filters.text, self.get_number_for_order)
+                    MessageHandler(Filters.regex(
+                        "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
+                        "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.get_number_for_order),
                 ],
                 SETTINGS: [
                     MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
                     MessageHandler(Filters.regex("^(Tilni o'zgartirish)$"), self.settings_language),
                     MessageHandler(Filters.regex("^(Raqamni o'zgartirish)$"), self.settings_number),
+                    MessageHandler(Filters.regex("^(Filialni o'zgartirish)$"), self.settings_change_filial),
                     MessageHandler(Filters.regex("^Ortga$"), self.back_to_menu)
                 ],
                 SETTINGS_NAME: [

@@ -297,6 +297,7 @@ class User(models.Model):
             ],
             [
                 self.text('change_language'),
+                self.text('change_filial')
             ],
             [
                 self.text('back')

@@ -1,4 +1,5 @@
 
+from re import L
 from admin_panel.models import Busket, BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
@@ -220,6 +221,9 @@ class Order:
                     [
                         KeyboardButton(
                             "Send location", request_location=True)
+                    ],
+                    [
+                        KeyboardButton("Skip location")
                     ]
                 ],
                 resize_keyboard=True
@@ -237,6 +241,31 @@ class Order:
         context.user_data['temp_message'] = user.send_message(
             db.text('send_your_self_image'), parse_mode="HTML")
         return CART_ORDER_SELF_IMAGE
+    
+    def skip_location(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+
+        context.user_data['order']['location'] = None
+
+        context.user_data['temp_message'] = user.send_message(
+            db.text('send_your_self_image'), parse_mode="HTML")
+        return CART_ORDER_SELF_IMAGE
+    
+    def error_location(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        update.message.delete()
+        user.send_message("Iltimos joylashuvingizni yuboring yoki pastdagi o'tkazib yuborish tugmasini bosing!", reply_markup=ReplyKeyboardMarkup(
+                [
+                    [
+                        KeyboardButton(
+                            "Send location", request_location=True)
+                    ],
+                    [
+                        KeyboardButton("Skip location")
+                    ]
+                ],
+                resize_keyboard=True
+            ))
 
     @remove_temp_message
     def cart_order_self_image(self, update:Update, context: CallbackContext):
@@ -298,3 +327,24 @@ class Order:
         user.send_message(db.text('yout_order_accepted'),
                           reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         return self.back_to_menu(update, context)
+    
+    def error_self_image(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        update.message.delete()
+        user.send_message(
+            db.text('send_your_self_image_error'), parse_mode="HTML")
+        return CART_ORDER_SELF_IMAGE
+    
+    def error_passport_image(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        update.message.delete()
+        user.send_message(
+            db.text('send_your_passport_image_error'), parse_mode="HTML")
+        return CART_ORDER_PASSPORT_IMAGE
+        
+    def error_self_passport_image(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        update.message.delete()
+        user.send_message(
+            db.text('send_your_self_password_image_error'), parse_mode="HTML")
+        return CART_ORDER_SELF_PASSWORD_IMAGE
