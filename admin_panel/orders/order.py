@@ -65,7 +65,7 @@ def update_order_status(request,pk,status):
         order.save()
         return redirect("")
     else:
-        messages.error("Kechirasiz siz Operator emassiz")
+        messages.error(request,"Kechirasiz siz Operator emassiz")
         return redirect("orders_list")
 
 
