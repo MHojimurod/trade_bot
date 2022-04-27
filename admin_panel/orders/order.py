@@ -1,6 +1,7 @@
 import requests
 from admin_panel.models import Busket, BusketItem, Operators
 from django.shortcuts import redirect, render
+from django.contrib import messages
 def orders_list(request):
     if not request.user.is_superuser:
         operator = Operators.objects.get(user=request.user)
@@ -160,55 +161,61 @@ def order_not_accepted(request):
 
 
 def order_accept(request,pk):
-    print("xxxxxxxx")
-    order = Busket.objects.get(pk=pk)
-    order.status = 3
-    operator = Operators.objects.get(user=request.user)
-    order.actioner = operator
-    operator.is_have = False
-    order.save()
-    operator.save()
-    requests.get(f"http://localhost:6002/order_updated", json={
-            'order': order.id,
-            'status': 3
-        })
+    if not request.user.is_superuser:
+        order = Busket.objects.get(pk=pk)
+        order.status = 3
+        operator = Operators.objects.get(user=request.user)
+        order.actioner = operator
+        operator.is_have = False
+        order.save()
+        operator.save()
+        requests.get(f"http://localhost:6002/order_updated", json={
+                'order': order.id,
+                'status': 3
+            })
+    else:
+        messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
 
 
 def order_not_accept(request, pk):
-    order = Busket.objects.get(pk=pk)
-    order.status = 4
-    operator = Operators.objects.get(user=request.user)
-    order.actioner = operator
-    operator.is_have = False
-    order.save()
-    operator.save()
-    requests.get(f"http://localhost:6002/order_updated", json={
-            'order': order.id,
-            'status': 4
-        })
+    if not request.user.is_superuser:
+        order = Busket.objects.get(pk=pk)
+        order.status = 4
+        operator = Operators.objects.get(user=request.user)
+        order.actioner = operator
+        operator.is_have = False
+        order.save()
+        operator.save()
+        requests.get(f"http://localhost:6002/order_updated", json={
+                'order': order.id,
+                'status': 4
+            })
+    else:
+        messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
 
 
 
 
 def reject_order(request, pk):
-
-    request.user.is_have = False
-    request.user.save()
-    
-    order = Busket.objects.get(pk=pk)
-    order.status = 2
-    order.actioner = Operators.objects.filter(user=request.user).first()
-    order.save()
-    try:
-        requests.get(f"http://localhost:8002/act", json={
-            'order': pk
-        })
-    except:
-        pass
-    requests.get(f"http://localhost:6002/order_updated", json={
-            'order': order.id,
-            'status': 2
-        })
+    if not request.user.is_superuser:
+        request.user.is_have = False
+        request.user.save()
+        order = Busket.objects.get(pk=pk)
+        order.status = 2
+        order.actioner = Operators.objects.filter(user=request.user).first()
+        order.save()
+        try:
+            requests.get(f"http://localhost:8002/act", json={
+                'order': pk
+            })
+        except:
+            pass
+        requests.get(f"http://localhost:6002/order_updated", json={
+                'order': order.id,
+                'status': 2
+            })
+    else:
+        messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')

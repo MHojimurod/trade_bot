@@ -2,7 +2,7 @@
 import json
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-
+from django.contrib import messages
 from admin_panel.models import Color,Percent,Text,Language
 
 
@@ -47,13 +47,7 @@ def settings(request):
 
 
 def texts(request):
-    
-
     languages: list[Language] = Language.objects.all()
-
-
-
-
     return render(request,"dashboard/settings/text.html",{
         "languages":languages
     })
@@ -66,38 +60,40 @@ def text_update(request):
         for name, lang_val in body.items():
             for lang, val in lang_val.items():
                 Text.objects.filter(name=name,language_id=lang).update(data=val)
-    
+        messages.success(request,"Ma'lumot saqlandi")
         return HttpResponse("xxx")
 
 def colors_update(request):
-    color = request.POST.get("color")
-    percent = request.POST.get(color)
-    print(color,"color")
-    print(percent,"persent")
-    c = Color.objects.get(color=color)
+    if request.POST:
+        color = request.POST.get("color")
+        percent = request.POST.get(color)
+        print(color,"color")
+        print(percent,"persent")
+        c = Color.objects.get(color=color)
 
-    if c:
-        three, six, twelve, twentyfour = request.POST.getlist("months")
-        c.base_percent = percent
-        c.save()
-    
-        percents = {
-            "3":three,
-            "6":six,
-            "12":twelve,
-            "24":twentyfour
+        if c:
+            three, six, twelve, twentyfour = request.POST.getlist("months")
+            c.base_percent = percent
+            c.save()
+        
+            percents = {
+                "3":three,
+                "6":six,
+                "12":twelve,
+                "24":twentyfour
 
-        }
-        for month, percent in percents.items():
-            p = Percent.objects.filter(color_id=c.id,months=month).first()
-            if p:
-                p.percent = percent if percent else 0
-                p.save()
-            else:
-                p = Percent(color_id=c.id,months=month,percent=percent)
-                p.save()
-    
-    
-    
+            }
+            for month, percent in percents.items():
+                p = Percent.objects.filter(color_id=c.id,months=month).first()
+                if p:
+                    p.percent = percent if percent else 0
+                    p.save()
+                else:
+                    p = Percent(color_id=c.id,months=month,percent=percent)
+                    p.save()
+        messages.success(request,"Ma'lumot muvoffaqiyatli o'zgartirildi")
+        
+        
+        
     return redirect("settings")
     
