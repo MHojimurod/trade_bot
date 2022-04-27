@@ -17,9 +17,9 @@ def settings(request):
             color = Color.objects.filter(color="yashil").update(base_percent=data.get("green"))
         if data.get("red"):
             color = Color.objects.filter(color="qizil").update(base_percent=data.get("red"))
-    YELLOW = Color.objects.filter(color="sariq").first()
-    GREEN = Color.objects.filter(color="yashil").first()
-    RED = Color.objects.filter(color="qizil").first()
+    YELLOW = Color.objects.filter(color="Sariq").first()
+    GREEN = Color.objects.filter(color="Yashil").first()
+    RED = Color.objects.filter(color="Qizil").first()
 
     ctx = {
         "yellow":{"color":YELLOW,
@@ -72,6 +72,8 @@ def text_update(request):
 def colors_update(request):
     color = request.POST.get("color")
     percent = request.POST.get(color)
+    print(color,"color")
+    print(percent,"persent")
     c = Color.objects.get(color=color)
 
     if c:

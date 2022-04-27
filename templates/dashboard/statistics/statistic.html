@@ -1,7 +1,12 @@
-{% extends 'main/base.html' %} {% load static %} {% block style %} {% endblock %} {% block content %}
-
-<div class="content-wrapper">
-  <!-- Content -->
+{% extends 'main/base.html' %} {% load static %} 
+{% block style %} 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback">
+<link rel="stylesheet" href="/static/charts/plugins/fontawesome-free/css/all.min.css">
+<link rel="stylesheet" href="/static/charts/dist/css/adminlte.min.css">
+<style type="text/css">/* Chart.js */
+  @keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% endblock %} {% block content %}
 
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row">
@@ -69,78 +74,225 @@
           </div>
         </div>
       </div>
-
-
-
-
-
-
-
-      <!-- / Content -->
-
-      <div class="content-backdrop fade"></div>
-    </div>
-
-    <div class="row">
-      <div class="col-lg-6 col-md-12 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <canvas id="myChart" width="400" height="400"></canvas>
-          </div>
-        </div>
+      <div class="">
+        <canvas id="barChart"></canvas>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>ChartJS</h1>
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item active">ChartJS</li>
+                </ol>
+              </div>
+            </div>
+          </div><!-- /.container-fluid -->
+        </section>
+    
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <!-- DONUT CHART -->
+                <div class="card card-danger">
+                  <div class="card-header">
+                    <h3 class="card-title">Donut Chart</h3>
+    
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;" width="646" height="250" class="chartjs-render-monitor"></canvas>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+    
+                <!-- PIE CHART -->
+                <div class="card card-danger">
+                  <div class="card-header">
+                    <h3 class="card-title">Pie Chart</h3>
+    
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                    <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;" width="646" height="250" class="chartjs-render-monitor"></canvas>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+    
+              </div>
+              <!-- /.col (LEFT) -->
+              <div class="col-md-6">
+                <!-- LINE CHART -->
+                <!-- /.card -->
+    
+                <!-- BAR CHART -->
+                <div class="card card-success">
+                  <div class="card-header">
+                    <h3 class="card-title">Bar Chart</h3>
+    
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                      <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;" width="646" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+    
+                <!-- STACKED BAR CHART -->
+                <div class="card card-success">
+                  <div class="card-header">
+                    <h3 class="card-title">Stacked Bar Chart</h3>
+    
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                      </button>
+                      <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div class="chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                      <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;" width="646" height="250" class="chartjs-render-monitor"></canvas>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+    
+              </div>
+              <!-- /.col (RIGHT) -->
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
       </div>
-
-
-      <div class="col-lg-6 col-md-12 mb-4">
-        <div class="card">
-          <div class="card-body">
-            <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
-          </div>
-        </div>
-      </div>
-    </div>
     {% endblock %}
-  
-  
+    
+    
     {% block javascript %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/staic/charts/plugins/chart.js/Chart.min.js"></script>
     <script>
-
-      const labels = [
-        {% for operator in operators  %}'{{ operator.operator.name }}',{% endfor %}
-      ];
-    
-      let data = {
-        labels: labels,
-        datasets: [{
-          label: 'Tasdiqlangan',
-          backgroundColor: 'rgb(0, 0, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: [{% for operator in operators  %}'{{ operator.accept }}',{% endfor %}],
-        },
-        {
-          label: 'Rad etilgan',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: [{% for operator in operators  %}'{{ operator.not_accept }}',{% endfor %}],
-        }],
+      $(function () {
+        /* ChartJS
+         * -------
+         * Here we will create a few charts using ChartJS
+         */
+        //-------------
         
-      };
+        //-------------
+        //- DONUT CHART -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+        var donutData        = {
+          labels: [
+              'Chrome',
+              'IE',
+              'FireFox',
+              'Safari',
+              'Opera',
+              'Navigator',
+          ],
+          datasets: [
+            {
+              data: [700,500,400,600,300,100],
+              backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+            }
+          ]
+        }
+        var donutOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(donutChartCanvas, {
+          type: 'doughnut',
+          data: donutData,
+          options: donutOptions
+        })
     
-      const confi2g = {
-        type: 'bar',
-        data: data,
-        options: {}
-      };
-
-      
+        //-------------
+        //- PIE CHART -
+        //-------------
+        // Get context with jQuery - using jQuery's .get() method.
+        var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+        var pieData        = donutData;
+        var pieOptions     = {
+          maintainAspectRatio : false,
+          responsive : true,
+        }
+        //Create pie or douhnut chart
+        // You can switch between pie and douhnut using the method below.
+        new Chart(pieChartCanvas, {
+          type: 'pie',
+          data: pieData,
+          options: pieOptions
+        })
+    
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = $.extend(true, {}, areaChartData)
+        var temp0 = areaChartData.datasets[0]
+        var temp1 = areaChartData.datasets[1]
+        barChartData.datasets[0] = temp1
+        barChartData.datasets[1] = temp0
+    
+        var barChartOptions = {
+          responsive              : true,
+          maintainAspectRatio     : false,
+          datasetFill             : false
+        }
+    
+        new Chart(barChartCanvas, {
+          type: 'bar',
+          data: barChartData,
+          options: barChartOptions
+        })
+    
+        
+      })
     </script>
-    <script>
-      const myChart = new Chart(
-        document.getElementById('myChart'),
-        confi2g
-      );
-    </script>
-     
-
     {% endblock %}
+  
+  
