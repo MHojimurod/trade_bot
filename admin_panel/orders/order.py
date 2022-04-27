@@ -24,44 +24,49 @@ def orders_list(request):
 
  
 def update_order_status(request,pk,status):
-    order = Busket.objects.get(pk=pk)
-    print(request.user)
-    operator = Operators.objects.get(user=request.user)
-    try:
-        requests.get(f"http://localhost:8002/act", json={
-            'order': order.id
-        })
-    except:
-        pass
-    if status == 1:
-        order.status = 1
-        order.actioner = operator
-        operator.is_have = True
-        operator.save()
-        
-        order.save()
-        requests.get(f"http://localhost:6002/order_updated", json={
-            'order': order.id,
-            'status': 1
-        })
-        return redirect('one_order',pk)
-    if status == 2:
-        if request.POST:
-            commet = request.POST.get('commet')
-            order.comment = commet
-            order.status = 2
+    if not request.user.is_superuser:
+        order = Busket.objects.get(pk=pk)
+        print(request.user)
+        operator = Operators.objects.get(user=request.user)
+        try:
+            requests.get(f"http://localhost:8002/act", json={
+                'order': order.id
+            })
+        except:
+            pass
+        if status == 1:
+            order.status = 1
+            order.actioner = operator
+            operator.is_have = True
+            operator.save()
+            
             order.save()
             requests.get(f"http://localhost:6002/order_updated", json={
-            'order': order.id,
-            'status': 2
+                'order': order.id,
+                'status': 1
             })
-            return redirect("order_list")
-    if status == 3:
-        order.status = 3
-    
+            return redirect('one_order',pk)
+        if status == 2:
+            if request.POST:
+                commet = request.POST.get('commet')
+                order.comment = commet
+                order.status = 2
+                order.save()
+                requests.get(f"http://localhost:6002/order_updated", json={
+                'order': order.id,
+                'status': 2
+                })
+                messages.warning(request,"Buyurtma Rad etildi")
+                return redirect("order_list")
+        if status == 3:
+            order.status = 3
+        
 
-    order.save()
-    return redirect("")
+        order.save()
+        return redirect("")
+    else:
+        messages.error("Kechirasiz siz Operator emassiz")
+        return redirect("orders_list")
 
 
 def one_order(request,pk):
