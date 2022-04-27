@@ -674,7 +674,7 @@ class Aksiya(models.Model, Name):
         return res
     @property
     def file(self):
-        return open(f".{self.media.url}", 'rb')
+        return open(f"{self.media.url}", 'rb')
 
 
 class Support(models.Model):
