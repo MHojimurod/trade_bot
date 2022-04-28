@@ -60,7 +60,7 @@ class Basehandlers():
     def name(self, update:Update, context:CallbackContext):
         user,db = get_user(update)
         name = update.message.text
-        lang = context.user_data['register']['language']
+        lang:Language = context.user_data['register']['language']
         if len(name.split()) >= 2:
             context.user_data['register']['name'] = name
             context.user_data['temp_message'] = user.send_message( lang._("send_number_register"), reply_markup=ReplyKeyboardMarkup(
@@ -73,7 +73,7 @@ class Basehandlers():
             return NUMBER
         else:
             context.user_data['temp_message'] = user.send_message(
-                "Iltimos ismingizni va familyangizni kiriting!", parse_mode="HTML")
+                lang._("name_error"), parse_mode="HTML")
             return NAME
 
     @remove_temp_message
@@ -87,8 +87,6 @@ class Basehandlers():
             f.name(context.user_data['register']['language']) for f in filials
         ], 2)), parse_mode="HTML")
 
-        # context.user_data['temp_message'] = user.send_message(
-        #                   "Siz muvoffaqiyatli ro'yxatdan o'tdingiz!", reply_markup=ReplyKeyboardMarkup(new_user.menu()))
         return FILIAL
     
     def filial(self, update:Update, context: CallbackContext):
@@ -104,7 +102,7 @@ class Basehandlers():
                               reply_markup=ReplyKeyboardMarkup(new_user.menu()), parse_mode="HTML")
         else:
             filials: list[Fillials] = Fillials.objects.filter(active=True)
-            user.send_message("Kechirasiz filial topilmadi!", reply_markup=ReplyKeyboardMarkup(distribute([
+            user.send_message(lang._("filial_not_found"), reply_markup=ReplyKeyboardMarkup(distribute([
                 f.name(context.user_data['register']['language']) for f in filials
             ], 2)), parse_mode="HTML")
             return FILIAL
@@ -116,14 +114,14 @@ class Basehandlers():
     
     def our_addresses(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        text = "Bizning manzillarimiz\n"
+        text = f"{db.text('our_addresses')}\n"
         keyboard = []
         address: Fillials
         for address in Fillials.objects.all():
             keyboard.append(address.name(db.language))
                 
         
-        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [ "🔙" +db.text("Orqaga")]
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [ "🔙" +db.text("back")]
                                                                        ]), parse_mode="HTML")
         return OUR_ADDRESSES
     
@@ -142,7 +140,7 @@ class Basehandlers():
             address: Fillials
             for address in Fillials.objects.all():
                 keyboard.append(address.name(db.language))
-            user.send_message(text="Kechirasiz manzil topilmadi!", reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), [db.text("Orqaga")]
+            user.send_message(text=db.text("address_not_found"), reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), [db.text("Orqaga")]
                                                                                                      ]), parse_mode="HTML")
             return OUR_ADDRESSES
 
@@ -152,7 +150,7 @@ class Basehandlers():
         user.send_message(db.text('support'),
                           reply_markup=ReplyKeyboardMarkup([
                               [
-                                 db.text("Orqaga")
+                                 db.text("back")
                               ]
                           ]), parse_mode="HTML")
         return SUPPORT
@@ -167,8 +165,8 @@ class Basehandlers():
     def aksiya(self, update: Update,context: CallbackContext):
         user, db = get_user(update)
 
-        context.user_data['temp_message'] = user.send_message("Aksiyalar", reply_markup=ReplyKeyboardMarkup(
-            [*distribute(Aksiya.keyboard(db.language), 2), [db.text("Orqaga")]]), parse_mode="HTML")
+        context.user_data['temp_message'] = user.send_message(db.text('offers'), reply_markup=ReplyKeyboardMarkup(
+            [*distribute(Aksiya.keyboard(db.language), 2), [db.text("back")]]), parse_mode="HTML")
         return AKSIYA
 
     @remove_temp_message
@@ -182,16 +180,16 @@ class Basehandlers():
         if aksiya:
             if aksiya.mode == 0:
                 context.user_data['temp_message'] = user.send_message(aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                    [[InlineKeyboardButton(db.text("back"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
             elif aksiya.mode == 1:
                 context.user_data['temp_message'] = user.send_photo(photo=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                    [[InlineKeyboardButton(db.text("back"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
                 
             elif aksiya.mode == 2:
                 context.user_data['temp_message'] = user.send_video(video=aksiya.file, caption=aksiya.caption, reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]))
+                    [[InlineKeyboardButton(db.text("back"), callback_data="back_to_aksiyas")]]))
         else:
             context.user_data['temp_message'] = user.send_message("Kechirasiz aksiya topilmadi!", reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(db.text("Orqaga"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
+                [[InlineKeyboardButton(db.text("back"), callback_data="back_to_aksiyas")]]), parse_mode="HTML")
             return AKSIYA
 
