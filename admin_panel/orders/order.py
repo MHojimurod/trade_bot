@@ -1,5 +1,5 @@
 import requests
-from admin_panel.models import Busket, BusketItem, Operators, money
+from admin_panel.models import Busket, BusketItem, Fillials, Operators, money
 from django.shortcuts import redirect, render
 from django.contrib import messages
 
@@ -27,6 +27,9 @@ def products_text(orders):
 
 
 def orders_list(request):
+    fillials = Fillials.objects.all()
+    orders = ""
+    fillial = ""
     if not request.user.is_superuser:
         operator = Operators.objects.get(user=request.user)
         if operator.is_have:
@@ -35,8 +38,15 @@ def orders_list(request):
             
     orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = products_text(orders)
-    
-    ctx = {"orders": data,"order_active":"active","list_active":"active","menu_open":"open"}
+    if request.POST:
+        pk=request.POST.get("action")
+        if pk!= "all":
+            fillial = Fillials.objects.get(pk=pk)
+            orders = Busket.objects.filter(bis_ordered=True,status=0,user__filial_id=pk)
+        else:
+            orders = Busket.objects.filter(bis_ordered=True,status=0)
+        data = products_text(orders)
+    ctx = {"orders": data,"order_active":"active","list_active":"active","menu_open":"open","fillials":fillials,"fillial":fillial}
     return render(request, 'dashboard/orders/list.html', ctx)
 
  

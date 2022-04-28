@@ -127,6 +127,7 @@ class Operators(models.Model):
         ("settings","Bot Sozlamalari"),
         ("text","Textlar"),
         ("followers","Foydalanuvchilar"),
+        ("comments","Kommentariyalar"),
     )
     
     id: int
@@ -679,7 +680,7 @@ class Aksiya(models.Model, Name):
 
 class Support(models.Model):
     data = models.TextField(blank=True)
-
+    status = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

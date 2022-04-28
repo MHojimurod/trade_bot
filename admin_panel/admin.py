@@ -2,7 +2,7 @@ from typing import Text
 from django.contrib import admin
 
 # Register your models here.
-from admin_panel.models import Aksiya, Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent, Text,Ads
+from admin_panel.models import Aksiya, Operators, Fillials, BotSettings,Product,Color,Category, Busket, BusketItem,Percent, Text,Ads,Support
 
 
 admin.site.register(BotSettings)
@@ -33,4 +33,5 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(Aksiya)
 admin.site.register(Ads)
+admin.site.register(Support)
 

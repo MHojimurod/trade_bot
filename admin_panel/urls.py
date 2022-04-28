@@ -6,7 +6,7 @@ from admin_panel.sub_category.sub_categories import create_sub_category, delete_
 from admin_panel.views import account, home,list_operators,create_operator,edit_operator,delete_operator,error_message
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
 from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
-from admin_panel.clients.all_clients import clients_list,send_telegram
+from admin_panel.clients.all_clients import clients_list, comments_list,send_telegram
 from admin_panel.orders.order import order_accept, order_accepted, order_archive, order_not_accept, order_not_accepted, orders_list, update_order_status, one_order, reject_order
 from admin_panel.statistics.statistika import all_statistika
 from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
@@ -54,6 +54,7 @@ urlpatterns = [
 
     #clients
     path('clients/list',clients_list,name="clients_list"),
+    path('comments/list',comments_list,name="comments_list"),
     path('clients/send_msg/<int:pk>',send_telegram,name="send_telegram"),
 
 

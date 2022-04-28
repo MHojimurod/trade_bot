@@ -31,6 +31,7 @@ class ProductForm(forms.ModelForm):
         }
 
 
+
 class OperatorForm(forms.ModelForm):
     name = forms.CharField(max_length=100)
     surname = forms.CharField(max_length=100)
@@ -40,6 +41,10 @@ class OperatorForm(forms.ModelForm):
         model = Operators
         fields = ["name","surname","username","password","phone","active","pers"]   
 
+class OperatorEditForm(forms.ModelForm):
+    class Meta:
+        model = Operators
+        fields = ["name","surname","phone","active","pers"]   
 
 
 class AdsForm(forms.ModelForm):

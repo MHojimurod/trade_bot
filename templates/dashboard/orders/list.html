@@ -13,7 +13,25 @@
       </ol>
     </nav>
     <div class="card">
-      <!-- <a class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a> -->
+      <form method="post">
+        {% csrf_token %}
+      <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
+        <div>
+          <button  type="button" class="btn-sm btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+           {% if fillial %} {{fillial.name_uz}} {% else %} Barchasi{% endif %}
+          </button>
+          <ul class="dropdown-menu">
+            <li><button type="submit" name="action" value="all" class="dropdown-item">Barchasi</button></li>
+            <!-- <li><input type="hidden" name="active" value="active"><button type="submit" class="dropdown-item">Faol</button></li>
+            <li><input type="hidden" name="not_active" value="not_active"><button type="submit" class="dropdown-item">Faol emas</button></li>
+            <li><input type="hidden" name="delete" value="delete"><button type="submit" class="dropdown-item">O'chirish</button></li> -->
+              {% for i in fillials %}
+            <li><button type="submit" name="action" value="{{i.id}}" class="dropdown-item">{{i.name_uz}}</button></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </form>
       <div class="table-responsive text-nowrap">
         <table class="table mt-3">
           <thead>

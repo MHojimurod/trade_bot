@@ -130,6 +130,16 @@
         <div data-i18n="Analytics">Foydalanuvchilar</div>
       </a>
     </li>
+    <li class="menu-item {{comment_active}}">
+      {% if 'comments' in access_types or user.is_superuser %}
+      <a href="{% url 'comments_list' %}" class="menu-link">
+        {% else %}
+      <a href="{% url 'error_message' %}" class="menu-link">
+        {% endif %}
+        <i class='bx bx-message-rounded-dots tf-icons menu-icon'></i>
+        <div data-i18n="Analytics">Kommentariyalar</div>
+      </a>
+    </li>
 
     <!-- Layouts -->
     <li class="menu-item {{settings_active}} {{menu1_open}}">
