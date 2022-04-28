@@ -21,7 +21,7 @@ def all_statistika(request):
             "not_accept":Busket.objects.filter(actioner=i,status=4).count(),
             "archive":Busket.objects.filter(actioner=i,status=5).count(),
         })
-    print(DATA)
+    
 
     ctx = {
         "statistics_active": "active",

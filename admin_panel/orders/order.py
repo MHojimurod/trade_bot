@@ -1,7 +1,31 @@
 import requests
-from admin_panel.models import Busket, BusketItem, Operators
+from admin_panel.models import Busket, BusketItem, Operators, money
 from django.shortcuts import redirect, render
 from django.contrib import messages
+
+
+def products_text(orders):
+    data = []
+    for i in orders:
+        text = ""
+        total = 0
+        to_month = 0
+        for j in BusketItem.objects.filter(busket=i):
+            total_price = j.product.price(j.month) * j.count
+            text+= f"<b>{j.product.name_uz}</b><br>      {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm<br>"
+            total+= total_price
+            to_month += total_price//j.month.months
+        text+= f"<b>Bir oylik to'lov:</b> {money(to_month)} so'm<br>"
+        text+= f"<b>Umumiy narx:</b>{ money(total)} so'm<br>"
+        
+        data.append(
+            {
+                "order":i,
+                "items":text
+        })
+    return data
+
+
 def orders_list(request):
     if not request.user.is_superuser:
         operator = Operators.objects.get(user=request.user)
@@ -10,16 +34,9 @@ def orders_list(request):
             return redirect('one_order',order.id)
             
     orders = Busket.objects.filter(bis_ordered=True,status=0)
-    data = []
-    for i in orders:
-        data.append(
-            {
-                "order":i,
-                "items":BusketItem.objects.filter(busket=i)
-        })
-
-    print(data)
-    ctx = {"orders": data,"order_active":"active"}
+    data = products_text(orders)
+    
+    ctx = {"orders": data,"order_active":"active","list_active":"active","menu_open":"open"}
     return render(request, 'dashboard/orders/list.html', ctx)
 
  
@@ -86,56 +103,30 @@ def one_order(request,pk):
 
 
 def order_accepted(request):
-    data = []
+    data = ""
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status=3)
-        for i in orders:
-            data.append(
-                {
-                    "order": i,
-                    "items": BusketItem.objects.filter(busket=i)
-                })
+        data = products_text(orders)
     else:
         orders = Busket.objects.filter(bis_ordered=True, status=3,actioner=Operators.objects.get(user=request.user))
-        for i in orders:
-            text = ""
-            for j in BusketItem.objects.filter(busket=i):
-                text+= f"""<b>{j.product.name_uz}</b><br>    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}<br>bir oylik narxi<br>    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}<br><br>"""
-            data.append(
-                {
-                    "order": i,
-                    "items":text
-                })
+        data = products_text(orders)
 
 
-    print(data)
-    ctx = {"orders": data, "order_active": "active"}
-    return render(
-        request, 'dashboard/orders/accepted.html', ctx
-        )
+    
+    ctx = {"orders": data, "order_active": "active","accept_active":"active","menu_open":"open"}
+    return render(request, 'dashboard/orders/accepted.html', ctx)
 
 
 def order_archive(request):
-    data = []
+    data = ""
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5])
-        for i in orders:
-            data.append(
-                {
-                    "order": i,
-                    "items": BusketItem.objects.filter(busket=i)
-                })
+        data = products_text(orders)
     else:
         orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5],actioner=Operators.objects.get(user=request.user))
-        for i in orders:
-            data.append(
-                {
-                    "order": i,
-                    "items": BusketItem.objects.filter(busket=i)
-                })
-        
+        data = products_text(orders)
 
-    ctx = {"orders": data, "order_active": "active"}
+    ctx = {"orders": data, "order_active": "active","archive_active":"active","menu_open":"open"}
     return render(request, 'dashboard/orders/archive.html', ctx)
 
 
@@ -143,27 +134,11 @@ def order_not_accepted(request):
     data = []
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status=4)
-        for i in orders:
-            data.append(
-                {
-                    "order": i,
-                    "items": BusketItem.objects.filter(busket=i)
-                })
+        data = products_text(orders)
     else:
         orders = Busket.objects.filter(bis_ordered=True, status=4,actioner=Operators.objects.get(user=request.user))
-        for i in orders:
-            text = ""
-            for j in BusketItem.objects.filter(busket=i):
-                text+= f"""<b>{j.product.name_uz}</b>\n    • {j.product.price(j.month) // j.month.months} x {j.month.months} = {j.product.price(j.month)}\numumiy narxi\n    • {j.product.price(j.month) // j.month.months} x {j.count} = {j.product.price(j.month) //  j.month.months * j.count}\n\n"""
-
-
-            data.append(
-                {
-                    "order": i,
-                    "items": text
-                })
-
-    ctx = {"orders": data, "order_active": "active"}
+        data = products_text(orders)
+    ctx = {"orders": data, "order_active": "active","not_accept_active":"active","menu_open":"open"}
     return render(request, 'dashboard/orders/reject.html', ctx)
 
 
