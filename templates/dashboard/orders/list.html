@@ -21,6 +21,7 @@
               <th>Buyurtma raqami</th>
               <th>Haridor</th>
               <th>Telefon</th>
+              <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
@@ -41,17 +42,31 @@
                 <a href="tel:{{i.order.user.number}}">{{i.order.user.number}}</a>
               </td>
               <td>
-                <button onclick="Products()" >Maxsulotlar</button>
-                <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
+                {{i.order.user.filial}}
               </td>
               <td>
-                <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-xs" >Qabul qilish</a>
+                <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >Maxsulotlar</button>
               </td>
               <td>
-                <button class="btn btn-danger btn-xs" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
+                <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
+              </td>
+              <td>
+                <button class="btn btn-danger btn-sm" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
               </td>
               
             </tr> 
+            <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
+              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+                <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div>  
+                <div class="card-body">
+                  
+                  <p class="card-text">{{i.items|safe}}</p>
+                  <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
+                  <button onclick="Reject( {{ i.order.id }} )" class="btn btn-danger btn-sm">Rad etish</button>
+                </div>
+              
+              </div>
+            </div>
             {% endfor %}                      
           </tbody>
           <tfoot>
@@ -59,6 +74,7 @@
               <th>Buyurtma raqami</th>
               <th>Haridor</th>
               <th>Telefon</th>
+              <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
@@ -70,16 +86,8 @@
     <div class="content-backdrop fade"></div>
   </div>
 </div>
-<div id="card" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
-  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
-    </div>
-  
-  </div>
-</div>
+
+
 
 
 
@@ -106,10 +114,16 @@
 
 <script>
   function Products(product) {
-    document.getElementById("card").style.display = "block";
+    document.getElementById("card_"+String(product)).style.display = "block";
   }
+  function Remove(product) {
+    document.getElementById("card_"+String(product)).style.display = "none";
+
+  }
+    
 
   function Reject(id) {
+    console.log(id);
 
     document.getElementById("reject").dataset['product'] = id;
     document.getElementById("reject_order").onclick = async (e) => {

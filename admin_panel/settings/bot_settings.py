@@ -22,6 +22,7 @@ def settings(request):
     RED = Color.objects.filter(color="Qizil").first()
 
     ctx = {
+        "settings_active":"active","bot_active":"active","menu1_open":"open",
         "yellow":{"color":YELLOW,
                 "3":Percent.objects.filter(color_id=YELLOW.id,months=3).first(),
                 "6":Percent.objects.filter(color_id=YELLOW.id,months=6).first(),
@@ -49,7 +50,7 @@ def settings(request):
 def texts(request):
     languages: list[Language] = Language.objects.all()
     return render(request,"dashboard/settings/text.html",{
-        "languages":languages
+        "languages":languages,"settings_active":"active","text_active":"active","menu1_open":"open"
     })
 
 
