@@ -1,19 +1,22 @@
-from email.message import EmailMessage
 import time
 
 from flask import Flask, jsonify, request
 from telegram import Update
 from admin_panel.models import Ads, Busket, User
+from tg_bot.filters import MultilanguageMessageHandler
 
 from tg_bot.myorders import myOrders
-from tg_bot.utils import remove_temp_message
 from .settings import Settings
-from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, RegexHandler, CallbackQueryHandler, CallbackContext
+from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from .constants import (
     ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
+
+
+
+
 
 class Bot(Updater, Basehandlers, Order, Settings, myOrders):
     def __init__(self,*args, **kwargs):
@@ -45,23 +48,34 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(Filters.text & not_start, self.filial)
                 ],
                 MENU: [
-                    MessageHandler(
-                        Filters.regex(
-                            ("^(" "Buyurtma berish" "|" "Заказать" "|" "Order" "|" "order" ")$")), self.order
-                        ),
-                    MessageHandler(
-                        Filters.regex(
-                            ("^(" "Mening buyurtmalarim" "|" "Мои заказы" "|" "My orders" "|" "order" ")$")), self.my_orders
+                    MultilanguageMessageHandler(
+                        "order", self.order
                     ),
-                    MessageHandler(Filters.regex(
-                        "^Savatcha|Корзина$"), self.cart),
-                    MessageHandler(Filters.regex("^Telefon orqali aloqa$"), self.contact_with_phone),
-                    MessageHandler(Filters.regex(
-                        "^(Sozlamalar|Настройки)$"), self.settings),
-                    MessageHandler(Filters.regex(
-                        "^Bizning manzillar$"), self.our_addresses),
-                        MessageHandler(Filters.regex("^(Savol va takliflar)$"), self.support),
-                    MessageHandler(Filters.regex("^Aksiyalar$"),self.aksiya)
+                    MultilanguageMessageHandler(
+                        "my_orders", self.my_orders
+                    ),
+                    MultilanguageMessageHandler(
+                        "busket", self.cart
+                    ),
+
+                    
+                    MultilanguageMessageHandler(
+                        "communications", self.contact_with_phone
+                    ),
+                    MultilanguageMessageHandler(
+                        "settigs", self.settings
+                    ),
+
+                    MultilanguageMessageHandler(
+                        "our_addresses", self.our_addresses
+                    ),
+
+                    MultilanguageMessageHandler(
+                        "questions_and_adds", self.support
+                    ),
+                    MultilanguageMessageHandler(
+                        "offers", self.aksiya
+                    ),
                 ],
                 ORDER: [
                     CallbackQueryHandler(
@@ -83,7 +97,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         self.add_to_cart, pattern="add_to_cart"),
                     CallbackQueryHandler(
                         self.cart, pattern="^cart"),
-                 ],
+                ],
                 CART: [
                     # controls counts
                     CallbackQueryHandler(
@@ -102,7 +116,9 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 ],
                 CART_ORDER_LOCATION: [
                     MessageHandler(Filters.location, self.cart_order_location),
-                    MessageHandler(Filters.regex("^(O'tkazib yuborish)$"), self.skip_location),
+                    MultilanguageMessageHandler(
+                        "skip_location", self.skip_location
+                    ),
                     MessageHandler(Filters.text, self.error_location)
                 ],
                 CART_ORDER_SELF_IMAGE:[
@@ -128,11 +144,25 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.get_number_for_order),
                 ],
                 SETTINGS: [
-                    MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
-                    MessageHandler(Filters.regex("^(Tilni o'zgartirish)$"), self.settings_language),
-                    MessageHandler(Filters.regex("^(Raqamni o'zgartirish)$"), self.settings_number),
-                    MessageHandler(Filters.regex("^(Filialni o'zgartirish)$"), self.settings_change_filial),
-                    MessageHandler(Filters.regex("^Ortga$"), self.back_to_menu)
+                    # MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
+                    MultilanguageMessageHandler(
+                        "change_name", self.settings_name
+                    ),
+                    # MessageHandler(Filters.regex("^(Tilni o'zgartirish)$"), self.settings_language),
+                    MultilanguageMessageHandler(
+                        "change_language", self.settings_language
+                    ),
+                    # MessageHandler(Filters.regex("^(Raqamni o'zgartirish)$"), self.settings_number),
+                    MultilanguageMessageHandler(
+                        "change_number", self.settings_number
+                    ),
+                    # MessageHandler(Filters.regex("^(Filialni o'zgartirish)$"), self.settings_change_filial),
+                    MultilanguageMessageHandler(
+                        "change_filial", self.settings_change_filial
+                    ),
+                    MultilanguageMessageHandler(
+                        "back", self.settings_name
+                    ),
                 ],
                 SETTINGS_NAME: [
                     MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_name_change),
@@ -158,10 +188,10 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 SUPPORT: [
                     MessageHandler(Filters.text, self.support_message)
                 ],
-                AKSIYA: [
-                    MessageHandler(Filters.text & not_start & ~Filters.regex("^(Orqaga)"), self.aksiya_select),
-                    CallbackQueryHandler(
+                AKSIYA: [CallbackQueryHandler(
                         self.aksiya, pattern="^back_to_aksiyas"),
+                    MessageHandler(Filters.text & not_start, self.aksiya_select),
+                    
                 ],
                 MY_ORDERS: [
                     CallbackQueryHandler(self.my_orders, pattern="my_orders")
@@ -203,7 +233,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
             elif status == 4:
                 self.bot.send_message(order.user.chat_id, order.user.text("order_not_accepted",cause=order.comment)  )
         return "ok"
-  
+
     def send_ads(self):
         data = request.get_json()['data']
         ad = data['id']

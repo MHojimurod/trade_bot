@@ -1,6 +1,4 @@
-
-from re import L
-from admin_panel.models import Busket, BusketItem, Category, Product
+from admin_panel.models import BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
 from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, MENU, ORDER
@@ -109,7 +107,7 @@ class Order:
 
             db.busket.add(product['product'], product['count'], product['month'])
             context.user_data['order']['current_product'] = None
-            update.callback_query.answer("Mahsulot savatga qo'shildi!",True)
+            update.callback_query.answer(db.text("product_added_to_busket"),True)
             update.callback_query.message.delete()
             user.send_message(
                 **db.category_list(1,  None, context, user=db), parse_mode="HTML")
@@ -132,7 +130,7 @@ class Order:
                 user.send_message(
                     **db.cart(context, db, False), parse_mode="HTML")
             else:
-                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(
+                user.send_message(db.text("cart_empty"), reply_markup=ReplyKeyboardMarkup(
                     db.menu()), parse_mode="HTML")
                 return MENU
         else:
@@ -140,7 +138,7 @@ class Order:
                 update.callback_query.message.edit_text(
                     **db.cart(context, db))
             else:
-                user.send_message("Savatcha_bo'sh", reply_markup=ReplyKeyboardMarkup(
+                user.send_message(db.text("cart_empty"), reply_markup=ReplyKeyboardMarkup(
                     db.menu()), parse_mode="HTML")
                 return MENU
         return CART
@@ -154,7 +152,7 @@ class Order:
             update.callback_query.message.edit_text(
                 **db.cart(context, db))
         else:
-            update.callback_query.answer("savatda hech nimaqomadi!", True)
+            update.callback_query.answer(db.text("nothing_in_busket"), True)
             update.callback_query.message.edit_text(
                 **db.category_list(1,  None, context, user=db))
             return ORDER
@@ -220,10 +218,10 @@ class Order:
                 [
                     [
                         KeyboardButton(
-                            "Send location", request_location=True)
+                            db.text('send_location_button'), request_location=True)
                     ],
                     [
-                        KeyboardButton("Skip location")
+                        KeyboardButton(db.text("skip_location"))
                     ]
                 ],
                 resize_keyboard=True
@@ -254,14 +252,14 @@ class Order:
     def error_location(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         update.message.delete()
-        user.send_message("Iltimos joylashuvingizni yuboring yoki pastdagi o'tkazib yuborish tugmasini bosing!", reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text('location_error'), reply_markup=ReplyKeyboardMarkup(
                 [
                     [
                         KeyboardButton(
-                            "Send location", request_location=True)
+                            db.text('send_location_button'), request_location=True)
                     ],
                     [
-                        KeyboardButton("Skip location")
+                        KeyboardButton(db.text("skip_location"))
                     ]
                 ],
                 resize_keyboard=True
@@ -309,10 +307,10 @@ class Order:
         user, db = get_user(update)
         if update.message.text.startswith("✅"):
             user.send_message(
-                db.text('yout_order_accepted'), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
+                db.text('your_order_accepted'), reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
             db.busket.order()
             user.send_message(
-                "Menu", reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
+                db.text("mainMenu"), reply_markup=ReplyKeyboardMarkup(db.menu()), parse_mode="HTML")
             return MENU
         else:
             user.send_message(
@@ -324,7 +322,7 @@ class Order:
         context.user_data['order']['number'] = update.message.text
         db.busket.set_extra_number(update.message.text)
         db.busket.order()
-        user.send_message(db.text('yout_order_accepted'),
+        user.send_message(db.text('your_order_accepted'),
                           reply_markup=ReplyKeyboardRemove(), parse_mode="HTML")
         return self.back_to_menu(update, context)
     

@@ -22,7 +22,17 @@ class myOrders:
                 text = ""
                 product: BusketItem
                 for product in order.products:
-                    text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\nbir oylik narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
+                    # text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\nbir oylik narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
+                    text += db.text("my_orders_order_text_one_line",
+                    pr_name=product.product.name(db.language),
+                    price_per_month=product.product.price(product.month) // product.month.months,
+                    months=product.month.months,
+                    price=product.product.price(product.month),
+
+                    total_price_per_month=product.product.price(product.month) // product.month.months,
+                    count=product.count,
+                    total_price=product.product.price(product.month) // product.month.months * product.count
+                    )
                 controls = []
                 if len(orders) > 1:
                     controls.append(
@@ -37,7 +47,7 @@ class myOrders:
                 update.message.reply_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(controls))
                 return MY_ORDERS
             else:
-                update.message.reply_text("Sizning buyurtmalarimiz yo'q")
+                update.message.reply_text(db.text("no_orders"))
             
 
         elif update.callback_query:
@@ -48,7 +58,19 @@ class myOrders:
                 text = ""
                 product: BusketItem
                 for product in order.products:
-                    text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\numumiy narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
+                    text += db.text("my_orders_order_text_one_line",
+                    pr_name=product.product.name(db.language),
+                    price_per_month=product.product.price(product.month) // product.month.months,
+                    months=product.month.months,
+                    price=product.product.price(product.month),
+
+                    total_price_per_month=product.product.price(product.month) // product.month.months,
+                    count=product.count,
+                    total_price=product.product.price(product.month) // product.month.months * product.count
+                    )
+                    # text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\numumiy narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
+                    # text += """<b>{pr_name}</b>\n    • {price_per_month} x {months} = {price}\numumiy narxi\n    • {total_price_per_month} x {count} = {total_price}\n\n"""
+
                 controls = []
                 cont = []
                 if index > 0:
@@ -71,4 +93,4 @@ class myOrders:
                 update.callback_query.edit_message_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(controls))
 
             else:
-                update.message.reply_text("Sizning buyurtmalarimiz yo'q")
+                update.message.reply_text(db.text("no_orders"))

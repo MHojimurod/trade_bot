@@ -1,4 +1,5 @@
 import locale
+from re import T
 from django.db import models
 from ckeditor.fields import RichTextField
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, Update
@@ -213,7 +214,7 @@ class Category(models.Model):
         'self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"cats{len(self.sub_categories())} - products {len(self.products())}"
+        return f" {self.name_uz} | cats{len(self.sub_categories())} - products {len(self.products())}"
 
     def name(self, language: Language = None) -> str:
         if language is None:
@@ -330,7 +331,7 @@ class User(models.Model):
             page - 1) * categorys_per_page:page * categorys_per_page]
 
         categorys_page_inline = []
-        text = "Katalog\n\n"
+        text = f"{self.text('categorys')}\n\n"
         for i in range(len(categorys_page)):
             category = categorys_page[i]
             # text += f"{i + 1}. {category.name(self.language)}\n"
@@ -342,7 +343,7 @@ class User(models.Model):
 
         if user.busket.is_available and parent == None:
             keyboard.append([
-                InlineKeyboardButton("🛒 Корзина", callback_data="cart")
+                InlineKeyboardButton(self.text('busket_button'), callback_data="cart")
             ])
 
         controls = []
@@ -375,7 +376,7 @@ class User(models.Model):
             page - 1) * products_per_page:page * products_per_page]
 
         products_page_inline = []
-        text = "Katalog\n\n"
+        text = f"{self.text('categorys')}\n\n"
         for i in range(len(products_page)):
             product: Product = products_page[i]
             text += f"{i + 1}. {product.name(self.language)}\n"
@@ -410,16 +411,33 @@ class User(models.Model):
         product: Product = context.user_data['order']['current_product']['product']
         product.refresh_from_db()
         text = f"<b>{product.name(user.language)}</b>\n"
+
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += f"        {money(product.price(i) // i.months)} x {i.months} oy = {money(product.price(i))}\n"
+                text += self.text(
+                'order_product_info_text',
+                per_month=money(product.price(i) // i.months),
+                month=i.months,
+                price=money(product.price(i)),
+            )
+                # text += "        {per_month} {self.text('money')} x {months} {self.text('month')} = {price} {self.text('money')}\n"
+                # text += f"        {money(product.price(i) // i.months)} {self.text('money')} x {i.months} {self.text('month')} = {money(product.price(i))} {self.text('money')}\n"
+
         else:
             month: Percent = context.user_data['order']['current_product']['month']
 
-            text += f"    {money(product.price(month) // month.months)}  x {month.months} = {money(product.price(month))}\n"
+            text += f"    {money(product.price(month) // month.months)} {self.text('money')}  x {month.months} {self.text('month')} = {money(product.price(month))} {self.text('money')}\n"
 
-            text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
 
+
+            text += self.text(
+                'order_product_info_text_selected',
+                price=money(product.price(month)),
+                count = context.user_data['order']['current_product']['count'],
+                total=money(product.price(month) * context.user_data['order']['current_product']['count']),
+            )
+            # text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
+            
 
         if context.user_data['order']['current_product']['count'] > 1:
             count_controls.append(
@@ -446,7 +464,7 @@ class User(models.Model):
 
         keyboard.append([
             InlineKeyboardButton(
-                f"{i.months} oy {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months
+                f"{i.months} {self.text('month')} {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months
         ])
         
 
@@ -483,9 +501,9 @@ class User(models.Model):
             for pr in busket.products:
                 obshiy_summa += pr.product.price(pr.month) * pr.count
                 pr_texts.append(f"""{pr.product.name(user.language)}
-        {pr.product.price(pr.month) // pr.month.months} x {pr.month.months} oy = {pr.product.price(pr.month)}
-        {pr.product.price(pr.month)} x {pr.count} = {pr.product.price(pr.month) * pr.count}
-        oyiga: {(pr.product.price(pr.month) // pr.month.months) * pr.count }""")
+        {pr.product.price(pr.month) // pr.month.months} {self.text('money')} x {pr.month.months} {self.text('month')} = {pr.product.price(pr.month)}
+        {pr.product.price(pr.month)} {self.text('money')} x {pr.count} = {pr.product.price(pr.month) * pr.count} {self.text('money')}
+        {self.text('per_month')}: {(pr.product.price(pr.month) // pr.month.months)  * pr.count } {self.text('money')}""")
                 controls = []
                 if pr.count > 1:
                     controls.append(
@@ -512,9 +530,9 @@ class User(models.Model):
 
             ])
             text += "\n———————————————-\n".join(pr_texts)
-            text += f"\n\nUmumiy: {obshiy_summa}"
+            text += f"\n\n{self.text('total')}: {obshiy_summa}"
         else:
-            text = "Cart is empty"
+            text = self.text("cart_empty")
         return {
             
             "text": text,
