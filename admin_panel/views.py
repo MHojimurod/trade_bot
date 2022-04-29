@@ -1,12 +1,5 @@
 
-from ast import operator
-from calendar import c
-from pyexpat import model
-import re
-from typing import Text
-from django.http import HttpResponse
 
-from requests import request
 from admin_panel.forms import OperatorEditForm, OperatorForm
 from admin_panel.login.decorator import dashboard_login, login_required_decorator
 from django.contrib import  messages
@@ -91,10 +84,11 @@ def list_operators(request):
 
 def create_operator(request):
     model = Operators()
-    form = OperatorForm(request.POST,instance=model)
+    form = OperatorForm(request.POST,request.FILES,instance=model)
     if request.method == 'POST':
         if form.is_valid():
             data = request.POST
+            image = request.FILES.get("photo")
             if request.POST['password'] == request.POST['confirm_password']:
                 print(data["username"])
                 if Djangouser.objects.filter(username=data['username']).exists():
@@ -104,12 +98,12 @@ def create_operator(request):
                     user = Djangouser.objects.create_user(
                         username=data["username"], password=data["password"], first_name=data["name"], last_name=data["surname"])
                     user.save()
-                    print(user)
                     Operators.objects.create(
                         user=user,
                         phone=data["phone"],
                         pers=request.POST.getlist("pers"),
                         active=True if data.get("active") else False,
+                        photo=image
                     )
                 return redirect("list_operator")
     ctx = {"form": form,"operator_active":"active"}
@@ -117,14 +111,16 @@ def create_operator(request):
 
 def edit_operator(request,pk):
     model = Operators.objects.get(pk=pk)
-    form = OperatorEditForm(request.POST or None,instance=model)
+    form = OperatorEditForm(request.POST or None, request.FILES or None,instance=model)
     if request.POST:
         if form.is_valid():
             user_data = request.POST
+            image = request.FILES.get("photo")
             Djangouser.objects.filter(pk=model.user.id).update(first_name=user_data.get("name"),last_name=user_data.get("surname"))
             model.phone = user_data.get("phone")
             model.active = True if user_data.get("active") else False
             model.pers = request.POST.getlist("pers")
+            model.photo = image
             model.save()
             messages.success(request,"Operator muvoffaqiyatli taxrirlandi")
             return redirect("list_operator")

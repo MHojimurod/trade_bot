@@ -22,6 +22,7 @@
               <th>Familyasi</th>
               <th>Username</th>
               <th>Telefon</th>
+              <th>Rasmi</th>
               <th>Holati</th>
               <th>Actions</th>
             </tr>
@@ -40,7 +41,14 @@
                 <a href=""><strong>{{i.user.username}}</strong></a>
               </td>
               <td>
-                <a href=""><strong>+998{{i.phone}}</strong></a>
+                <a href="tel:+998{{i.phone}}"><strong>+998{{i.phone}}</strong></a>
+              </td>
+              <td>
+                <a  target="_blank" href="{{i.photo.url}}">
+                  <div class="avatar">
+                    <img src="{{i.photo.url}}" alt="" class="w-px-40 rounded-circle" style="object-fit: cover;">
+                  </div>
+                </a>
               </td>
               {%  if i.active %}
               <td><span class="badge bg-label-primary me-1">Faol</span></td>

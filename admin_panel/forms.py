@@ -39,7 +39,7 @@ class OperatorForm(forms.ModelForm):
     password = forms.CharField(max_length=100)
     class Meta:
         model = Operators
-        fields = ["name","surname","username","password","phone","active","pers"]   
+        fields = ["name","surname","username","password","phone","active","pers","photo"]   
 
 class OperatorEditForm(forms.ModelForm):
     class Meta:

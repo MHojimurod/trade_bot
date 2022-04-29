@@ -31,7 +31,7 @@
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
                 <strong>{{forloop.counter}}</strong>
               </td>
-              <td><a href="https://t.me/"></a></td>
+              <td>{{i.name}}</td>
               <td>{{i.filial.name_uz}}</td>
               <td><a href="tel:{{i.number}}">{{i.number}}</a></td>
               <td><a style="color: #229ED9; margin-left: 14px;" href="{% url 'send_telegram' i.id %}"><i  class="bx bxl-telegram"></i></a></td>

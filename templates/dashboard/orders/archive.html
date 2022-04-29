@@ -18,7 +18,7 @@
         <table class="table mt-3">
           <thead>
             <tr>
-              <th>Buyurtma raqami</th>
+              <th>№</th>
               <th>Haridor</th>
               <th>Telefon</th>
               <th>Fillial</th>
@@ -31,7 +31,7 @@
             <tr>
               <td>
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <strong>#{{i.order.id}}</strong>
+                <strong>{{forloop.counter}}</strong>
               </td>
               <td>
                 {{i.order.user.name}}
@@ -41,7 +41,7 @@
               </td>
               <td>{{i.order.user.filial.name_uz}}</td>
               <td>
-                <button onclick="Products({{i.order.id}})" >Maxsulotlar</button>
+                <button onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
                 <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
               <!-- <td>
@@ -66,7 +66,7 @@
           </tbody>
           <tfoot>
             <tr>
-              <th>Buyurtma raqami</th>
+              <th>№</th>
               <th>Haridor</th>
               <th>Telefon</th>
               <th>Fillial</th>

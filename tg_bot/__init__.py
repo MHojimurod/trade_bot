@@ -63,7 +63,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         "communications", self.contact_with_phone
                     ),
                     MultilanguageMessageHandler(
-                        "settigs", self.settings
+                        "settings", self.settings
                     ),
 
                     MultilanguageMessageHandler(
@@ -214,6 +214,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
 
         server.route('/send_ads')(self.send_ads)
         server.route('/order_updated')(self.order_updated)
+        server.route('/send_sms')(self.send_sms)
 
         server.run(port=6002)
         
@@ -257,3 +258,12 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
     def cart_add_more(self, update:Update, context:CallbackContext):
         (update.message if update.message else update.callback_query.message).delete()
         return self.order(update, context)
+    
+    def send_sms(self):
+        data = request.get_json()['data']
+        user: User = User.objects.filter(id=data["id"]).first()
+        if user:
+            try:
+                self.bot.send_message(user.chat_id, data["message"])
+            except:
+                pass

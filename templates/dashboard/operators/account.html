@@ -27,7 +27,7 @@
 
               <div class="card-body">
                 <div class="d-flex align-items-start align-items-sm-center gap-4">
-                  <img src="{% if user_account.photo %}{{user_account.photo.url}}{% else %}/static/dashboard/assets/default.png{% endif %}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                  <img src="{% if user_account.photo %}{{user_account.photo.url}}{% else %}/static/dashboard/assets/img/default.png{% endif %}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
                   <div class="button-wrapper">
                     <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                       <span class="d-none d-sm-block">Yangi rasm yuklash</span>
@@ -36,7 +36,7 @@
                     </label>
                     <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
                       <i class="bx bx-reset d-block d-sm-none"></i>
-                      <span class="d-none d-sm-block">Reset</span>
+                      <span class="d-none d-sm-block">Tozalash</span>
                     </button>
   
                     <p class="text-muted mb-0">JPG, GIF yoki PNG ruxsat berilgan. Maksimal hajmi 800K</p>
@@ -111,7 +111,4 @@
 {% endblock %}
 {% block javascript %}
 <script src="/static/dashboard/assets/js/pages-account-settings-account.js"></script>
-<script>
-
-</script>
 {% endblock %}

@@ -36,7 +36,7 @@
         <table class="table mt-3">
           <thead>
             <tr>
-              <th>Buyurtma raqami</th>
+              <th>№</th>
               <th>Haridor</th>
               <th>Telefon</th>
               <th>Fillial</th>
@@ -51,7 +51,7 @@
             <tr data-order="{{i.order.id}}" class="all_product_for_socket">
               <td>
                 <i class="fab fa-angular fa-lg text-danger me-3"></i>
-                <strong>#{{i.order.id}}</strong>
+                <strong>{{forloop.counter}}</strong>
               </td>
               <td>
                 {{i.order.user.name}}
@@ -63,7 +63,7 @@
                 {{i.order.user.filial}}
               </td>
               <td>
-                <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >Maxsulotlar</button>
+                <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
               <td>
                 <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
@@ -89,7 +89,7 @@
           </tbody>
           <tfoot>
             <tr>
-              <th>Buyurtma raqami</th>
+              <th>№</th>
               <th>Haridor</th>
               <th>Telefon</th>
               <th>Fillial</th>
