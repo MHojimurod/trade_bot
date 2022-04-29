@@ -245,7 +245,6 @@ class Product(models.Model):
         return self.tan_price * BotSettings.objects.first().money
 
     def price(self, month: "Percent"):
-        print(self.p)
         return (self.p + (((self.p // 100) * month.percent)))
     
     def percents(self):

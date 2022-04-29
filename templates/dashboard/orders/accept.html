@@ -35,9 +35,9 @@
                 <a href="tel:{{i.order.user.number}}">{{i.order.user.number}}</a>
               </td>
               <td>
-                <button onclick="Products()" >#{{i.order.id}} mahsulot</button>
-                <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
+                <button onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
+              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>
                 <a href="" class="btn btn-success btn-sm" href="">Qabul qilish</a>
               </td>

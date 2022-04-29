@@ -41,6 +41,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>
@@ -65,6 +66,7 @@
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
+              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>
                 <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
               </td>
@@ -94,6 +96,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>

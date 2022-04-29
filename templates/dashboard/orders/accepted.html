@@ -23,6 +23,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Operator</th>
             </tr>
           </thead>
@@ -42,8 +43,8 @@
               <td>{{i.order.user.filial.name_uz}}</td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
-                <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
+              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>{{i.order.actioner.user.first_name}}</td>
             </tr> 
             <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
@@ -65,6 +66,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Operator</th>
             </tr>
           </tfoot>
