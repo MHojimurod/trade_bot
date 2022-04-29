@@ -453,15 +453,15 @@ class User(models.Model):
 
         keyboard.append(count_controls)
 
-        keyboard.append([
-            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3)
-        ])
-        keyboard.append([
-            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3, 6)
-        ])
-        keyboard.append([
-            InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
-        ])
+        # keyboard.append([
+        #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3)
+        # ])
+        # keyboard.append([
+        #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(3, 6)
+        # ])
+        # keyboard.append([
+        #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
+        # ])
 
         keyboard.append([
             InlineKeyboardButton(
