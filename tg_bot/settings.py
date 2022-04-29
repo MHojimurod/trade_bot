@@ -17,6 +17,7 @@ class Settings:
     
     def settings_name(self, update:Update, context: CallbackContext):
         user, db=  get_user(update)
+        print(update.message.text)
         user.send_message(db.text("enter_new_name"), reply_markup=ReplyKeyboardMarkup(
             [
                 [

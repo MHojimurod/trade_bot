@@ -161,7 +161,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         "change_filial", self.settings_change_filial
                     ),
                     MultilanguageMessageHandler(
-                        "back", self.settings_name
+                        "back", self.back_to_menu
                     ),
                 ],
                 SETTINGS_NAME: [
@@ -190,6 +190,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 ],
                 AKSIYA: [CallbackQueryHandler(
                         self.aksiya, pattern="^back_to_aksiyas"),
+                    MultilanguageMessageHandler('back', self.back_to_menu),
                     MessageHandler(Filters.text & not_start, self.aksiya_select),
                     
                 ],

@@ -16,5 +16,7 @@ class MultilanguageMessageHandler(MessageHandler):
     def check_update(self, update):
         if isinstance(update, Update) and update.effective_message:
             user, db = get_user(update)
-            return db.text(self.textName) == update.effective_message.text
+            res = db.text(self.textName) == update.effective_message.text
+            print(res, "|", db.text(self.textName), "|" , update.effective_message.text, self.textName)
+            return res
         return None
