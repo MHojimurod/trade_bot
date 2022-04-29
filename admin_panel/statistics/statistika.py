@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from admin_panel.models import BusketItem, Category, Fillials, User,Operators,Busket
 from datetime import datetime
+from django.db.models import Q
 
 def all_statistika(request):
     today_user = User.objects.filter(
@@ -12,6 +13,27 @@ def all_statistika(request):
     uz_percent = 100* uz_user // all_user
     ru_percent = 100* ru_user // all_user
     
+    categories = Category.objects.filter(parent=None)
+    category_data = []
+    for i in categories:
+        for j in Category.objects.filter(parent=i):
+            if len(category_data):
+                for l in category_data:
+                    if i.name_uz == l["category"]:
+                        l.update({"data":l["data"]+BusketItem.objects.filter(product__category=j).count()})
+                    else:
+                        category_data.append({
+                            "category":i.name_uz,
+                            "data":BusketItem.objects.filter(product__category=j).count()
+                        })
+            else:
+                category_data.append({
+                    "category":i.name_uz,
+                    "data":BusketItem.objects.filter(product__category=j).count()
+                })
+
+
+
     operators = Operators.objects.all()
     fillials = Fillials.objects.all()
     fillial_data = []
@@ -41,6 +63,7 @@ def all_statistika(request):
         "uz_user":uz_user, #
         "ru_user":ru_user, #,
         "operators":DATA,
-        "fillial_data":fillial_data
+        "fillial_data":fillial_data,
+        "category_data":category_data,
     }
     return render(request, 'dashboard/statistics/statistic.html',ctx)

@@ -191,7 +191,7 @@
         <div class="col-md-6">
           <div class="card card-danger">
             <div class="card-header">
-              <h3 class="card-title">Tasdiqlanmagan </h3>
+              <h5 class="card-title">Kategoriya bo'yicha buyurtmalar statistikasi</h5>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -212,37 +212,6 @@
                 </div>
               </div>
               <canvas id="donutChart1"
-                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
-                width="646" height="250" class="chartjs-render-monitor"></canvas>
-            </div>
-            <!-- /.card-body -->
-          </div>
-
-        </div>
-        <div class="col-md-4">
-          <div class="card card-danger">
-            <div class="card-header">
-              <h3 class="card-title">Arxiv </h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-tool" data-card-widget="remove">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chartjs-size-monitor">
-                <div class="chartjs-size-monitor-expand">
-                  <div class=""></div>
-                </div>
-                <div class="chartjs-size-monitor-shrink">
-                  <div class=""></div>
-                </div>
-              </div>
-              <canvas id="donutChart2"
                 style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
                 width="646" height="250" class="chartjs-render-monitor"></canvas>
             </div>
@@ -292,10 +261,10 @@
     })
     var pieChartCanvas = $('#donutChart1').get(0).getContext('2d')
     var donutData1= {
-      labels: [{% for i in operators %} `{{i.operator}}`,{% endfor %}],
+      labels: [{% for i in category_data %} `{{i.category}}`,{% endfor %}],
       datasets: [
         {
-          data: [{% for i in operators %} `{{i.not_accept}}`,{% endfor %}],
+          data: [{% for i in category_data %} `{{i.data}}`,{% endfor %}],
           backgroundColor: ['#00c0ef', '#3c8dbc', '#d2d6de','#f56954','#00a65a','#f39c12', ],
         }
       ]
@@ -309,27 +278,7 @@
       data: donutData1,
       options: donutOptions
     })
-    var pieChartCanvas1 = $('#donutChart2').get(0).getContext('2d')
-    var donutData2= {
-      labels: [{% for i in operators %} `{{i.operator}}`,{% endfor %}],
-      datasets: [
-        {
-          data: [{% for i in operators %} `{{i.archive}}`,{% endfor %}],
-          backgroundColor: ['#d2d6de','#00c0ef','#f56954', '#3c8dbc', '#00a65a','#f39c12', ],
-        }
-      ]
-    }
-    var donutOptions = {
-      maintainAspectRatio: false,
-      responsive: true,
-    }
-    new Chart(pieChartCanvas1, {
-      type: 'doughnut',
-      data: donutData2,
-      options: donutOptions
-    })
-
-
+    
     //-------------
     //- BAR CHART -
     //-------------
