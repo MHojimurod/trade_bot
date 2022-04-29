@@ -87,6 +87,8 @@ def update_order_status(request,pk,status):
                 return redirect("order_list")
         if status == 3:
             order.status = 3
+
+
         
 
         order.save()
@@ -102,13 +104,11 @@ def one_order(request,pk):
     except:
         pass
     order = Busket.objects.get(pk=pk)
-    items:BusketItem = BusketItem.objects.filter(busket=order)
-    text = "" 
-    for i in items:
-        text += f"{i.product.name_uz}<br> {i.product.p + i.product.p*i.month.percent // 100/i.month.months}\n"
+    order_1 = Busket.objects.filter(pk=pk)
+    data = products_text(order_1)
 
 
-    ctx = {"order_active":"active","order":order,"text":text}
+    ctx = {"order_active":"active","order":order,"text":data[0]}
     return render(request, 'dashboard/orders/one_order.html',ctx)
 
 
@@ -165,6 +165,7 @@ def order_accept(request,pk):
                 'order': order.id,
                 'status': 3
             })
+        messages.success(request,"Maxsulot tasdiqlandi")
     else:
         messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
@@ -183,6 +184,7 @@ def order_not_accept(request, pk):
                 'order': order.id,
                 'status': 4
             })
+        messages.success(request,"Maxsulot rad etildi")
     else:
         messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
@@ -208,6 +210,22 @@ def reject_order(request, pk):
                 'order': order.id,
                 'status': 2
             })
+        messages.warning(request,"Maxsulot qabul qilinmadi")
+    else:
+        messages.error(request,"Kechirasiz siz Operator emassiz")
+    return redirect('orders_list')
+
+
+def archive_order(request, pk):
+    if not request.user.is_superuser:
+        order = Busket.objects.get(pk=pk)
+        op = Operators.objects.filter(user=request.user)
+        
+        order.actioner = op.first()
+        op.update(is_have=False)
+        order.status = 5
+        order.save()
+        messages.warning(request,"Maxsulot arxivga joylandi")
     else:
         messages.error(request,"Kechirasiz siz Operator emassiz")
     return redirect('orders_list')

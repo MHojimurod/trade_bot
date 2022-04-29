@@ -10,10 +10,9 @@
           <a href="/">Asosiy</a>
           {{user.is_superuser}}
         </li>
-        <li class="breadcrumb-item">
-          <a href="/category/list">Kategoriya</a>
-        </li>
-        <li class="breadcrumb-item active">Hello</li>
+        
+        <li class="breadcrumb-item active">Buyurtmalar</li>
+        <li class="breadcrumb-item active">#{{order.id}}-raqamli buyurtma</li>
       </ol>
     </nav>
     </div>
@@ -25,27 +24,32 @@
             <h5 class="card-title">Passport ma'lumotlari</h5>
             <div class="row">
               <div class="col-md-4">
-                <img class="card-img" style="max-height: 11rem; object-fit: cover; object-position: center;"
+                <a href="{{order.self_image.url}}">
+                  <img class="card-img" style="height: 100%; object-fit: cover; object-position: center;"
                   src="{{order.self_image.url}}" alt="">
+                </a>
               </div>
               <div class="col-md-4">
-                <img class="card-img" style="max-height: 11rem; object-fit: cover; object-position: center;"
+                <a href="{{order.passport_image.url}}">
+                  <img class="card-img" style="height: 100%; object-fit: cover; object-position: center;"
                   src="{{order.passport_image.url}}" alt="">
+                </a>
               </div>
               <div class="col-md-4">
-                <img class="card-img" style="max-height: 11rem; object-fit: cover; object-position: center;"
+                <a href="{{order.self_password_image.url}}">
+                  <img class="card-img" style="height: 100%; object-fit: cover; object-position: center;"
                   src="{{order.self_password_image.url}}" alt="">
+                </a>
               </div>
             </div>
             <br>
             <h5 class="card-title">Buyurtmalar</h5>
-            <p>{{text|safe}}</p>
-            <p>{{order}}</p>
+            <p>{{text.items|safe}}</p>
             <a style="color: #fff;" href="{% url 'order_accept' order.id  %}"
               class="btn btn-success mt-2">Tasdiqlash</a>
 
             <a style="color: #fff;" href="{% url 'order_not_accept' order.id %}" class="btn btn-danger mt-2">Rad etish</a>
-            <a style="color: #fff;" class="btn btn-secondary mt-2">Arxiv</a>
+            <a style="color: #fff;" href="{% url 'archive_order' order.id %}" class="btn btn-secondary mt-2">Arxiv</a>
           </div>
         </div>
 

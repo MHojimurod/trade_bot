@@ -23,6 +23,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Operator</th>
             </tr>
           </thead>
@@ -42,8 +43,8 @@
               <td>{{i.order.user.filial.name_uz}}</td>
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
-                <input id="all_product" type="hidden" value="{{i.items}}" name="" id="">
               </td>
+              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <!-- <td>
                 <a href="{% url 'one_order' i.order.id %}" class="btn btn-success btn-sm" >Qabul qilish</a>
               </td>
@@ -71,6 +72,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Sana</th>
               <th>Operator</th>
             </tr>
           </tfoot>
