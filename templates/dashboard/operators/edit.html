@@ -29,7 +29,7 @@
               <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="d-flex align-items-start align-items-sm-center gap-4">
-                  <img src="{% if data.photo %}{{data.photo.url}}{% else %}/static/dashboard/assets/img/default.png{% endif %}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+                  <img src="{% if data.photo %}/media/{{data.photo}}{% else %}/static/dashboard/assets/img/default.png{% endif %}" alt="user-avatar" name="photo" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
                   <div class="button-wrapper">
                     <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                       <span class="d-none d-sm-block">Yangi rasm yuklash</span>

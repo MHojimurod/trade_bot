@@ -44,7 +44,7 @@ class OperatorForm(forms.ModelForm):
 class OperatorEditForm(forms.ModelForm):
     class Meta:
         model = Operators
-        fields = ["name","surname","phone","active","pers"]   
+        fields = ["name","surname","phone","active","pers","photo"]   
 
 
 class AdsForm(forms.ModelForm):

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from admin_panel.models import BusketItem, Category, User,Operators,Busket
+from admin_panel.models import BusketItem, Category, Fillials, User,Operators,Busket
 from datetime import datetime
 
 def all_statistika(request):
@@ -13,6 +13,14 @@ def all_statistika(request):
     ru_percent = 100* ru_user // all_user
     
     operators = Operators.objects.all()
+    fillials = Fillials.objects.all()
+    fillial_data = []
+    for j in fillials:
+        fillial_data.append({
+            "fillial":j.name_uz,
+            "data":Busket.objects.filter(status=3,user__filial_id=j.id).count()
+        })
+
     DATA = []
     for i in operators:
         DATA.append({   
@@ -22,7 +30,7 @@ def all_statistika(request):
             "archive":Busket.objects.filter(actioner=i,status=5).count(),
         })
     
-
+    print(DATA)
     ctx = {
         "statistics_active": "active",
         "today_user":today_user, #
@@ -32,6 +40,7 @@ def all_statistika(request):
         "ru_percent":ru_percent,
         "uz_user":uz_user, #
         "ru_user":ru_user, #,
-        "operators":DATA
+        "operators":DATA,
+        "fillial_data":fillial_data
     }
     return render(request, 'dashboard/statistics/statistic.html',ctx)
