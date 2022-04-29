@@ -426,15 +426,10 @@ class User(models.Model):
         product: Product = context.user_data['order']['current_product']['product']
         product.refresh_from_db()
         text = f"<b>{product.name(user.language)}</b>\n"
+        per_month = 0
 
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-            #     text += self.text(
-            #     'order_product_info_text',
-                # per_month=money(product.price(i) // i.months),
-                # months=i.months,
-                # price=money(product.price(i)),
-            # )
                 text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
                 per_month=money(product.price(i) // i.months),
                 months=i.months,
@@ -444,23 +439,12 @@ class User(models.Model):
                 month_text=user.language.month(),
                 money=user.language.money(),
     )
-                # text += "        {per_month} {self.text('money')} x {months} {self.text('month')} = {price} {self.text('money')}\n"
-                # text += f"        {money(product.price(i) // i.months)} {self.text('money')} x {i.months} {self.text('month')} = {money(product.price(i))} {self.text('money')}\n"
 
         else:
             month: Percent = context.user_data['order']['current_product']['month']
 
-            # text += f"    {money(product.price(month) // month.months)} {self.text('money')}  x {month.months} {self.text('month')} = {money(product.price(month))} {self.text('money')}\n"
 
-
-
-            # text += self.text(
-            #     'order_product_info_text_selected',
-            #     price=money(product.price(month)),
-            #     count = context.user_data['order']['current_product']['count'],
-            #     total=money(product.price(month) * context.user_data['order']['current_product']['count']),
-            # )
-            text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}""".format(
+            text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
                 per_month=money(product.price(month) // month.months),
                 months=month.months,
                 price=money(product.price(month)),
@@ -468,9 +452,9 @@ class User(models.Model):
                 count=context.user_data['order']['current_product']['count'],
                 month_text=user.language.month(),
                 money=user.language.money(),
-    )
-            # text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
-            
+            )
+            per_month += product.price(month) // month.months
+        
 
         if context.user_data['order']['current_product']['count'] > 1:
             count_controls.append(
@@ -494,6 +478,11 @@ class User(models.Model):
         # keyboard.append([
         #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
         # ])
+        text += {
+            "uz": f"Bir oylik to'lov: {per_month} so'm",
+            "ru": f"Ежемесячный платеж: {per_month} сум.",
+            "en": f"Monthly payment: {per_month} so'm"
+        }[self.language.code]
 
         keyboard.append([
             InlineKeyboardButton(

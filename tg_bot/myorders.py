@@ -13,28 +13,17 @@ class myOrders:
         user, db = get_user(update)
         if update.message:
             context.user_data['my_orders_page'] = 0
+
             orders = db.get_orders()
             if orders:
+                per_month = 0
+                total = 0
                 order: Busket = orders[0]
-                # if not order.is_ordered:
-                #     update.message.reply_text("Sizning buyurtmalarimiz yo'q")
-                #     return MENU
                 text = ""
                 product: BusketItem
                 for product in order.products:
-                    # text += f"""<b>{product.product.name(db.language)}</b>\n    • {product.product.price(product.month) // product.month.months} x {product.month.months} = {product.product.price(product.month)}\nbir oylik narxi\n    • {product.product.price(product.month) // product.month.months} x {product.count} = {product.product.price(product.month) //  product.month.months * product.count}\n\n"""
-                    # text += db.text("my_orders_order_text_one_line",
-                    # pr_name=product.product.name(db.language),
-                    # price_per_month=product.product.price(product.month) // product.month.months,
-                    # months=product.month.months,
-                    # price=product.product.price(product.month),
-
-                    # total_price_per_month=product.product.price(product.month) // product.month.months,
-                    # count=product.count,
-                    # total_price=product.product.price(product.month) // product.month.months * product.count
-                    # )
                     text += """{pr_name}
-    {per_month} x {month} {month_text} x {count} ta = {price} {money}""".format(
+    {per_month} x {month} {month_text} x {count} ta = {price} {money}\n""".format(
                     pr_name=product.product.name(db.language),
                     per_month=product.product.price(product.month) // product.month.months,
                     month=product.month.months,
@@ -43,6 +32,8 @@ class myOrders:
                     price=product.product.price(product.month) // product.month.months * product.count,
                     money=db.language.money()
       )
+                    per_month += product.product.price(product.month) // product.month.months
+                    total += product.product.price(product.month) * product.count
                 controls = []
 
 
@@ -55,6 +46,14 @@ class myOrders:
                 controls.append([
                     InlineKeyboardButton(db.text('back'), callback_data="back_to_menu")
                 ])
+                text += {
+                    "uz": f"""Bir oylik to'lov: {per_month} so'm
+Umumiy narx: {total} so'm""",
+                    "ru": f"""Ежемесячная плата: {per_month} руб.
+Общая сумма: {total} руб.""",
+                    "en": f"""Monthly payment: {per_month} rub.
+Total amount: {total} rub."""
+                }[db.language.code]
                 
                 update.message.reply_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(controls))
                 return MY_ORDERS
