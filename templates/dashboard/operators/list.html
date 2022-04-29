@@ -44,12 +44,12 @@
                 <a href="tel:+998{{i.phone}}"><strong>+998{{i.phone}}</strong></a>
               </td>
               <td>
-                <a  target="_blank" href="{{i.photo.url}}">
+                <a  target="_blank" href="/media/{{i.photo}}">
                   <div class="avatar">
-                    <img src="{{i.photo.url}}" alt="" class="w-px-40 rounded-circle" style="object-fit: cover;">
+                    <img src="{% if i.photo %}/media/{{i.photo}}{% else %}/static/dashboard/assets/img/default.png{% endif %}" alt="user-avatar" name="photo" class="w-px-40 rounded-circle" style="object-fit: cover;">
                   </div>
                 </a>
-              </td>
+              </td> 
               {%  if i.active %}
               <td><span class="badge bg-label-primary me-1">Faol</span></td>
               {% else %}

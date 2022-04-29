@@ -115,7 +115,7 @@
               </div>
               <span class="fw-semibold d-block mb-1">Umumiy foydalanuvchilar</span>
               <h3 class="card-title text-nowrap mb-1">{{all_user}}</h3>
-              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>{{total_percent}}%</small>
+              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>100%</small>
             </div>
           </div>
         </div>
@@ -134,10 +134,33 @@
   <section class="content">
     <div class="">
       <div class="row">
+        
+        <div class="col-md-12 mb-4">
+          <div class="card card-success">
+            <div class="card-header">
+              <h4 class="card-title">Operatorlar statistikasi</h4>
+
+              <!-- <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div> -->
+            </div>
+            <div class="card-body">
+              <div class="chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;" width="646" height="250" class="chartjs-render-monitor"></canvas>
+              </div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
         <div class="col-md-6">
           <div class="card card-danger">
             <div class="card-header">
-              <h3 class="card-title">Tasdiqlangan </h3>
+              <h5 class="card-title">Filliallar bo'yicha qabul qilingan zakazlar </h5>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -163,9 +186,12 @@
             </div>
             <!-- /.card-body -->
           </div>
+
+        </div>
+        <div class="col-md-6">
           <div class="card card-danger">
             <div class="card-header">
-              <h3 class="card-title">Pie Chart</h3>
+              <h3 class="card-title">Tasdiqlanmagan </h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -185,7 +211,7 @@
                   <div class=""></div>
                 </div>
               </div>
-              <canvas id="pieChart"
+              <canvas id="donutChart1"
                 style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
                 width="646" height="250" class="chartjs-render-monitor"></canvas>
             </div>
@@ -193,10 +219,10 @@
           </div>
 
         </div>
-        <div class="col-md-6">
-          <div class="card card-success">
+        <div class="col-md-4">
+          <div class="card card-danger">
             <div class="card-header">
-              <h3 class="card-title">Bar Chart</h3>
+              <h3 class="card-title">Arxiv </h3>
 
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -208,52 +234,21 @@
               </div>
             </div>
             <div class="card-body">
-              <div class="chart">
-                <div class="chartjs-size-monitor">
-                  <div class="chartjs-size-monitor-expand">
-                    <div class=""></div>
-                  </div>
-                  <div class="chartjs-size-monitor-shrink">
-                    <div class=""></div>
-                  </div>
+              <div class="chartjs-size-monitor">
+                <div class="chartjs-size-monitor-expand">
+                  <div class=""></div>
                 </div>
-                <canvas id="barChart"
-                  style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
-                  width="646" height="250" class="chartjs-render-monitor"></canvas>
+                <div class="chartjs-size-monitor-shrink">
+                  <div class=""></div>
+                </div>
               </div>
+              <canvas id="donutChart2"
+                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
+                width="646" height="250" class="chartjs-render-monitor"></canvas>
             </div>
             <!-- /.card-body -->
           </div>
-          <div class="card card-success">
-            <div class="card-header">
-              <h3 class="card-title">Stacked Bar Chart</h3>
 
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-tool" data-card-widget="remove">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chart">
-                <div class="chartjs-size-monitor">
-                  <div class="chartjs-size-monitor-expand">
-                    <div class=""></div>
-                  </div>
-                  <div class="chartjs-size-monitor-shrink">
-                    <div class=""></div>
-                  </div>
-                </div>
-                <canvas id="stackedBarChart"
-                  style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 646px;"
-                  width="646" height="250" class="chartjs-render-monitor"></canvas>
-              </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
         </div>
       </div>
     </div><!-- /.container-fluid -->
@@ -276,29 +271,12 @@
 <script src="/staic/charts/plugins/chart.js/Chart.min.js"></script>
 <script>
   $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
-    //-------------
-
-    //-------------
-    //- DONUT CHART -
-    //-------------
-    // Get context with jQuery - using jQuery's .get() method.
     var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
     var donutData = {
-      labels: [
-        'Chrome',
-        'IE',
-        'FireFox',
-        'Safari',
-        'Opera',
-        'Navigator',
-      ],
+      labels: [{% for i in fillial_data %} `{{i.fillial}}`,{% endfor %}],
       datasets: [
         {
-          data: [700, 500, 400, 600, 300, 100],
+          data: [{% for i in fillial_data %} `{{i.data}}`,{% endfor %}],
           backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
         }
       ]
@@ -307,46 +285,98 @@
       maintainAspectRatio: false,
       responsive: true,
     }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
     new Chart(donutChartCanvas, {
       type: 'doughnut',
       data: donutData,
       options: donutOptions
     })
-
-    //-------------
-    //- PIE CHART -
-    //-------------
-    // Get context with jQuery - using jQuery's .get() method.
-    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
-    var pieData = donutData;
-    var pieOptions = {
+    var pieChartCanvas = $('#donutChart1').get(0).getContext('2d')
+    var donutData1= {
+      labels: [{% for i in operators %} `{{i.operator}}`,{% endfor %}],
+      datasets: [
+        {
+          data: [{% for i in operators %} `{{i.not_accept}}`,{% endfor %}],
+          backgroundColor: ['#00c0ef', '#3c8dbc', '#d2d6de','#f56954','#00a65a','#f39c12', ],
+        }
+      ]
+    }
+    var donutOptions = {
       maintainAspectRatio: false,
       responsive: true,
     }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
     new Chart(pieChartCanvas, {
-      type: 'pie',
-      data: pieData,
-      options: pieOptions
+      type: 'doughnut',
+      data: donutData1,
+      options: donutOptions
     })
+    var pieChartCanvas1 = $('#donutChart2').get(0).getContext('2d')
+    var donutData2= {
+      labels: [{% for i in operators %} `{{i.operator}}`,{% endfor %}],
+      datasets: [
+        {
+          data: [{% for i in operators %} `{{i.archive}}`,{% endfor %}],
+          backgroundColor: ['#d2d6de','#00c0ef','#f56954', '#3c8dbc', '#00a65a','#f39c12', ],
+        }
+      ]
+    }
+    var donutOptions = {
+      maintainAspectRatio: false,
+      responsive: true,
+    }
+    new Chart(pieChartCanvas1, {
+      type: 'doughnut',
+      data: donutData2,
+      options: donutOptions
+    })
+
 
     //-------------
     //- BAR CHART -
     //-------------
     var barChartCanvas = $('#barChart').get(0).getContext('2d')
-    var barChartData = $.extend(true, {}, areaChartData)
-    var temp0 = areaChartData.datasets[0]
-    var temp1 = areaChartData.datasets[1]
-    barChartData.datasets[0] = temp1
-    barChartData.datasets[1] = temp0
+    var barChartData = {
+      labels  : [{% for i in operators %} `{{i.operator}}`,{% endfor %}],
+      datasets: [
+        {
+          label               : 'Tasdiqlangan',
+          backgroundColor     : '#00a65a',
+          borderColor         : '#00a65a',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : '#00a65a',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: '#00a65a',
+          data                : [{% for i in operators %} `{{i.accept}}`,{% endfor %}]
+        },
+        {
+          label               : 'Tasdiqlanmagan',
+          backgroundColor     : '#f56954',
+          borderColor         : '#f56954',
+          pointRadius         : false,
+          pointColor          : '#f56954',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: '#f56954',
+          data                : [{% for i in operators %} `{{i.not_accept}}`,{% endfor %}]
+        },
+        {
+          label               : 'Arxiv',
+          backgroundColor     : '#d2d6de',
+          borderColor         : '#d2d6de',
+          pointRadius         : false,
+          pointColor          : '#d2d6de',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: '#d2d6de',
+          data                : [{% for i in operators %} `{{i.archive}}`,{% endfor %}]
+        },
+      ]
+    }
 
     var barChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      datasetFill: false
+      responsive              : true,
+      maintainAspectRatio     : false,
+      datasetFill             : false
     }
 
     new Chart(barChartCanvas, {
@@ -354,6 +384,7 @@
       data: barChartData,
       options: barChartOptions
     })
+
 
 
   })

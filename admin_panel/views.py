@@ -114,13 +114,16 @@ def edit_operator(request,pk):
     form = OperatorEditForm(request.POST or None, request.FILES or None,instance=model)
     if request.POST:
         if form.is_valid():
+
             user_data = request.POST
             image = request.FILES.get("photo")
+            print(image,"AAAAAAAAA")
             Djangouser.objects.filter(pk=model.user.id).update(first_name=user_data.get("name"),last_name=user_data.get("surname"))
             model.phone = user_data.get("phone")
             model.active = True if user_data.get("active") else False
             model.pers = request.POST.getlist("pers")
-            model.photo = image
+            if image is not None:
+                model.photo = image
             model.save()
             messages.success(request,"Operator muvoffaqiyatli taxrirlandi")
             return redirect("list_operator")
