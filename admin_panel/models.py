@@ -43,6 +43,20 @@ class Language(models.Model):
     name: str = models.CharField(max_length=100)
     code = models.CharField(max_length=3, unique=True)
 
+    def money(self):
+        return {
+            "uz": "so'm",
+            "ru": "сум",
+            "en": "sums"
+        }[self.code]
+
+    def month(self):
+        return {
+            "uz": "oy",
+            "ru": "месяц",
+            "en": "month"
+        }[self.code]
+
     def __str__(self) -> str:
         return self.name + " (" + str(self.id) + ")"
 
@@ -270,7 +284,7 @@ class Color(models.Model):
 
     @property
     def months(self):
-        return Percent.objects.filter(color=self)
+        return Percent.objects.filter(color=self).exclude(percent=0)
     def __str__(self) -> str:
         return self.color
 
@@ -416,28 +430,46 @@ class User(models.Model):
 
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += self.text(
-                'order_product_info_text',
+            #     text += self.text(
+            #     'order_product_info_text',
+                # per_month=money(product.price(i) // i.months),
+                # months=i.months,
+                # price=money(product.price(i)),
+            # )
+                text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
                 per_month=money(product.price(i) // i.months),
-                month=i.months,
+                months=i.months,
                 price=money(product.price(i)),
-            )
+                pr_name=product.name(user.language),
+                count=context.user_data['order']['current_product']['count'],
+                month_text=user.language.month(),
+                money=user.language.money(),
+    )
                 # text += "        {per_month} {self.text('money')} x {months} {self.text('month')} = {price} {self.text('money')}\n"
                 # text += f"        {money(product.price(i) // i.months)} {self.text('money')} x {i.months} {self.text('month')} = {money(product.price(i))} {self.text('money')}\n"
 
         else:
             month: Percent = context.user_data['order']['current_product']['month']
 
-            text += f"    {money(product.price(month) // month.months)} {self.text('money')}  x {month.months} {self.text('month')} = {money(product.price(month))} {self.text('money')}\n"
+            # text += f"    {money(product.price(month) // month.months)} {self.text('money')}  x {month.months} {self.text('month')} = {money(product.price(month))} {self.text('money')}\n"
 
 
 
-            text += self.text(
-                'order_product_info_text_selected',
+            # text += self.text(
+            #     'order_product_info_text_selected',
+            #     price=money(product.price(month)),
+            #     count = context.user_data['order']['current_product']['count'],
+            #     total=money(product.price(month) * context.user_data['order']['current_product']['count']),
+            # )
+            text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}""".format(
+                per_month=money(product.price(month) // month.months),
+                months=month.months,
                 price=money(product.price(month)),
-                count = context.user_data['order']['current_product']['count'],
-                total=money(product.price(month) * context.user_data['order']['current_product']['count']),
-            )
+                pr_name=product.name(user.language),
+                count=context.user_data['order']['current_product']['count'],
+                month_text=user.language.month(),
+                money=user.language.money(),
+    )
             # text += f"\numumiy summa\n    {money(product.price(month))} x {context.user_data['order']['current_product']['count']} = {money(product.price(month) * context.user_data['order']['current_product']['count'])}"
             
 
@@ -466,7 +498,7 @@ class User(models.Model):
 
         keyboard.append([
             InlineKeyboardButton(
-                f"{i.months} {self.text('month')} {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months
+                f"{i.months} {self.text('month')} {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months.exclude(months=0)
         ])
         
 

@@ -6,6 +6,7 @@ from admin_panel.models import Ads, Busket, User
 from tg_bot.filters import MultilanguageMessageHandler
 
 from tg_bot.myorders import myOrders
+from tg_bot.utils import get_user
 from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from .constants import (
@@ -42,7 +43,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(Filters.regex(
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.number),
-                    MessageHandler(Filters.text, self.number_error)
+                    MessageHandler(Filters.text, self.number_error2)
                 ],
                 FILIAL: [
                     MessageHandler(Filters.text & not_start, self.filial)
@@ -220,6 +221,12 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         server.run(port=6002)
         
         self.idle()
+    
+    def number_error2(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        user.send_message("Iltimos raqamingizni yuboring yoki pastdagi tugmani bosing!")
+        return NUMBER
+
     
     def order_updated(self):
         data = request.get_json()
