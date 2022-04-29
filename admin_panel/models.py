@@ -1,3 +1,4 @@
+from datetime import datetime
 import locale
 from re import T
 from django.db import models
@@ -576,6 +577,7 @@ class Location(models.Model):
 class Busket(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     bis_ordered: bool = models.BooleanField(default=False)
+    order_time = models.DateTimeField(null=True, blank=True)
 
     def get_is_ordered(self):
         return self.bis_ordered and self.products.count() > 0
@@ -642,6 +644,7 @@ class Busket(models.Model):
     
     def order(self):
         self.is_ordered = True
+        self.order_time = datetime.now()
         self.save()
 
 
