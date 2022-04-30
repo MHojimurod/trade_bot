@@ -1,4 +1,4 @@
-from admin_panel.models import BusketItem, Category, Product
+from admin_panel.models import BotSettings, BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
 from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, MENU, ORDER
@@ -236,8 +236,10 @@ class Order:
 
         context.user_data['order']['location'] = update.message.location.to_dict()
 
-        context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+        # context.user_data['temp_message'] = user.send_message(
+        #     db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+        context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_self_image, caption=db.text("send_your_self_image"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+
         return CART_ORDER_SELF_IMAGE
     
     def skip_location(self, update:Update, context:CallbackContext):
@@ -245,8 +247,9 @@ class Order:
 
         context.user_data['order']['location'] = None
 
-        context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+        # context.user_data['temp_message'] = user.send_message(
+            # db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+        context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_self_image, caption=db.text("send_your_self_image"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
         return CART_ORDER_SELF_IMAGE
     
     def error_location(self, update:Update, context:CallbackContext):
@@ -271,8 +274,9 @@ class Order:
         context.user_data['order']['self_image'] = update.message.photo[-1].get_file().download()
         db.busket.set_self_image(
             update.message.photo[-1].get_file().download())
-        context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_password_iamge'), parse_mode="HTML")
+        # context.user_data['temp_message'] = user.send_message(
+        #     db.text('send_your_password_iamge'), parse_mode="HTML")
+        context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_passport_image, caption=db.text("send_your_password_iamge"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
         return CART_ORDER_PASSPORT_IMAGE
 
     @remove_temp_message
@@ -281,8 +285,10 @@ class Order:
         context.user_data['order']['passport_image'] = update.message.photo[-1].file_id
         db.busket.set_passport_image(
             update.message.photo[-1].get_file().download())
-        context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_and_passport_image'), parse_mode="HTML")
+        # context.user_data['temp_message'] = user.send_message(
+        #     db.text('send_your_self_and_passport_image'), parse_mode="HTML")
+        context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_self_passport_image,
+        caption=db.text("send_your_self_and_passport_image"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
         return CART_ORDER_SELF_PASSWORD_IMAGE
 
     @remove_temp_message
