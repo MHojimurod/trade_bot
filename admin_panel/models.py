@@ -453,7 +453,7 @@ class User(models.Model):
                 month_text=user.language.month(),
                 money=user.language.money(),
             )
-            per_month += product.price(month) // month.months
+            per_month += (product.price(month) // month.months) * context.user_data['order']['current_product']['count']
         
 
         if context.user_data['order']['current_product']['count'] > 1:
@@ -479,14 +479,14 @@ class User(models.Model):
         #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
         # ])
         text += {
-            "uz": f"Bir oylik to'lov: {per_month} so'm",
-            "ru": f"Ежемесячный платеж: {per_month} сум.",
-            "en": f"Monthly payment: {per_month} so'm"
+            "uz": f"Bir oylik to'lov: {money(per_month)} so'm",
+            "ru": f"Ежемесячный платеж: {money(per_month)} сум.",
+            "en": f"Monthly payment: {money(per_month)} so'm"
         }[self.language.code]
 
         keyboard.append([
             InlineKeyboardButton(
-                f"{i.months} {self.text('month')} {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months.exclude(months=0)
+                f"{i.months} {self.language.month()} {'✅' if context.user_data['order']['current_product']['month'] == i else ''}", callback_data=f"product_creadit_month:{i.id}") for i in product.color.months.exclude(months=0)
         ])
         
 
@@ -518,14 +518,16 @@ class User(models.Model):
         pr_texts = []
         keyboard = []
         busket = user.busket
-
+        x = {"uz": "Oyiga",
+            "ru": "За месяц",
+            "en": "per month"}[self.language.code]
         if busket.is_available:
             for pr in busket.products:
                 obshiy_summa += pr.product.price(pr.month) * pr.count
                 pr_texts.append(f"""{pr.product.name(user.language)}
-        {pr.product.price(pr.month) // pr.month.months} {self.text('money')} x {pr.month.months} {self.text('month')} = {pr.product.price(pr.month)}
-        {pr.product.price(pr.month)} {self.text('money')} x {pr.count} = {pr.product.price(pr.month) * pr.count} {self.text('money')}
-        {self.text('per_month')}: {(pr.product.price(pr.month) // pr.month.months)  * pr.count } {self.text('money')}""")
+        {money(pr.product.price(pr.month) // pr.month.months)} {self.language.money()} x {pr.month.months} {self.language.month()} = {money(pr.product.price(pr.month))}
+        {money(pr.product.price(pr.month))} {self.language.money()} x {pr.count} = {money(pr.product.price(pr.month) * pr.count)} {self.language.money()}
+        { x }: {money((pr.product.price(pr.month) // pr.month.months)  * pr.count) } {self.language.money()}""")
                 controls = []
                 if pr.count > 1:
                     controls.append(
@@ -544,6 +546,7 @@ class User(models.Model):
                 keyboard.append(controls)
             keyboard.append([InlineKeyboardButton(
                 "➕" + user.text("add_more"), callback_data=f"cart_add_more")])
+        
             
             keyboard.append([
                 InlineKeyboardButton(
@@ -551,8 +554,13 @@ class User(models.Model):
                         InlineKeyboardButton("🛒" + self.text("clearance"), callback_data=f"order_cart"),
 
             ])
+            y = {
+                "uz": "Hammasi bo'lib:",
+                "ru": "Всего:",
+                "en": "Total:"
+            }[self.language.code]
             text += "\n———————————————-\n".join(pr_texts)
-            text += f"\n\n{self.text('total')}: {obshiy_summa}"
+            text += f"\n\n{y}: {obshiy_summa}"
         else:
             text = self.text("cart_empty")
         return {

@@ -237,7 +237,7 @@ class Order:
         context.user_data['order']['location'] = update.message.location.to_dict()
 
         context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_image'), parse_mode="HTML")
+            db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
         return CART_ORDER_SELF_IMAGE
     
     def skip_location(self, update:Update, context:CallbackContext):
@@ -246,7 +246,7 @@ class Order:
         context.user_data['order']['location'] = None
 
         context.user_data['temp_message'] = user.send_message(
-            db.text('send_your_self_image'), parse_mode="HTML")
+            db.text('send_your_self_image'), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
         return CART_ORDER_SELF_IMAGE
     
     def error_location(self, update:Update, context:CallbackContext):
