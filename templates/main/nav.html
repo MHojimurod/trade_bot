@@ -271,7 +271,11 @@
             <div class="dropdown-divider"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="{% url 'account' %}">
+            {% if user.is_superuser %}
+            <a class="dropdown-item">
+              {% else %}
+              <a class="dropdown-item" href="{% url 'account' %}">
+                {% endif %}
               <i class="bx bx-user me-2"></i>
               <span class="align-middle">Mening Profilim</span>
             </a>
