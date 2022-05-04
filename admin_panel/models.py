@@ -218,9 +218,9 @@ class Fillials(models.Model):
 class BotSettings(models.Model):
     id: int
     money: int = models.IntegerField(default=0)
-    request_self_image = models.ImageField()
-    request_passport_image = models.ImageField()
-    request_self_passport_image = models.ImageField()
+    request_self_image = models.ImageField(null=True, blank=True)
+    request_passport_image = models.ImageField(null=True, blank=True)
+    request_self_passport_image = models.ImageField(null=True, blank=True)
 
 
 class Category(models.Model):

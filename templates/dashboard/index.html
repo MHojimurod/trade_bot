@@ -4,9 +4,76 @@
 <link rel="stylesheet" href="/static/dashboard/assets/vendor/css/pages/page-icons.css" />
 {% endblock %}
 {% block content %} 
+<div class="container-xxl container-p-y">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 order-1">
+      <div class="row">
+        <div class="col-lg-3 col-md-12 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img src="/static/dashboard/assets/img/icons/unicons/chart-success.png" alt="chart success"
+                    class="rounded" />
+                </div>
+              </div>
+              <span class="fw-semibold d-block mb-1">Bugun ro'yxatdan o'tganlar</span>
+              <h3 class="card-title mb-2">{{today_user}}</h3>
+              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> {{total_percent}}%</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img src="/static/dashboard/assets/img/icons/unicons/chart-success.png" alt="Credit Card"
+                    class="rounded" />
+                </div>
+              </div>
+              <span class="fw-semibold d-block mb-1">O'zbek foydalanuvchilar</span>
+              <h3 class="card-title text-nowrap mb-1">{{uz_user}}</h3>
+              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>{{uz_percent}}%</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img src="/static/dashboard/assets/img/icons/unicons/chart-success.png" alt="Credit Card"
+                    class="rounded" />
+                </div>
+              </div>
+              <span class="fw-semibold d-block mb-1">Rus foydalanuvchilar</span>
+              <h3 class="card-title text-nowrap mb-1">{{ru_user}}</h3>
+              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>{{ru_percent}}%</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img src="/static/dashboard/assets/img/icons/unicons/chart-success.png" alt="Credit Card"
+                    class="rounded" />
+                </div>
+              </div>
+              <span class="fw-semibold d-block mb-1">Umumiy foydalanuvchilar</span>
+              <h3 class="card-title text-nowrap mb-1">{{all_user}}</h3>
+              <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i>100%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-
-            <h3 style="margin-bottom: 50vh;margin: auto;text-align: center;">Assalom alekum Munis bitovoy texnika 
+            <h3 style="margin-bottom: 10vh;margin-top: 10vh;margin-left: auto;margin-right: auto;text-align: center;">Assalom alekum Munis bitovoy texnika 
               <br>Admin paneliga Xush keliibsiz!!</h3>
             
 
