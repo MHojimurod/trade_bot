@@ -76,7 +76,7 @@
                       <a class="dropdown-item" href="{% url 'edit_category' i.id %}"
                         ><i class="bx bx-edit-alt me-1"></i> Taxrirlash</a
                       >
-                      <a class="dropdown-item" href="{% url 'delete_category' i.id %}"
+                      <a class="dropdown-item" onclick="delete_category('{% url 'delete_category' i.id %}')"
                         ><i class="bx bx-trash me-1"></i> O'chirish</a
                       >
                     </div>
@@ -101,4 +101,21 @@
     </div>
     </form>
 </div>
+{% endblock %}
+
+
+
+{% block javascript %}
+
+<script>
+  async function delete_category(url) {
+    if (confirm("Siz buni aniq o'chirmoqchimisiz?")){
+      // let res = await fetch(url);
+      // location.reload();
+      location.href = url;
+    }
+    
+  }
+</script>
+
 {% endblock %}

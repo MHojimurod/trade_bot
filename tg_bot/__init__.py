@@ -124,15 +124,15 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 ],
                 CART_ORDER_SELF_IMAGE:[
                     MessageHandler(Filters.photo, self.cart_order_self_image),
-                    MessageHandler(Filters.text, self.error_self_image)
+                    MessageHandler(Filters.text & not_start, self.error_self_image)
                 ],
                 CART_ORDER_PASSPORT_IMAGE: [
                     MessageHandler(Filters.photo, self.cart_order_passport_image),
-                    MessageHandler(Filters.text, self.error_passport_image)
+                    MessageHandler(Filters.text & not_start, self.error_passport_image)
                 ],
                 CART_ORDER_SELF_PASSWORD_IMAGE: [
                     MessageHandler(Filters.photo, self.cart_order_self_password_image),
-                    MessageHandler(Filters.text, self.error_self_passport_image)
+                    MessageHandler(Filters.text & not_start, self.error_self_passport_image)
                 ],
                 CART_ORDER_CHECK_NUMBER: [
                     MessageHandler(
