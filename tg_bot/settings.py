@@ -148,7 +148,9 @@ class Settings:
     
     def settings_change_filial_change(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
-        fillial = Fillials.objects.filter(name=update.message.text).first()
+        fillial = Fillials.objects.filter(**{
+            "name_" + db.language.code: update.message.text
+        }).first()
         if fillial:
             db.filial = fillial
             db.save()

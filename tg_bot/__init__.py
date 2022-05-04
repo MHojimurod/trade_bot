@@ -1,7 +1,8 @@
+from email.message import Message
 import time
 
 from flask import Flask, jsonify, request
-from telegram import Update
+from telegram import ReplyKeyboardMarkup, Update
 from admin_panel.models import Ads, Busket, User
 from tg_bot.filters import MultilanguageMessageHandler
 
@@ -10,7 +11,7 @@ from tg_bot.utils import get_user
 from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from .constants import (
-    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_FILIAL, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -137,12 +138,14 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 CART_ORDER_CHECK_NUMBER: [
                     MessageHandler(
                         Filters.regex("^(✅|❌)"), self.cart_order_check_number
-                    )
+                    ),
+                    MessageHandler(Filters.text & not_start, self.error_check_number)
                 ],
                 GET_NUMBER_FOR_ORDER: [
                     MessageHandler(Filters.regex(
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.get_number_for_order),
+                    MessageHandler(Filters.text, self.error_text_number)
                 ],
                 SETTINGS: [
                     # MessageHandler(Filters.regex("^(Ismni o'zgartirish)$"), self.settings_name),
@@ -181,6 +184,9 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 SETTINGS_LANGUAGE: [
                     MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_language_change),
                     MessageHandler(Filters.regex("^🔙"), self.settings)
+                ],
+                SETTINGS_FILIAL: [
+                    MessageHandler(Filters.text & not_start,self.settings_change_filial_change )
                 ],
                 OUR_ADDRESSES: [
                     MessageHandler(Filters.regex("^🔙"), self.back_to_menu),
@@ -222,6 +228,23 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         
         self.idle()
     
+    def error_check_number(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        user.send_message(db.text("error_check_number"), reply_markup=ReplyKeyboardMarkup(
+            [
+                [
+                    "✅" + db.text('yes'),
+                   "❌" + db.text('no')
+                ]
+            ],
+            resize_keyboard=True
+        ))
+    
+
+    def error_text_number(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        user.send_message(db.text("error_text_number"))
+
     def number_error2(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         user.send_message("Iltimos raqamingizni yuboring yoki pastdagi tugmani bosing!")

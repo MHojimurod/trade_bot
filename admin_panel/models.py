@@ -174,10 +174,10 @@ class Fillials(models.Model):
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
 
     def desc_ru_get(self):
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "").replace("</strong>", "").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
 
     
     
