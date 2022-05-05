@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from admin_panel.models import Fillials, Support, User
@@ -5,6 +6,25 @@ import requests
 def clients_list(request):
     fillials = Fillials.objects.all()
     clients = User.objects.order_by("-id").all()
+    if request.POST:
+        data = request.POST
+        if data.get("fillial")!= "all":
+            if data.get("from")and data.get("to"):
+                clients = User.objects.filter(filial_id=data.get("fillial"),created_at__range=[data.get("from"),data.get("to")])
+            elif data.get("from"):
+                clients = User.objects.filter(filial_id=data.get("fillial"),created_at__gte=data.get("from"))
+            elif data.get("to"):
+                clients = User.objects.filter(filial_id=data.get("fillial"),created_at__lte=data.get("to"))
+
+            else:
+                clients = User.objects.filter(filial_id=data.get("fillial"))
+        elif data.get("from")and data.get("to"):
+            print("bbb",data.get("from"),data.get("to"))
+            clients = User.objects.filter(created_at__range=[data.get("from"),data.get("to")]) 
+        elif data.get("from"):
+                clients = User.objects.filter(created_at__gte=data.get("from"))
+        elif data.get("to"):
+                clients = User.objects.filter(created_at__lte=data.get("to"))
     ctx = {"users_active":"active","clients":clients,"fillials":fillials}
     return render(request, 'dashboard/clients/list.html',ctx)
 
