@@ -241,7 +241,8 @@ class Category(models.Model):
         return self.__getattribute__(f"name_{language.code}")
 
     def products(self):
-        return Product.objects.filter(category=self).exclude(desc_uz="", desc_ru="")
+        # return Product.objects.filter(category=self).exclude(desc_uz="", desc_ru="")
+        return Product.objects.filter(category=self)
 
     def sub_categories(self):
         return Category.objects.filter(parent=self)
@@ -460,7 +461,9 @@ class User(models.Model):
         count_controls = []
         product: Product = context.user_data['order']['current_product']['product']
         product.refresh_from_db()
-        text = f"<b>{product.name(user.language)}</b>\n\n{product.desc(user.language)}\n\n"
+        text = f"<b>{product.name(user.language)}</b>\n"
+        if product.has_description():
+            text += "\n" + product.desc(user.language) + "\n\n"
         per_month = 0
 
         if not context.user_data['order']['current_product']['month']:
