@@ -241,7 +241,7 @@ class Category(models.Model):
         return self.__getattribute__(f"name_{language.code}")
 
     def products(self):
-        return Product.objects.filter(category=self)
+        return Product.objects.filter(category=self).exclude(desc_uz="", desc_ru="")
 
     def sub_categories(self):
         return Category.objects.filter(parent=self)
@@ -256,6 +256,38 @@ class Product(models.Model):
     active: bool = models.BooleanField(default=False)
     tan_price: int = models.IntegerField()
     color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
+    desc_uz: str = RichTextField(default="", blank=True)
+    desc_ru: str = RichTextField(default="", blank=True)
+
+
+
+    def desc_uz_get(self):
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+
+    def desc_ru_get(self):
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+
+    
+    
+    def desc_uz_set(self, new):
+        self.desc_uz = new
+        self.save()
+
+    def desc_ru_set(self, new):
+        self.desc_ru = new
+        self.save()
+    
+    _desc_uz = property(desc_uz_get, desc_uz_set)
+    _desc_ru = property(desc_ru_get, desc_ru_set)
+
+    def desc(self, language: Language = None) -> str:
+            if language is None:
+                return self.name_uz
+            return self.__getattribute__(f"desc_{language.code}_get")()
+    
+    def has_description(self):
+        return self.desc_uz != "" and self.desc_ru != ""
+
 
     @property
     def p(self):
@@ -428,7 +460,7 @@ class User(models.Model):
         count_controls = []
         product: Product = context.user_data['order']['current_product']['product']
         product.refresh_from_db()
-        text = f"<b>{product.name(user.language)}</b>\n"
+        text = f"<b>{product.name(user.language)}</b>\n\n{product.desc(user.language)}\n\n"
         per_month = 0
 
         if not context.user_data['order']['current_product']['month']:

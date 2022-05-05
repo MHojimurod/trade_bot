@@ -17,4 +17,3 @@ data = {
     "yout_order_accepted":"Sizning buyurtmangiz qabul qilinde tez orada javobini aytamiz",
     "mainMenu":"Quyidagilarni birini tanlang"
 }
-
