@@ -17,39 +17,18 @@
         {% csrf_token %}
       <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
         <div>
-          <button  type="button" class="btn-sm btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-           {% if fillial %} {{fillial.name_uz}} {% else %} Barchasi{% endif %}
-          </button>
-          <ul class="dropdown-menu">
-            <li><button type="submit" name="action" value="all" class="dropdown-item">Barchasi</button></li>
-            <!-- <li><input type="hidden" name="active" value="active"><button type="submit" class="dropdown-item">Faol</button></li>
-            <li><input type="hidden" name="not_active" value="not_active"><button type="submit" class="dropdown-item">Faol emas</button></li>
-            <li><input type="hidden" name="delete" value="delete"><button type="submit" class="dropdown-item">O'chirish</button></li> -->
-              {% for i in fillials %}
-            <li class="active-item"><button type="button"  name="action" value="{{i.id}}" class="dropdown-item">{{i.name_uz}}</button></li>
+          <select class="btn-sm btn" style="border: solid 1px #8592a3;" name="fillial" id="">
+            <option value="all">---------</option>
+            {% for i in fillials %}
+            <option  value="{{i.id}}">{{i.name_uz}}</option>
             {% endfor %}
-          </ul>
+          </select>
 
-          <button  type="button" class="btn-sm btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            {% if fillial %} {{fillial.name_uz}} {% else %} dan{% endif %}
-           </button>
-           <ul class="dropdown-menu">
-             <li><input type="date" name="action"  class="dropdown-item"/></li>
-        
-           </ul>
+           <input type="date" name="from" style="border: solid 1px #8592a3;"   class="dropdown-toggle btn btn-sm"/>
 
-          <button  type="button" class="btn-sm btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            {% if fillial %} {{fillial.name_uz}} {% else %} gacha{% endif %}
-           </button>
-           <ul class="dropdown-menu">
-             <li><input type="date" name="action"  class="dropdown-item"/></li>
-             <!-- <li><input type="hidden" name="active" value="active"><button type="submit" class="dropdown-item">Faol</button></li>
-             <li><input type="hidden" name="not_active" value="not_active"><button type="submit" class="dropdown-item">Faol emas</button></li>
-             <li><input type="hidden" name="delete" value="delete"><button type="submit" class="dropdown-item">O'chirish</button></li> -->
-
-           </ul>
+           <input type="date" name="to" style="border: solid 1px #8592a3;"  class="dropdown-toggle btn btn-sm"/>
+           <button type="submit" class="btn btn-sm btn-secondary">Filter</button>
         </div>
-        
       </div>
     </form>
       <div class="table-responsive text-nowrap">
@@ -60,6 +39,7 @@
               <th>Ismi</th>
               <th>Fillial</th>
               <th>Telefon</th>
+              <th>Sana</th>
               <th>Telegram</th>
             </tr>
           </thead>
@@ -73,6 +53,7 @@
               <td>{{i.name}}</td>
               <td>{{i.filial.name_uz}}</td>
               <td><a href="tel:{{i.number}}">{{i.number}}</a></td>
+              <td>{{i.created_at|date:"d-m-Y H:i"}}</td>
               <td><a style="color: #229ED9; margin-left: 14px;" href="{% url 'send_telegram' i.id %}"><i  class="bx bxl-telegram"></i></a></td>
             </tr>   
             {% endfor %}                    
@@ -83,6 +64,7 @@
               <th>Ismi</th>
               <th>Fillial</th>
               <th>Telefon</th>
+              <th>Sana</th>
               <th>Telegram</th>
             </tr>
           </tfoot>

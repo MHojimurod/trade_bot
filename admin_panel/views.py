@@ -58,7 +58,7 @@ def home(request):
     total_percent = 100* today_user // all_user
     uz_percent = 100* uz_user // all_user
     ru_percent = 100* ru_user // all_user
-    ctx = {"home":"active","statistics_active": "active",
+    ctx = {"home":"active",
         "today_user":today_user, #
         "all_user":all_user, #
         "total_percent":total_percent,
