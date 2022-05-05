@@ -1,11 +1,12 @@
 
 
+from datetime import datetime
 from admin_panel.forms import OperatorEditForm, OperatorForm
 from admin_panel.login.decorator import dashboard_login, login_required_decorator
 from django.contrib import  messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from admin_panel.models import Fillials, Operators,Text
+from admin_panel.models import Fillials, Operators,Text, User
 from django.contrib.auth.models import User as Djangouser
 # Create your views here.   
 
@@ -48,14 +49,30 @@ def home(request):
 
     # for i,j in data.items():
     #     Text.objects.create(name=i,data=j,language_id=1)
-    ctx = {"home":"active"}
+
+    today_user = User.objects.filter(
+        created_at__day=datetime.now().day).count()
+    all_user = User.objects.all().count()
+    uz_user = User.objects.filter(language__code="uz").count()
+    ru_user = User.objects.filter(language__code="ru").count()
+    total_percent = 100* today_user // all_user
+    uz_percent = 100* uz_user // all_user
+    ru_percent = 100* ru_user // all_user
+    ctx = {"home":"active","statistics_active": "active",
+        "today_user":today_user, #
+        "all_user":all_user, #
+        "total_percent":total_percent,
+        "uz_percent":uz_percent,
+        "ru_percent":ru_percent,
+        "uz_user":uz_user, #
+        "ru_user":ru_user}
     return render(request, 'dashboard/index.html',ctx)
 
 def account(request):
     if request.POST or request.FILES:
         data = request.POST
         image = request.FILES.get("photo")
-        name = data["firstName"]
+        name = data["firstName"]    
         surname = data["lastName"]
         phone = data["phoneNumber"]
         country = data["country"]

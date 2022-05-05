@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from admin_panel.models import Support, User
+from admin_panel.models import Fillials, Support, User
 import requests
 def clients_list(request):
+    fillials = Fillials.objects.all()
     clients = User.objects.order_by("-id").all()
-    ctx = {"users_active":"active","clients":clients}
+    ctx = {"users_active":"active","clients":clients,"fillials":fillials}
     return render(request, 'dashboard/clients/list.html',ctx)
 
 
