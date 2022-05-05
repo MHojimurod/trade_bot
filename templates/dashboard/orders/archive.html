@@ -13,7 +13,24 @@
       </ol>
     </nav>
     <div class="card">
-      <!-- <a class="btn btn-primary col-1 btn-sm" style="margin: 30px 30px 10px auto;color: white;">Qo'shish</a> -->
+      <form method="post">
+        {% csrf_token %}
+      <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
+        <div>
+          <select class="btn-sm btn" style="border: solid 1px #8592a3;" name="fillial" id="">
+            <option value="all">---------</option>
+            {% for i in fillials %}
+            <option  value="{{i.id}}">{{i.name_uz}}</option>
+            {% endfor %}
+          </select>
+
+           <input type="date" name="from" style="border: solid 1px #8592a3;"   class="dropdown-toggle btn btn-sm"/>
+
+           <input type="date" name="to" style="border: solid 1px #8592a3;"  class="dropdown-toggle btn btn-sm"/>
+           <button type="submit" class="btn btn-sm btn-secondary">Filter</button>
+        </div>
+      </div>
+    </form>
       <div class="table-responsive text-nowrap">
         <table class="table mt-3">
           <thead>
