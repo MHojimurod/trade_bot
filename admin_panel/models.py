@@ -777,3 +777,8 @@ class Ads(models.Model):
 
     def send_desc(self):
         return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")
+
+
+[].reverse
+
+# get 
