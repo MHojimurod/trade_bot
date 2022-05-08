@@ -641,6 +641,7 @@ class Location(models.Model):
     longitude = models.FloatField()
 
 class Busket(models.Model):
+    id: int
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     bis_ordered: bool = models.BooleanField(default=False)
     order_time = models.DateTimeField(null=True, blank=True)
@@ -653,9 +654,9 @@ class Busket(models.Model):
 
     is_ordered = property(get_is_ordered, set_is_ordered)
 
-    self_image = models.ImageField(upload_to="busket", null=True, blank=True)
-    passport_image = models.ImageField(upload_to="busket", null=True, blank=True)
-    self_password_image = models.ImageField(upload_to="busket", null=True, blank=True)
+    self_image = models.ImageField(upload_to="media/busket", null=True, blank=True)
+    passport_image = models.ImageField(upload_to="media/busket", null=True, blank=True)
+    self_password_image = models.ImageField(upload_to="media/busket", null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.SET(
         None), null=True, blank=True)
     extra_number = models.CharField(max_length=20, null=True, blank=True)

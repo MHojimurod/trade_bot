@@ -271,9 +271,9 @@ class Order:
     @remove_temp_message
     def cart_order_self_image(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        context.user_data['order']['self_image'] = update.message.photo[-1].get_file().download()
+        # context.user_data['order']['self_image'] = update.message.photo[-1].get_file().download("media/busket/self_image.jpg")
         db.busket.set_self_image(
-            update.message.photo[-1].get_file().download())
+            update.message.photo[-1].get_file().download(f"media/busket/{user.id}_cart_self_image_{db.busket.id}")[6:])
         # context.user_data['temp_message'] = user.send_message(
         #     db.text('send_your_password_iamge'), parse_mode="HTML")
         context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_passport_image, caption=db.text("send_your_password_iamge"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
@@ -284,7 +284,7 @@ class Order:
         user, db = get_user(update)
         context.user_data['order']['passport_image'] = update.message.photo[-1].file_id
         db.busket.set_passport_image(
-            update.message.photo[-1].get_file().download())
+            update.message.photo[-1].get_file().download(f"media/busket/{user.id}_cart_passport_image_{db.busket.id}")[6:])
         # context.user_data['temp_message'] = user.send_message(
         #     db.text('send_your_self_and_passport_image'), parse_mode="HTML")
         context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_self_passport_image,
@@ -295,8 +295,10 @@ class Order:
     def cart_order_self_password_image(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         context.user_data['order']['self_passport_image'] = update.message.photo[-1].file_id
+        f = update.message.photo[-1].get_file().download(f"media/busket/{user.id}_cart_self_passport_image_{db.busket.id}")
         db.busket.set_self_passport_image(
-            update.message.photo[-1].get_file().download())
+            f[6:])
+        print(f, f[6:])
         user.send_message(db.text('is_your_number',number=db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
