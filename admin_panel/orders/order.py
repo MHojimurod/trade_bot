@@ -4,6 +4,53 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 
 
+def filter_text(request,status):
+    orders = ""
+    data = request.POST
+    if data.get("fillial")!= "all":
+        if data.get("from")and data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+        elif data.get("from"):
+            orders = Busket.objects.filter(fbis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+        elif data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+        else:
+            orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"))
+    elif data.get("from")and data.get("to"):
+        orders = Busket.objects.filter(bis_ordered=True,status=status, order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
+    elif data.get("from"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, order_time__gte=data.get("from"))
+    elif data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, order_time__lte=data.get("to"))
+    else:
+        orders = Busket.objects.filter(bis_ordered=True,status=status)
+    return products_text(orders)
+
+
+def filter_text_operator(request,status,actioner):
+    orders = ""
+    data = request.POST
+    if data.get("fillial")!= "all":
+        if data.get("from")and data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+        elif data.get("from"):
+            orders = Busket.objects.filter(fbis_ordered=True,status=status, actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+        elif data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+        else:
+            orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, user__filial_id=data.get("fillial"))
+    elif data.get("from")and data.get("to"):
+        orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
+    elif data.get("from"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, order_time__gte=data.get("from"))
+    elif data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status=status, actioner=actioner, order_time__lte=data.get("to"))
+    else:
+        orders = Busket.objects.filter(bis_ordered=True,status=status,actioner=actioner)
+    return products_text(orders)
+
+
+
 def products_text(orders):
     data = []
     for i in orders:
@@ -39,13 +86,7 @@ def orders_list(request):
     orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = products_text(orders)
     if request.POST:
-        pk=request.POST.get("action")
-        if pk!= "all":
-            fillial = Fillials.objects.get(pk=pk)
-            orders = Busket.objects.filter(bis_ordered=True,status=0,user__filial_id=pk)
-        else:
-            orders = Busket.objects.filter(bis_ordered=True,status=0)
-        data = products_text(orders)
+        data = filter_text(request,0)
     ctx = {"orders": data,"order_active":"active","list_active":"active","menu_open":"open","fillials":fillials,"fillial":fillial}
     return render(request, 'dashboard/orders/list.html', ctx)
 
@@ -113,42 +154,93 @@ def one_order(request,pk):
 
 
 def order_accepted(request):
+    fillials = Fillials.objects.all()
     data = ""
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status=3)
         data = products_text(orders)
+        if request.POST:
+            data = filter_text(request,3)
     else:
         orders = Busket.objects.filter(bis_ordered=True, status=3,actioner=Operators.objects.get(user=request.user))
         data = products_text(orders)
+        if request.POST:
+            data = filter_text_operator(request,3,Operators.objects.get(user=request.user))
 
 
     
-    ctx = {"orders": data, "order_active": "active","accept_active":"active","menu_open":"open"}
+    ctx = {"orders": data, "order_active": "active","accept_active":"active","menu_open":"open","fillials":fillials}
     return render(request, 'dashboard/orders/accepted.html', ctx)
 
 
 def order_archive(request):
+    fillials = Fillials.objects.all()
     data = ""
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5])
         data = products_text(orders)
+        if request.POST:
+            data = request.POST
+            if data.get("fillial")!= "all":
+                if data.get("from")and data.get("to"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+                elif data.get("from"):
+                    orders = Busket.objects.filter(fbis_ordered=True,status__in=[2,5], user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+                elif data.get("to"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+                else:
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], user__filial_id=data.get("fillial"))
+            elif data.get("from")and data.get("to"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
+            elif data.get("from"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], order_time__gte=data.get("from"))
+            elif data.get("to"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], order_time__lte=data.get("to"))
+            else:
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5])
+            data =  products_text(orders)
+        
     else:
-        orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5],actioner=Operators.objects.get(user=request.user))
+        actioner = Operators.objects.get(user=request.user)
+        orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5],actioner=actioner)
         data = products_text(orders)
-
-    ctx = {"orders": data, "order_active": "active","archive_active":"active","menu_open":"open"}
+        data = request.POST
+        if data.get("fillial")!= "all":
+            if data.get("from")and data.get("to"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+            elif data.get("from"):
+                orders = Busket.objects.filter(fbis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+            elif data.get("to"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+            else:
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"))
+        elif data.get("from")and data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
+        elif data.get("from"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"))
+        elif data.get("to"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__lte=data.get("to"))
+        else:
+            orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5],actioner=actioner)
+        data = products_text(orders)
+    ctx = {"orders": data, "order_active": "active","archive_active":"active","menu_open":"open","fillials":fillials}
     return render(request, 'dashboard/orders/archive.html', ctx)
 
 
 def order_not_accepted(request):
+    fillials = Fillials.objects.all()
     data = []
     if request.user.is_superuser:
         orders = Busket.objects.filter(bis_ordered=True, status=4)
         data = products_text(orders)
+        if request.POST:
+            data = filter_text(request,4)
     else:
         orders = Busket.objects.filter(bis_ordered=True, status=4,actioner=Operators.objects.get(user=request.user))
         data = products_text(orders)
-    ctx = {"orders": data, "order_active": "active","not_accept_active":"active","menu_open":"open"}
+        if request.POST:
+            data = filter_text(request,4,Operators.objects.get(user=request.user))
+    ctx = {"orders": data, "order_active": "active","not_accept_active":"active","menu_open":"open","fillials":fillials}
     return render(request, 'dashboard/orders/reject.html', ctx)
 
 
