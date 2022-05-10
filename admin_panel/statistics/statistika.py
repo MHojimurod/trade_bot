@@ -51,8 +51,73 @@ def all_statistika(request):
             "not_accept":Busket.objects.filter(actioner=i,status=4).count(),
             "archive":Busket.objects.filter(actioner=i,status=5).count(),
         })
+
+
     
-    print(DATA)
+    if request.POST:
+        data = request.POST
+        DATA = []
+        if data.get("fillial")!= "all":
+            if data.get("from")and data.get("to"):
+                for i in operators:
+                    DATA.append({   
+                        "operator":i.user.first_name,
+                        "accept":Busket.objects.filter(actioner=i,status=3,user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                        "not_accept":Busket.objects.filter(actioner=i,status=4,user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                        "archive":Busket.objects.filter(actioner=i,status=5,user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                    })
+            elif data.get("from"):
+                for i in operators:
+                    DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,user__filial_id=data.get("fillial"),order_time__contains=data.get("from")).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,user__filial_id=data.get("fillial"),order_time__contains=data.get("from")).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,user__filial_id=data.get("fillial"),order_time__contains=data.get("from")).count(),
+                        })
+            elif data.get("to"):
+                for i in operators:
+                    DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,user__filial_id=data.get("fillial"),order_time__lte=data.get("to")).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,user__filial_id=data.get("fillial"),order_time__lte=data.get("to")).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,user__filial_id=data.get("fillial"),order_time__lte=data.get("to")).count(),
+                        })
+
+            else:
+                for i in operators:
+                    DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,user__filial_id=data.get("fillial")).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,user__filial_id=data.get("fillial")).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,user__filial_id=data.get("fillial")).count(),
+                        })
+        elif data.get("from")and data.get("to"):
+            for i in operators:
+                DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,order_time__gte=data.get("from"),order_time__lte=data.get("to")).count(),
+                        })
+        elif data.get("from"):
+            print("hello")
+            for i in operators:
+                DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,order_time__contains=data.get("from")).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__contains=data.get("from")).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,order_time__contains=data.get("from")).count(),
+                        })
+                print(DATA)
+        elif data.get("to"):
+            for i in operators:
+                DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,order_time__lte=data.get("from"),).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__lte=data.get("from"),).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,order_time__lte=data.get("from"),).count(),
+                        })  
+    
     ctx = {
         "statistics_active": "active",
         "today_user":today_user, #
@@ -65,5 +130,6 @@ def all_statistika(request):
         "operators":DATA,
         "fillial_data":fillial_data,
         "category_data":category_data,
+        "fillials":fillials,
     }
     return render(request, 'dashboard/statistics/statistic.html',ctx)

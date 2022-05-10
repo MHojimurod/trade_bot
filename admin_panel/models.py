@@ -770,6 +770,8 @@ class Support(models.Model):
     data = models.TextField(blank=True)
     status = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    answer = models.CharField(max_length=1000,default="")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Ads(models.Model):

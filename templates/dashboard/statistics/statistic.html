@@ -139,6 +139,24 @@
           <div class="card card-success">
             <div class="card-header">
               <h4 class="card-title">Operatorlar statistikasi</h4>
+              <form method="post">
+                {% csrf_token %}
+              <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
+                <div>
+                  <select class="btn-sm btn" style="border: solid 1px #8592a3;" name="fillial" id="">
+                    <option value="all">---------</option>
+                    {% for i in fillials %}
+                    <option  value="{{i.id}}">{{i.name_uz}}</option>
+                    {% endfor %}
+                  </select>
+          
+                   <input type="date" name="from" style="border: solid 1px #8592a3;"   class="dropdown-toggle btn btn-sm"/>
+          
+                   <input type="date" name="to" style="border: solid 1px #8592a3;"  class="dropdown-toggle btn btn-sm"/>
+                   <button type="submit" class="btn btn-sm btn-secondary">Filter</button>
+                </div>
+              </div>
+            </form>
 
               <!-- <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
