@@ -726,6 +726,7 @@ class BusketItem(models.Model):
     def set_count(self, other):
         self._count = other
         self.save()
+        
     def get_count(self): return self._count
 
     count = property(get_count, set_count)
