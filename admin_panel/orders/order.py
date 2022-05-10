@@ -285,6 +285,7 @@ def order_not_accept(request, pk):
 
 
 def reject_order(request, pk):
+    
     if not request.user.is_superuser:
         request.user.is_have = False
         request.user.save()

@@ -43,6 +43,7 @@
                     </div>
                     <h6><b>Foydalanuvchi:</b> {{i.user.name}}</h6>
                     <h6><b>Telefon:</b> {{i.user.number}}</h6>
+                    <h6><b>Vaqti:</b> {{i.created_at|date:"d-m-Y H:i"}}</h6>
                     <h5 class="fw-semibold">Savol va Taklif</h5>
                     <p >{{i.data|safe}}</p>
                     {% if not i.status %}
