@@ -38,13 +38,12 @@ class Socket:
         self.thread.start()
         async with self.server:
             await asyncio.Future()
-        self.thread.join()
     
     def act(self):
         print('xxxxx')
         data = request.get_json()
         print(request.get_json())
-        order = data['order'] 
+        order = data['order']
         asyncio.run(self.broadcast(str(order)))
         return "salom"
     
