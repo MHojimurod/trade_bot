@@ -88,7 +88,7 @@ class Settings:
     
     def settings_number(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message("enter_new_number", reply_markup=ReplyKeyboardMarkup([
+        user.send_message(db.text("enter_new_number"), reply_markup=ReplyKeyboardMarkup([
             [
                 KeyboardButton(db.text("send_number_button"), request_contact=True)
             ],

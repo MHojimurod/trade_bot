@@ -179,7 +179,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.settings_number_text),
                          MessageHandler(MultiLanguageFilter("back"), self.settings),
-                    MessageHandler(Filters.text, self.settings_number_error),
+                    MessageHandler(Filters.text & not_start, self.settings_number_error),
                     
                 ],
                 SETTINGS_LANGUAGE: [
