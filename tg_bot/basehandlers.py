@@ -121,7 +121,7 @@ class Basehandlers():
             keyboard.append(address.name(db.language))
                 
         
-        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [ "🔙" +db.text("back")]
+        user.send_message(text=text, reply_markup=ReplyKeyboardMarkup([*distribute(keyboard,2), [ db.text("back")]
                                                                        ]), parse_mode="HTML")
         return OUR_ADDRESSES
     
@@ -161,7 +161,7 @@ class Basehandlers():
         user.send_message(db.text('support_accepted'),
                           reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU
-        
+
     @remove_temp_message
     def aksiya(self, update: Update,context: CallbackContext):
         user, db = get_user(update)
