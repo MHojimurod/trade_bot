@@ -192,7 +192,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 ],
                 OUR_ADDRESSES: [
                     MessageHandler(MultiLanguageFilter("back"), self.back_to_menu),
-                    MessageHandler(Filters.text & not_start, self.address)
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.address)
                 ],
                 SUPPORT: [
                     MessageHandler(Filters.text, self.support_message)
