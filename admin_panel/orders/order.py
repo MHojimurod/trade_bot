@@ -84,7 +84,7 @@ def orders_list(request):
             if order:
                 return redirect('one_order',order.id)
             else:
-                return redirect("order_list")
+                return redirect("orders_list")
     orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = products_text(orders)
     if request.POST:
@@ -127,7 +127,7 @@ def update_order_status(request,pk,status):
                 'status': 2
                 })
                 messages.warning(request,"Buyurtma Rad etildi")
-                return redirect("order_list")
+                return redirect("orders_list")
         if status == 3:
             order.status = 3
 
