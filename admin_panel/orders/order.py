@@ -80,9 +80,11 @@ def orders_list(request):
     if not request.user.is_superuser:
         operator = Operators.objects.get(user=request.user)
         if operator.is_have:
-            order = Busket.objects.order_by('-id').filter(bis_ordered=True,status=1,actioner=operator)
-            return redirect('one_order',order.id)
-            
+            order = Busket.objects.order_by('-id').filter(bis_ordered=True,status=1,actioner=operator).first()
+            if order:
+                return redirect('one_order',order.id)
+            else:
+                return redirect("order_list")
     orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = products_text(orders)
     if request.POST:
