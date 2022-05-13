@@ -117,6 +117,15 @@ def all_statistika(request):
                             "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__lte=data.get("from"),).count(),
                             "archive":Busket.objects.filter(actioner=i,status=5,order_time__lte=data.get("from"),).count(),
                         })  
+        else:
+            for i in operators:
+                DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,).count(),
+                        })
+
     
     ctx = {
         "statistics_active": "active",
