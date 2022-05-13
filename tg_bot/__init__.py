@@ -178,19 +178,19 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(Filters.regex(
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.settings_number_text),
-                         MessageHandler(Filters.regex("^🔙"), self.settings),
+                         MessageHandler(MultiLanguageFilter("back"), self.settings),
                     MessageHandler(Filters.text, self.settings_number_error),
                     
                 ],
                 SETTINGS_LANGUAGE: [
-                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_language_change),
-                    MessageHandler(Filters.regex("^🔙"), self.settings)
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_language_change),
+                    MessageHandler(MultiLanguageFilter("back"), self.settings)
                 ],
                 SETTINGS_FILIAL: [
                     MessageHandler(Filters.text & not_start,self.settings_change_filial_change )
                 ],
                 OUR_ADDRESSES: [
-                    MessageHandler(Filters.regex("^🔙"), self.back_to_menu),
+                    MessageHandler(MultiLanguageFilter("back"), self.back_to_menu),
                     MessageHandler(Filters.text & not_start, self.address)
                 ],
                 SUPPORT: [
