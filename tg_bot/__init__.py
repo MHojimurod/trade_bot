@@ -4,7 +4,7 @@ import time
 from flask import Flask, jsonify, request
 from telegram import ReplyKeyboardMarkup, Update
 from admin_panel.models import Ads, Busket, User
-from tg_bot.filters import MultilanguageMessageHandler
+from tg_bot.filters import MultiLanguageFilter, MultilanguageMessageHandler
 
 from tg_bot.myorders import myOrders
 from tg_bot.utils import get_user
@@ -169,7 +169,8 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     ),
                 ],
                 SETTINGS_NAME: [
-                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_name_change),
+                    
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_name_change),
                     MessageHandler(Filters.regex("^🔙"), self.settings)
                 ],
                 SETTINGS_NUMBER: [

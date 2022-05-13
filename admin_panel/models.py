@@ -399,7 +399,7 @@ class User(models.Model):
 
         controls = []
         controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"back_to_category_from_category"),)
+            user.text('back'), callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
                 "⬅️", callback_data=f"category_pagination:{page - 1}"))
@@ -439,10 +439,10 @@ class User(models.Model):
 
         controls = []
         controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"back_to_category_from_category"),)
+            self.text('back'), callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
-                "⬅️", callback_data=f"category_pagination:{page - 1}"))
+                self.text('back'), callback_data=f"category_pagination:{page - 1}"))
 
         if page < products_pages:
             controls.append(InlineKeyboardButton(
@@ -533,9 +533,9 @@ class User(models.Model):
         keyboard.append(
             [
                 InlineKeyboardButton(
-                    "🔙", callback_data=f"back_to_category_from_product"),
+                   user.text('back'), callback_data=f"back_to_category_from_product"),
                 InlineKeyboardButton(
-                    "🛒", callback_data=f"add_to_cart"),
+                    user.text("clearance"), callback_data=f"add_to_cart"),
             ]
         )
         if photo:
@@ -588,8 +588,8 @@ class User(models.Model):
             
             keyboard.append([
                 InlineKeyboardButton(
-                    "🔙", callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
-                        InlineKeyboardButton("🛒" + self.text("clearance"), callback_data=f"order_cart"),
+                    self.text('back'), callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
+                        InlineKeyboardButton(self.text("clearance"), callback_data=f"order_cart"),
 
             ])
             y = {
