@@ -276,7 +276,13 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         if ad:
             for user in User.objects.all():
                 try:
-                    self.bot.send_photo(user.chat_id, open(f".{ad.photo.url}", 'rb'), caption=ad.send_desc(), parse_mode="HTML")
+                    print("sending")
+                    if ad.mode == 0:
+                        self.bot.send_message(user.chat_id, text=ad.send_desc(), parse_mode="HTML")
+                    elif ad.mode == 1:
+                        self.bot.send_photo(user.chat_id, photo=open(f".{ad.photo.url}", "rb"), caption=ad.send_desc(), parse_mode="HTML")
+                    elif ad.mode == 2:
+                        self.bot.send_video(user.chat_id, video=open(f".{ad.photo.url}", "rb"), caption=ad.send_desc(), parse_mode="HTML")
                 except Exception as e:
                     print('user not found', e)
                 per += 1

@@ -8,6 +8,8 @@ from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User as DjangoUser
 from multiselectfield import MultiSelectField
+from django.core.validators import FileExtensionValidator
+val=[FileExtensionValidator(allowed_extensions=['mp4', 'jpg','png','mow','avi','3gp',"gif"])]
 # from tg_bot.utils import distribute
 
 
@@ -764,7 +766,7 @@ class Aksiya(models.Model, Name):
         return res
     @property
     def file(self):
-        return open(f"{self.media.path}", 'rb')
+        return open(f".{self.media.path}", 'rb')
 
 
 class Support(models.Model):
@@ -776,9 +778,14 @@ class Support(models.Model):
 
 
 class Ads(models.Model):
-    photo = models.ImageField(upload_to="images/")
+    mode = models.IntegerField(default=0, choices=[
+        (0, 'text'),
+        (1, "image"),
+        (2, 'video')
+        
+    ])
+    photo = models.FileField(upload_to="images/",null=True, blank=True,validators=val)
     desc = RichTextField()
-
     def send_desc(self):
         return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")
 

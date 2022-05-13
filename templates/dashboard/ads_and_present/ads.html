@@ -23,7 +23,13 @@
                 {% for i in ads %}
               <div class="col-lg-4 col-md-12 col-6 mb-4">
                 <div class="card">
-                    <img src="{{i.photo.url}}" alt="">
+                    {% if i.mode == 1 %}
+                    <img style="max-height: 30vh;" src="{{i.photo.url}}" alt="">
+                    {% elif i.mode == 2 %}
+                    <video style="max-height: 30vh;" src="{{i.photo.url}}" controls alt=""></video>
+                    {% endif %}
+
+                    
                   <div class="card-body">
                     <div class="card-title d-flex align-items-start justify-content-between">
                     </div>
