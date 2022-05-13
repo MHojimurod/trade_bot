@@ -83,8 +83,6 @@ def orders_list(request):
             order = Busket.objects.order_by('-id').filter(bis_ordered=True,status=1,actioner=operator).first()
             if order:
                 return redirect('one_order',order.id)
-            else:
-                return redirect("orders_list")
     orders = Busket.objects.filter(bis_ordered=True,status=0)
     data = products_text(orders)
     if request.POST:
