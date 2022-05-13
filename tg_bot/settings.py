@@ -141,9 +141,9 @@ class Settings:
     def settings_change_filial(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         print(context.user_data,"sds")
-        user.send_message(db.text("select_new_filial"), reply_markup=ReplyKeyboardMarkup(distribute([
+        user.send_message(db.text("select_new_filial"), reply_markup=ReplyKeyboardMarkup([*distribute([
             f.name(db.language) for f in Fillials.objects.filter(active=True)
-        ], 2),resize_keyboard=True), parse_mode="HTML")
+        ], 2), [db.text("back")]],resize_keyboard=True), parse_mode="HTML")
         return SETTINGS_FILIAL
     
     def settings_change_filial_change(self, update:Update, context:CallbackContext):
