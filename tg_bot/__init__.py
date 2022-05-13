@@ -187,7 +187,8 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(MultiLanguageFilter("back"), self.settings)
                 ],
                 SETTINGS_FILIAL: [
-                    MessageHandler(Filters.text & not_start, self.settings_change_filial_change )
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_change_filial_change ),
+                    MultilanguageMessageHandler('back', self.settings)
                 ],
                 OUR_ADDRESSES: [
                     MessageHandler(MultiLanguageFilter("back"), self.back_to_menu),
