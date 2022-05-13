@@ -43,6 +43,9 @@
               </div>
             </div>
             <br>
+            <h5 class="card-title">BuyurtmaCHI</h5>
+            <p><b>FIO: </b>{{order.user.name}}</p>
+            <p><b>Telefon: </b><a href="tel:{{order.user.number}}">{{order.user.number}}</a></p>
             <h5 class="card-title">Buyurtmalar</h5>
             <p>{{text.items|safe}}</p>
             <a style="color: #fff;" href="{% url 'order_accept' order.id  %}"
