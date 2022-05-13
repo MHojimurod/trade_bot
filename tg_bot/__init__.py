@@ -171,7 +171,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 SETTINGS_NAME: [
                     
                     MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_name_change),
-                    MessageHandler(Filters.regex("^🔙"), self.settings)
+                    MessageHandler(MultiLanguageFilter("back"), self.settings)
                 ],
                 SETTINGS_NUMBER: [
                     MessageHandler(Filters.contact, self.settings_number_change),
