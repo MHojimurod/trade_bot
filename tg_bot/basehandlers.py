@@ -140,7 +140,7 @@ class Basehandlers():
             address: Fillials
             for address in Fillials.objects.all():
                 keyboard.append(address.name(db.language))
-            user.send_message(text=db.text("address_not_found"), reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), [db.text("Orqaga")]
+            user.send_message(text=db.text("address_not_found"), reply_markup=ReplyKeyboardMarkup([*distribute(keyboard, 2), [db.text("back")]
                                                                                                      ]), parse_mode="HTML")
             return OUR_ADDRESSES
 
