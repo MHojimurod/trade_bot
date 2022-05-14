@@ -24,9 +24,9 @@
               <div class="col-lg-4 col-md-12 col-6 mb-4">
                 <div class="card">
                     {% if i.mode == 1 %}
-                    <img style="max-height: 30vh;" src="{{i.photo.url}}" alt="">
+                    <img style="max-height: 30vh; object-fit: cover;;" src="{{i.photo.url}}" alt="">
                     {% elif i.mode == 2 %}
-                    <video style="max-height: 30vh;" src="{{i.photo.url}}" controls alt=""></video>
+                    <video style="max-height: 30vh; width: 100%;" src="{{i.photo.url}}" controls alt=""></video>
                     {% endif %}
 
                     
@@ -36,6 +36,7 @@
                     <span class="fw-semibold d-block mb-1">{{i.desc|safe}}</span>
                     <a href="{% url 'send_ads' i.id %}" style="color: #fff;" class="btn btn-success btn-sm">Yuborish</a>
                     <a href="{% url 'delete_ads' i.id %}" style="color: #fff;" class="btn btn-secondary btn-sm">O'chirish</a>
+                    <span>{{i.created_at|date:"d-m-Y H:i"}}</span>
                   </div>
                 </div>
               </div>    

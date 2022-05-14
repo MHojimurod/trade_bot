@@ -24,10 +24,10 @@
               <div class="col-lg-4 col-md-12 col-6 mb-4">
                 <div class="card">
                   {% if i.mode == 1 %}
-                    <img style="max-width: 100%;max-height: 30vh;" src="/media/{{i.media}}" alt="">
+                    <img style="width: 100%;max-height: 30vh;object-fit: cover;" src="/media/{{i.media}}" alt="">
                   <!-- elif -->
                   {% elif i.mode == 2 %}
-                    <video style="max-width: 100%;max-height: 30vh;" width="320" height="240" controls>
+                    <video style="width: 100%;max-height: 30vh;" width="320" height="240" controls>
                       <source src="/media/{{i.media}}" type="video/mp4">
                       Your browser does not support the video tag.
                     </video>
@@ -37,6 +37,7 @@
                     </div>
                     <span class="fw-semibold d-block mb-1">{{i.caption|safe}}</span>
                     <a href="{% url 'delete_offers' i.id %}" style="color: #fff;" class="btn btn-secondary btn-sm">O'chirish</a>
+                    <span>{{i.created_at|date:"d-m-Y H:i"}}</span>
                   </div>
                 </div>
               </div>    

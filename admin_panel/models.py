@@ -744,6 +744,7 @@ class BusketItem(models.Model):
 class Aksiya(models.Model, Name):
     name_uz = models.CharField(max_length=15)
     name_ru = models.CharField(max_length=15)
+    created_at = models.DateTimeField(auto_now_add=True)
     mode = models.IntegerField(choices=[
         (0, 'text'),
         (1, "image"),
@@ -766,7 +767,7 @@ class Aksiya(models.Model, Name):
         return res
     @property
     def file(self):
-        return open(f".{self.media.path}", 'rb')
+        return open(f"{self.media.path}", 'rb')
 
 
 class Support(models.Model):
@@ -786,6 +787,7 @@ class Ads(models.Model):
     ])
     photo = models.FileField(upload_to="images/",null=True, blank=True,validators=val)
     desc = RichTextField()
+    created_at = models.DateTimeField(auto_now_add=True)
     def send_desc(self):
         return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")
 
