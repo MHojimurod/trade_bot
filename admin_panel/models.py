@@ -595,12 +595,12 @@ class User(models.Model):
 
             ])
             y = {
-                "uz": "Hammasi bo'lib:",
-                "ru": "Всего:",
-                "en": "Total:"
+                "uz": "Umumiy summa",
+                "ru": "Общая сумма",
+                "en": "Total amount"
             }[self.language.code]
             text += "\n———————————————-\n".join(pr_texts)
-            text += f"\n\n{y}: {obshiy_summa}"
+            text += f"\n\n{y}: {money(obshiy_summa)}  {self.language.money()}"
         else:
             text = self.text("cart_empty")
         return {
