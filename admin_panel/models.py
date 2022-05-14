@@ -340,7 +340,7 @@ class User(models.Model):
     language: Language = models.ForeignKey(Language, on_delete=models.SET(1))
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
-    filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
+    filial: Fillials = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     @property
     def settings(self):

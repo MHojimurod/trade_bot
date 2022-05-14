@@ -10,7 +10,7 @@ from tg_bot.utils import get_user
 class Settings:
     def settings(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
-        user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})"), reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})", filial=db.filial.name(db.language)), reply_markup=ReplyKeyboardMarkup(
             db.settings,True
         ), parse_mode="HTML")
         return SETTINGS
