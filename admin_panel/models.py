@@ -745,7 +745,7 @@ class Aksiya(models.Model, Name):
     name_uz = models.CharField(max_length=15)
     name_ru = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
-    mode = models.IntegerField(choices=[
+    mode = models.IntegerField(default=0,choices=[
         (0, 'text'),
         (1, "image"),
         (2, 'video')

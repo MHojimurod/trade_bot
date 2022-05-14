@@ -32,7 +32,7 @@ def add_offers(request):
             else:
                 mode = 0
 
-        new_aksiya = Aksiya.objects.create(name_uz=name_uz, name_ru=name_ru, mode=mode, caption=caption, media=media)
+        Aksiya.objects.create(name_uz=name_uz, name_ru=name_ru, mode=mode, caption=caption, media=media)
         return redirect("all_offers")
     
     return render(request,"dashboard/offers/create_ads.html")
