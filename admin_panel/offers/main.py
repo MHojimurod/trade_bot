@@ -20,8 +20,6 @@ def add_offers(request):
         name_uz, name_ru = data.get("name_uz"), data.get("name_ru")
         mode, caption = data.get("mode"), data.get("caption")
         media: TemporaryUploadedFile = request.FILES.get("media")
-
-        print(media)
         if media:
             media_type = media.content_type.split("/")[0]
             media.name = f"{uuid4()}.{media.name.split('.')[-1]}"
@@ -31,6 +29,8 @@ def add_offers(request):
                 mode = 2
             else:
                 mode = 0
+        else:
+            mode = 0
 
         Aksiya.objects.create(name_uz=name_uz, name_ru=name_ru, mode=mode, caption=caption, media=media)
         return redirect("all_offers")
