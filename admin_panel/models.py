@@ -565,7 +565,7 @@ class User(models.Model):
             for pr in busket.products:
                 obshiy_summa += pr.product.price(pr.month) * pr.count
                 pr_texts.append(f"""{pr.product.name(user.language)}
-        {money(pr.product.price(pr.month) // pr.month.months)} {self.language.money()} x {pr.month.months} {self.language.month()} = {money(pr.product.price(pr.month))}
+        {money(pr.product.price(pr.month) // pr.month.months)} {self.language.money()} x {pr.month.months} {self.language.month()} = {money(pr.product.price(pr.month))}  {self.language.money()} \n
         {money(pr.product.price(pr.month))} {self.language.money()} x {pr.count} = {money(pr.product.price(pr.month) * pr.count)} {self.language.money()}
         { x }: {money((pr.product.price(pr.month) // pr.month.months)  * pr.count) } {self.language.money()}""")
                 controls = []
