@@ -90,6 +90,7 @@ class Basehandlers():
         return FILIAL
     
     def filial(self, update:Update, context: CallbackContext):
+        update.message.video
         user, db = get_user(update)
         filial = Fillials.objects.filter(**{
             "name_" + context.user_data['register']['language'].code: update.message.text
