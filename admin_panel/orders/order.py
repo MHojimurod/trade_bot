@@ -177,8 +177,6 @@ def order_archive(request):
     fillials = Fillials.objects.all()
     data = ""
     if request.user.is_superuser:
-        orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5])
-        data = products_text(orders)
         if request.POST:
             data = request.POST
             if data.get("fillial")!= "all":
@@ -199,30 +197,34 @@ def order_archive(request):
             else:
                 orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5])
             data =  products_text(orders)
+        else:
+            orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5])
+            data = products_text(orders)
         
     else:
         actioner = Operators.objects.get(user=request.user)
         orders = Busket.objects.filter(bis_ordered=True, status__in=[2,5],actioner=actioner)
         data = products_text(orders)
-        data = request.POST
-        if data.get("fillial")!= "all":
-            if data.get("from")and data.get("to"):
-                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+        if request.POST:
+            data = request.POST
+            if data.get("fillial")!= "all":
+                if data.get("from")and data.get("to"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
+                elif data.get("from"):
+                    orders = Busket.objects.filter(fbis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+                elif data.get("to"):
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+                else:
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"))
+            elif data.get("from")and data.get("to"):
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
             elif data.get("from"):
-                orders = Busket.objects.filter(fbis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"))
             elif data.get("to"):
-                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
+                    orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__lte=data.get("to"))
             else:
-                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, user__filial_id=data.get("fillial"))
-        elif data.get("from")and data.get("to"):
-            orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"),order_time__lte=data.get("to")) 
-        elif data.get("from"):
-                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__gte=data.get("from"))
-        elif data.get("to"):
-                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5], actioner=actioner, order_time__lte=data.get("to"))
-        else:
-            orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5],actioner=actioner)
-        data = products_text(orders)
+                orders = Busket.objects.filter(bis_ordered=True,status__in=[2,5],actioner=actioner)
+            data = products_text(orders)
     ctx = {"orders": data, "order_active": "active","archive_active":"active","menu_open":"open","fillials":fillials}
     return render(request, 'dashboard/orders/archive.html', ctx)
 
