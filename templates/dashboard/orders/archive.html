@@ -42,6 +42,7 @@
               <th>Maxsulot</th>
               <th>Sana</th>
               <th>Operator</th>
+              <th>komment</th>
             </tr>
           </thead>
           <tbody class="table-border-bottom-0">
@@ -69,20 +70,25 @@
                 <button class="btn btn-danger btn-sm" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
               </td> -->
               <td>{{i.order.actioner.user.first_name}}</td>
+              <td>{{ i.order.comment }}</td>
             </tr> 
             <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
               <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
                 <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 
                 <div class="card-body">
                   <!-- <h5 class="card-title">Card title</h5> -->
+
                   <p class="card-text">{{i.items|safe}}</p>
                   {% if i.order.status == 5 %}
                   <a style="color: #fff;" href="{% url 'update_order' pk=i.order.id status=1 %}"
               class="btn btn-success mt-2">Qabul qilish</a>
 
-            <a style="color: #fff;" href="{% url 'order_not_accept' i.order.id %}" class="btn btn-danger mt-2">Rad etish</a>
+            <a style="color: #fff;" href="{% url 'order_not_accept' i.order.id %}" class="btn btn-danger mt-2" >Rad etish</a>
                 </div>
+                
+
                 {% endif %}
+
               
               </div>
             </div>
