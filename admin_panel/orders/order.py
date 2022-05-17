@@ -94,7 +94,6 @@ def orders_list(request):
 def update_order_status(request,pk,status):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
-        print(request.user)
         operator = Operators.objects.get(user=request.user)
         try:
             requests.get(f"http://localhost:8002/act", json={

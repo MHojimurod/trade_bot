@@ -77,8 +77,8 @@
                   <!-- <h5 class="card-title">Card title</h5> -->
                   <p class="card-text">{{i.items|safe}}</p>
                   {% if i.order.status == 5 %}
-                  <a style="color: #fff;" href="{% url 'order_accept' i.order.id  %}"
-              class="btn btn-success mt-2">Tasdiqlash</a>
+                  <a style="color: #fff;" href="{% url 'update_order' pk=i.order.id status=1 %}"
+              class="btn btn-success mt-2">Qabul qilish</a>
 
             <a style="color: #fff;" href="{% url 'order_not_accept' i.order.id %}" class="btn btn-danger mt-2">Rad etish</a>
                 </div>
