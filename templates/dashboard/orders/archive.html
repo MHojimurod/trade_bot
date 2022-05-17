@@ -76,11 +76,13 @@
                 <div class="card-body">
                   <!-- <h5 class="card-title">Card title</h5> -->
                   <p class="card-text">{{i.items|safe}}</p>
+                  {% if i.order.status == 5 %}
                   <a style="color: #fff;" href="{% url 'order_accept' i.order.id  %}"
               class="btn btn-success mt-2">Tasdiqlash</a>
 
             <a style="color: #fff;" href="{% url 'order_not_accept' i.order.id %}" class="btn btn-danger mt-2">Rad etish</a>
                 </div>
+                {% endif %}
               
               </div>
             </div>
