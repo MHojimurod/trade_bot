@@ -266,11 +266,11 @@ class Product(models.Model):
 
     def desc_uz_get(self):
         print(self.desc_uz.encode())
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ").replace("<br />","\n")
 
     def desc_ru_get(self):
         print(self.desc_ru)
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ").replace("<br />","\n")
 
     
     
