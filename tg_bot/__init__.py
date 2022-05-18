@@ -300,6 +300,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
     
     def send_sms(self):
         data = request.get_json()['data']
+        print(data)
         user: User = User.objects.filter(id=data["id"]).first()
         if user:
             try:
