@@ -176,10 +176,10 @@ class Fillials(models.Model):
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     def desc_ru_get(self):
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     
     
@@ -265,10 +265,12 @@ class Product(models.Model):
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        print(self.desc_uz.encode())
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     def desc_ru_get(self):
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        print(self.desc_ru)
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     
     
@@ -470,7 +472,7 @@ class User(models.Model):
 
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
+                text += """    <b>{per_month} x {months} {month_text} x {count} ta = {price} {money}</b>\n""".format(
                 per_month=money(product.price(i) // i.months),
                 months=i.months,
                 price=money(product.price(i)),
@@ -484,7 +486,7 @@ class User(models.Model):
             month: Percent = context.user_data['order']['current_product']['month']
 
 
-            text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
+            text += """    <b>{per_month} x {months} {month_text} x {count} ta = {price} {money}</b>\n""".format(
                 per_month=money(product.price(month) // month.months),
                 months=month.months,
                 price=money(product.price(month)),
@@ -518,11 +520,13 @@ class User(models.Model):
         # keyboard.append([
         #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
         # ])
-        text += {
+        x = {
             "uz": f"Bir oylik to'lov: {money(per_month)} so'm",
             "ru": f"Ежемесячный платеж: {money(per_month)} сум.",
             "en": f"Monthly payment: {money(per_month)} so'm"
         }[self.language.code]
+
+        text += f'<b>{x}</b>'
 
         keyboard.append([
             InlineKeyboardButton(
@@ -789,7 +793,7 @@ class Ads(models.Model):
     desc = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)
     def send_desc(self):
-        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")
+        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
 
 [].reverse
