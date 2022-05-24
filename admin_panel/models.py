@@ -446,7 +446,7 @@ class User(models.Model):
             self.text('back'), callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
-                self.text('back'), callback_data=f"category_pagination:{page - 1}"))
+                self.text('⬅️'), callback_data=f"category_pagination:{page - 1}"))
 
         if page < products_pages:
             controls.append(InlineKeyboardButton(

@@ -22,11 +22,12 @@ class Order:
         data = update.callback_query.data.split(":")
 
         update.callback_query.message.edit_text(
-            **db.category_list(int(data[1]), None, context, db))
+            **db.product_list(int(data[1]), context.user_data['order']['current_category']))
 
     def enter_category(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         data = update.callback_query.data.split(":")
+        print(data)
 
         category: Category = Category.objects.filter(id=int(data[1])).first()
         context.user_data['order']['current_category'] = category
