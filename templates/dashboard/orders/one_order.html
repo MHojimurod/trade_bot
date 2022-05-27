@@ -51,7 +51,7 @@
             <a style="color: #fff;" href="{% url 'order_accept' order.id  %}"
               class="btn btn-success mt-2">Tasdiqlash</a>
 
-            <a style="color: #fff;" href="{% url 'order_not_accept' order.id %}" class="btn btn-danger mt-2">Rad etish</a>
+              <button onclick="Reject( {{ i.order.id }} )" class="btn btn-danger mt-2">Rad etish</button>
             <a style="color: #fff;" href="{% url 'archive_order' order.id %}" class="btn btn-secondary mt-2">Arxiv</a>
           </div>
         </div>
@@ -62,18 +62,46 @@
     <div class="content-backdrop fade"></div>
   </div>
 </div>
+
+<div id="reject" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
+  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+    <div class="card-body">
+      <h5>Kamentariya qoldirish</h5>
+      <textarea class="form-control"  name="" id="description_data" cols="50" rows="5"></textarea>
+      <a  id="reject_order" style="color: #fff;" class="btn btn-primary mt-2">Yuborish</a>
+      <!-- <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a> -->
+    </div>
+  
+  </div>
+</div>
+
+{% csrf_token %}
 {% endblock %}
 {% block javascript %}
 <script>
-    var Getcheck = function() {
-    var data = document.getElementsByClassName("results");
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].checked) {
-        console.log("checked",data[i].value);}
-      else {
-        console.log("unchecked",data[i].value);
-      }
+  function Reject(id) {
+    console.log(id);
+    
+    document.getElementById("reject").dataset['product'] = id;
+    
+    document.getElementById("reject_order").onclick = async (e) => {
+       let req = await (await fetch(`{% url 'order_not_accept' order.id %}`, {
+         method: "POST",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          },
+         body: JSON.stringify({
+         desc: document.getElementById("description_data").value
+         })
+       }) );
+       console.log( await req.text())
+       location.href = "{% url 'orders_list' %}"
+
+       console.log(this);
     }
-    }
+    document.getElementById("reject").style.display = "block";
+
+  }
 </script>
 {% endblock %}

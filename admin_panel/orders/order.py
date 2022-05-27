@@ -1,3 +1,4 @@
+import json
 import requests
 from admin_panel.models import Busket, BusketItem, Fillials, Operators, money
 from django.shortcuts import redirect, render
@@ -267,16 +268,21 @@ def order_accept(request,pk):
 def order_not_accept(request, pk):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
+        comment = request.POST.get("comment")
+        data = json.loads(request.body.decode())
+        print(data)
+        comment = data['desc']
+        order.comment = comment
         order.status = 4
         operator = Operators.objects.get(user=request.user)
         order.actioner = operator
         operator.is_have = False
         order.save()
         operator.save()
-        requests.get(f"http://localhost:6002/order_updated", json={
-                'order': order.id,
-                'status': 4
-            })
+        # requests.get(f"http://localhost:6002/order_updated", json={
+        #         'order': order.id,
+        #         'status': 4
+        #     })
         messages.success(request,"Maxsulot rad etildi")
     else:
         messages.error(request,"Kechirasiz siz Operator emassiz")

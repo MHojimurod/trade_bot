@@ -5,8 +5,10 @@ from admin_panel.models import BotSettings, Operators
 
 def get_current_context(request):
     try:
-        data  = requests.get("https://cbu.uz/uz/arkhiv-kursov-valyut/json/")
-        return {"currency":data.json()[0]}
+        data = 0
+        # data  = requests.get("https://cbu.uz/uz/arkhiv-kursov-valyut/json/")
+        # return {"currency":data.json()[0]}
+        return {"currency":0}
     except:
         return {"currency":0}
     # return {"currency":0}
