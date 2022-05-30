@@ -40,8 +40,8 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Kommentariya</th>
               <th>Sana</th>
-              <th>komment</th>
               <th>Operator</th>
             </tr>
           </thead>
@@ -62,40 +62,43 @@
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
-              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
-              <!-- <td>
-                <a href="{% url 'one_order' i.order.id %}" class="btn btn-success btn-sm" >Qabul qilish</a>
-              </td>
+              
               <td>
-                <button class="btn btn-danger btn-sm" onclick="Reject( {{ i.order.id }} )">Rad etish</button>
-              </td> -->
-              {% if i.order.commnet %}
-              <td>{{ i.order.comment }}</td>
-              {% else %}
-              <td>Komment yo'q</td>
-              {% endif %}
+                {% if i.order.comment %}
+                <button class="btn btn-info btn-sm" onclick="Comments({{i.order.id}})" >Komment</button>
+                {% else %}
+                Komment yo'q
+                {% endif %}
+              </td>
+              <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>{{i.order.actioner.user.first_name}}</td>
             </tr> 
-            <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
-              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+            <div id="comment_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%;  display: none;">
+              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%; border: solid 1px #696cff;">
+                <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove1({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 
+                <div class="card-body">
+                  <!-- <h5 class="card-title">Card title</h5> -->
+                  <p class="card-text">{{i.order.comment}}</p>
+                </div>
+              
+              </div>
+            </div>
+            <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%;  display: none;">
+              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;border: solid 1px #696cff;">
                 <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 
                 <div class="card-body">
                   <!-- <h5 class="card-title">Card title</h5> -->
 
                   <p class="card-text">{{i.items|safe}}</p>
                   {% if i.order.status == 5 %}
-                  <a style="color: #fff;" href="{% url 'update_order' pk=i.order.id status=1 %}"
-              class="btn btn-success mt-2">Qabul qilish</a>
-
-            <a style="color: #fff;" href="{% url 'order_not_accept' i.order.id %}" class="btn btn-danger mt-2" >Rad etish</a>
+                  <button onclick="Accept( {{ i.order.id }} )"class="btn btn-success mt-2">Tasdiqlash</button>
+                  <button onclick="Reject( {{ i.order.id }} )"  class="btn btn-danger mt-2">Rad etish</button>
                 </div>
                 
-
                 {% endif %}
-
-              
               </div>
             </div>
+            
             {% endfor %}                      
           </tbody>
           <tfoot>
@@ -105,8 +108,8 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Kommentariya</th>
               <th>Sana</th>
-              <th>Komment</th>
               <th>Operator</th>
             </tr>
           </tfoot>
@@ -119,18 +122,28 @@
 
 
 
-<div id="reject" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
-  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+<div id="reject" style="position: fixed; width: 100%;height: 100%;  display: none;">
+  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;border: solid 1px #696cff;">
     <div class="card-body">
       <h5>Kamentariya qoldirish</h5>
-      <textarea class="form-control"  name="" id="description_data" cols="50" rows="5"></textarea>
-      <a href="#" id="reject_order" style="color: #fff;" class="btn btn-primary mt-2">Yuborish</a>
-      <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a>
+      <textarea class="form-control"  name="" id="description_data" cols="50" rows="5" placeholder="Kommentariya (ixtiyoriy)"></textarea>
+      <a  id="reject_order" style="color: #fff;" class="btn btn-primary mt-2">Yuborish</a>
+      <!-- <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a> -->
     </div>
   
   </div>
 </div>
-
+<div id="accept" style="position: fixed; width: 100%;height: 100%;  display: none;">
+  <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%; border: solid 1px #696cff;">
+    <div class="card-body">
+      <h5>Kamentariya qoldirish</h5>
+      <textarea class="form-control"  name="" id="description_data1" cols="50" rows="5" placeholder="Kommentariya (ixtiyoriy)"></textarea>
+      <a  id="accept_order" style="color: #fff;" class="btn btn-primary mt-2">Yuborish</a>
+      <!-- <a href="#"  class="btn btn-secondary mt-2">O'tkazib yuborish</a> -->
+    </div>
+  
+  </div>
+</div>
 
 
 
@@ -148,12 +161,18 @@
     document.getElementById("card_"+String(product)).style.display = "none";
 
   }
+  function Comments(product) {
+    a = document.getElementById("comment_"+String(product)).style.display = "block";
+    console.log(a);
+  }
+  function Remove1(product) {
+      document.getElementById("comment_"+String(product)).style.display = "none";
+  }
   function Reject(id) {
 
     document.getElementById("reject").dataset['product'] = id;
     document.getElementById("reject_order").onclick = async (e) => {
 
-       console.log();
        let req = await (await fetch(`/orders/reject/${e.target.parentElement.parentElement.parentElement.dataset['product']}`, {
          method: "POST",
           headers: {
@@ -168,6 +187,26 @@
        console.log(this);
     }
     document.getElementById("reject").style.display = "block";
+  }
+  
+  function Accept(id) {
+    document.getElementById("accept").dataset['product'] = id;
+    document.getElementById("accept_order").onclick = async (e) => {
+      let req = await (await fetch(`/orders/accept/${e.target.parentElement.parentElement.parentElement.dataset['product']}`, {
+         method: "POST",
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+          },
+         body: JSON.stringify({
+         desc: document.getElementById("description_data1").value
+         })
+       }) );
+       location.href = "{% url 'orders_list' %}"
+
+    }
+    document.getElementById("accept").style.display = "block";
+
   }
 </script>
 

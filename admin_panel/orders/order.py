@@ -12,7 +12,7 @@ def filter_text(request,status):
         if data.get("from")and data.get("to"):
             orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),order_time__lte=data.get("to"))
         elif data.get("from"):
-            orders = Busket.objects.filter(fbis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
+            orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__gte=data.get("from"),)
         elif data.get("to"):
             orders = Busket.objects.filter(bis_ordered=True,status=status, user__filial_id=data.get("fillial"),order_time__lte=data.get("to"))
         else:
@@ -250,6 +250,7 @@ def order_accept(request,pk):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
         order.status = 3
+        order.comment =json.loads(request.body.decode())['desc']
         operator = Operators.objects.get(user=request.user)
         order.actioner = operator
         operator.is_have = False
@@ -270,7 +271,6 @@ def order_not_accept(request, pk):
         order = Busket.objects.get(pk=pk)
         comment = request.POST.get("comment")
         data = json.loads(request.body.decode())
-        print(data)
         comment = data['desc']
         order.comment = comment
         order.status = 4
@@ -298,6 +298,7 @@ def reject_order(request, pk):
         request.user.save()
         order = Busket.objects.get(pk=pk)
         order.status = 2
+        order.comment = json.loads(request.body.decode())['desc']
         order.actioner = Operators.objects.filter(user=request.user).first()
         order.save()
         try:
@@ -320,10 +321,11 @@ def archive_order(request, pk):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
         op = Operators.objects.filter(user=request.user)
-        
         order.actioner = op.first()
         op.update(is_have=False)
         order.status = 5
+        order.comment = json.loads(request.body.decode())['desc']
+
         order.save()
         messages.warning(request,"Maxsulot arxivga joylandi")
     else:

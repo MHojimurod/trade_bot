@@ -13,27 +13,31 @@ def all_statistika(request):
     uz_percent = 100* uz_user // all_user
     ru_percent = 100* ru_user // all_user
     
-    categories = Category.objects.filter(parent=None)
-    category_data = []
-    for i in categories:
-        for j in Category.objects.filter(parent=i):
-            if len(category_data):
-                for l in category_data:
-                    if i.name_uz == l["category"]:
-                        l.update({"data":l["data"]+BusketItem.objects.filter(product__category=j).count()})
-                    else:
-                        category_data.append({
-                            "category":i.name_uz,
-                            "data":BusketItem.objects.filter(product__category=j).count()
-                        })
-            else:
-                category_data.append({
-                    "category":i.name_uz,
-                    "data":BusketItem.objects.filter(product__category=j).count()
-                })
+    category_data = [
+        {
+            "category": i.name_uz,
+            "data": i.sold_products
+        } for i in Category.objects.filter(parent=None)
+    ]
 
+    # for i in categories:
+    #     for j in Category.objects.filter(parent=i):
+    #         if len(category_data):
+    #             for l in category_data:
+    #                 if i.name_uz == l["category"] :
+    #                     l.update({"category":i.name_uz,"data":l["data"]+BusketItem.objects.filter(product__category=j).count()})
+    #                 else:
+    #                     category_data.append({
+    #                         "category":i.name_uz,
+    #                         "data":BusketItem.objects.filter(product__category=j).count()
+    #                     })
+    #         else:
+    #             category_data.append({
+    #                 "category":i.name_uz,
+    #                 "data":BusketItem.objects.filter(product__category=j).count()
+    #             })
 
-
+    print(category_data)
     operators = Operators.objects.all()
     fillials = Fillials.objects.all()
     fillial_data = []

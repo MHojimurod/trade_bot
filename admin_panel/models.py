@@ -235,19 +235,27 @@ class Category(models.Model):
         'self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f" {self.name_uz} | cats{len(self.sub_categories())} - products {len(self.products())}"
+        return f" {self.name_uz} | cats {len(self.sub_categories())} - products {len(self.products())} { f'sub {self.parent.name_uz}' if self.parent else ''} "
 
     def name(self, language: Language = None) -> str:
         if language is None:
             return self.name_uz
         return self.__getattribute__(f"name_{language.code}")
 
-    def products(self):
+    def products(self) -> "list[Product]":
         # return Product.objects.filter(category=self).exclude(desc_uz="", desc_ru="")
         return Product.objects.filter(category=self)
 
-    def sub_categories(self):
+    def sub_categories(self) -> "list[Category]":
         return Category.objects.filter(parent=self)
+    
+    @property
+    def sold_products(self):
+        return sum(i.sold_products_sub() for i in self.sub_categories())
+    
+    def sold_products_sub(self):
+        return sum( i.monthly_sold() for i in self.products())
+
 
 
 class Product(models.Model):
@@ -261,6 +269,11 @@ class Product(models.Model):
     color: "Color" = models.ForeignKey("Color", on_delete=models.CASCADE, null=True, blank=True)
     desc_uz: str = RichTextField(default="", blank=True)
     desc_ru: str = RichTextField(default="", blank=True)
+
+    def monthly_sold(self):
+        return sum(
+            [i.count for i in [j for j in BusketItem.objects.filter(product=self) if j.busket.is_ordered]]
+        )
 
 
 
