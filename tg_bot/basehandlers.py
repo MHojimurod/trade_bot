@@ -19,6 +19,7 @@ db: User
 
 class Basehandlers():
     def start(self, update:Update, context:CallbackContext):
+        print('sdfsdf')
         user, db = get_user(update)
         context.user_data['temp_message'] = None
         context.user_data['register'] = {

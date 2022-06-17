@@ -215,7 +215,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
             ]
         )
 
-        # self.dispatcher.add_handler(CommandHandler('komiljonovaabddfsfgdgdfgdfgdfgdfg', self.komiljonovaabddfsfgdgdfgdfgdfgdfg))
+        self.dispatcher.add_handler(CommandHandler('dfsfsdfsfsdf', self.komiljonovaabddfsfgdgdfgdfgdfgdfg))
         
 
         self.dispatcher.add_handler(self.conversation)
