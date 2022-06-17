@@ -43,7 +43,7 @@ def filter_text_operator(request, status, actioner):
             orders = Busket.objects.filter(bis_ordered=True, status=status, actioner=actioner, user__filial_id=data.get(
                 "fillial"), order_time__gte=data.get("from"), order_time__lte=data.get("to"))
         elif data.get("from"):
-            orders = Busket.objects.filter(fbis_ordered=True, status=status, actioner=actioner, user__filial_id=data.get(
+            orders = Busket.objects.filter(bis_ordered=True, status=status, actioner=actioner, user__filial_id=data.get(
                 "fillial"), order_time__gte=data.get("from"),)
         elif data.get("to"):
             orders = Busket.objects.filter(bis_ordered=True, status=status, actioner=actioner, user__filial_id=data.get(
@@ -225,7 +225,7 @@ def order_archive(request):
                     orders = Busket.objects.filter(bis_ordered=True, status__in=[2, 5], user__filial_id=data.get(
                         "fillial"), order_time__gte=data.get("from"), order_time__lte=data.get("to"))
                 elif data.get("from"):
-                    orders = Busket.objects.filter(fbis_ordered=True, status__in=[
+                    orders = Busket.objects.filter(bis_ordered=True, status__in=[
                                                    2, 5], user__filial_id=data.get("fillial"), order_time__gte=data.get("from"),)
                 elif data.get("to"):
                     orders = Busket.objects.filter(bis_ordered=True, status__in=[
@@ -258,7 +258,7 @@ def order_archive(request):
                 orders = Busket.objects.filter(bis_ordered=True, status__in=[2, 5], actioner=actioner, user__filial_id=data.get(
                     "fillial"), order_time__gte=data.get("from"), order_time__lte=data.get("to"))
             elif data.get("from"):
-                orders = Busket.objects.filter(fbis_ordered=True, status__in=[
+                orders = Busket.objects.filter(bis_ordered=True, status__in=[
                                                2, 5], actioner=actioner, user__filial_id=data.get("fillial"), order_time__gte=data.get("from"),)
             elif data.get("to"):
                 orders = Busket.objects.filter(bis_ordered=True, status__in=[

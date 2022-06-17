@@ -121,11 +121,7 @@ def all_statistika(request):
                             "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__lte=data.get("from"),).count(),
                             "archive":Busket.objects.filter(actioner=i,status=5,order_time__lte=data.get("from"),).count(),
                         })  
-<<<<<<< HEAD
-    filter_active_filial = request.POST.get("fillial")
-    from_date = request.POST.get("from")
-    to_date = request.POST.get("to")
-=======
+    
         else:
             for i in operators:
                 DATA.append({   
@@ -134,9 +130,11 @@ def all_statistika(request):
                             "not_accept":Busket.objects.filter(actioner=i,status=4,).count(),
                             "archive":Busket.objects.filter(actioner=i,status=5,).count(),
                         })
+    filter_active_filial = request.POST.get("fillial")
+    from_date = request.POST.get("from")
+    to_date = request.POST.get("to")
 
     
->>>>>>> 764419ccb970de301d403403a4f3ce36232ece14
     ctx = {
         "statistics_active": "active",
         "today_user":today_user, #
