@@ -7,7 +7,7 @@ For more information about skins, please check the [CKEditor Skin SDK](https://c
 documentation.
 
 Features
--------------------
+BarchasiBarchasi-
 "Moono-lisa" is a monochromatic skin, which offers a modern, flat and minimalistic look which blends very well in modern design.
 It comes with the following features:
 
@@ -16,7 +16,7 @@ It comes with the following features:
 - Graphics source provided in SVG.
 
 Directory Structure
--------------------
+BarchasiBarchasi-
 
 CSS parts:
 - **editor.css**: the main CSS file. It's simply loading several other files, for easier maintenance,

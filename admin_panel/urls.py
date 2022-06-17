@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.urls import path
 from admin_panel.category.categories import create_category, delete_category, edit_category, list_category
 from admin_panel.offers.main import *
@@ -11,6 +12,13 @@ from admin_panel.orders.order import archive_order, order_accept, order_accepted
 from admin_panel.statistics.statistika import all_statistika
 from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
 from admin_panel.ads_and_present.main import add_ads, all_ads,delete_ads,send_ads
+
+def currency_api(request):
+    data  = requests.get("https://cbu.uz/uz/arkhiv-kursov-valyut/json/")
+    return JsonResponse(data.json()[0])
+
+
+
 
 
 urlpatterns = [
@@ -103,4 +111,6 @@ urlpatterns = [
     path("offers/list",all_offers,name="all_offers"),
     path("offers/add",add_offers,name="add_offers"),
     path("offers/delete/<int:pk>",delete_offer,name="delete_offers"),
+
+    path('currency_api/', currency_api, name='currency_api'),
 ]

@@ -4,12 +4,13 @@ from admin_panel.models import BotSettings, Operators
 
 
 def get_current_context(request):
+    print('currency')
     try:
         data  = requests.get("https://cbu.uz/uz/arkhiv-kursov-valyut/json/")
+        print(data.elapsed.total_seconds())
         return {"currency":data.json()[0]}
     except:
         return {"currency":0}
-    # return {"currency":0}
 
 
 def update_currency(request):

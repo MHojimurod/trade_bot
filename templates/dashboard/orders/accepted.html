@@ -18,15 +18,15 @@
       <div class="d-flex justify-content-between" style="margin: 30px 30px 10px 20px;">
         <div>
           <select class="btn-sm btn" style="border: solid 1px #8592a3;" name="fillial" id="">
-            <option value="all">---------</option>
+            <option value="all">Barchasi</option>
             {% for i in fillials %}
-            <option  value="{{i.id}}">{{i.name_uz}}</option>
+            <option  value="{{i.id}}" {% if i.id == filter_active_filial %} {{ 'selected' }} {% endif %} >{{i.name_uz}}</option>
             {% endfor %}
           </select>
 
-           <input type="date" name="from" style="border: solid 1px #8592a3;"   class="dropdown-toggle btn btn-sm"/>
+           <input type="date" {% if from_date %} value="{{ from_date }}"  {% endif %} name="from" style="border: solid 1px #8592a3;"   class="dropdown-toggle btn btn-sm"/>
 
-           <input type="date" name="to" style="border: solid 1px #8592a3;"  class="dropdown-toggle btn btn-sm"/>
+           <input type="date" {% if to_date %} value="{{ to_date }}"  {% endif %} name="to" style="border: solid 1px #8592a3;"  class="dropdown-toggle btn btn-sm"/>
            <button type="submit" class="btn btn-sm btn-secondary">Filter</button>
         </div>
       </div>

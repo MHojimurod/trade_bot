@@ -13,18 +13,18 @@ The default version of SCAYT plugin for CKEditor 4 is using the free services of
 To lift the limitations and get rid of the banner, [obtain a license](https://webspellchecker.com/wsc-scayt-ckeditor4/#pricing). Depending on your needs, you can choose a Cloud-based or Server (self-hosted) solution.
 
 Demo
-------------
+Barchasi---
 SCAYT plugin for CKEditor 4: https://webspellchecker.com/wsc-scayt-ckeditor4/
 
 Supported languages
-------------
+Barchasi---
 
 The SCAYT plugin for CKEditor as a part of the free services supports the next languages for check spelling: American English, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmal, Spanish, Swedish.
 
 There are also additional languages and specialized dictionaries available for a commercial license, you can check the full list [here](https://webspellchecker.com/additional-dictionaries/).
 
 Get started
-------------
+Barchasi---
 
 1. Clone/copy this repository contents in a new "plugins/scayt" folder in your CKEditor installation.
 2. Enable the "scayt" plugin in the CKEditor configuration file (config.js):

@@ -418,9 +418,9 @@ module.exports = function(XRegExp) {
      * @requires XRegExp
      */
 
-    // ==--------------------------==
+    // ==BarchasiBarchasi--------==
     // Private stuff
-    // ==--------------------------==
+    // ==BarchasiBarchasi--------==
 
     // Storage for Unicode data
     var unicode = {};
@@ -512,9 +512,9 @@ module.exports = function(XRegExp) {
         );
     }
 
-    // ==--------------------------==
+    // ==BarchasiBarchasi--------==
     // Core functionality
-    // ==--------------------------==
+    // ==BarchasiBarchasi--------==
 
     /*
      * Add astral mode (flag A) and Unicode token syntax: `\p{..}`, `\P{..}`, `\p{^..}`, `\pC`.
@@ -2741,9 +2741,9 @@ module.exports = XRegExp;
  * cross-browser inconsistencies.
  */
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Private stuff
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 // Property name used for extended regex instance data
 var REGEX_DATA = 'xregexp';
@@ -3254,9 +3254,9 @@ function toObject(value) {
     return value;
 }
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Constructor
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 /**
  * Creates an extended regular expression object for matching text with a pattern. Differs from a
@@ -3383,9 +3383,9 @@ function XRegExp(pattern, flags) {
 // Add `RegExp.prototype` to the prototype chain
 XRegExp.prototype = new RegExp();
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Public properties
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 /**
  * The XRegExp version number as a string containing three dot-separated parts. For example,
@@ -3397,9 +3397,9 @@ XRegExp.prototype = new RegExp();
  */
 XRegExp.version = '3.2.0';
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Public methods
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 // Intentionally undocumented; used in tests and addons
 XRegExp._clipDuplicates = clipDuplicates;
@@ -4144,9 +4144,9 @@ XRegExp.union = function(patterns, flags, options) {
     return XRegExp(output.join(separator), flags);
 };
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Fixed/extended native methods
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 /**
  * Adds named capture support (with backreferences returned as `result.name`), and fixes browser
@@ -4445,9 +4445,9 @@ fixed.split = function(separator, limit) {
     return output.length > limit ? output.slice(0, limit) : output;
 };
 
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 // Built-in syntax/flag tokens
-// ==--------------------------==
+// ==BarchasiBarchasi--------==
 
 /*
  * Letter escapes that natively match literal characters: `\a`, `\A`, etc. These should be

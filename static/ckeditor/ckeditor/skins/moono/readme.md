@@ -9,7 +9,7 @@ For more information about skins, please check the [CKEditor Skin SDK](http://do
 documentation.
 
 Features
--------------------
+BarchasiBarchasi-
 "Moono" is a monochromatic skin, which offers a modern look coupled with gradients and transparency.
 It comes with the following features:
 
@@ -18,7 +18,7 @@ It comes with the following features:
 - graphics source provided in SVG.
 
 Directory Structure
--------------------
+BarchasiBarchasi-
 
 CSS parts:
 - **editor.css**: the main CSS file. It's simply loading several other files, for easier maintenance,

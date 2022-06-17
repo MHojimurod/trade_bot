@@ -1175,7 +1175,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	} );
 
 	/* Attributes
-	---------------------------------------------------------------------- */
+	BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi------- */
 
 	// Support: IE<8
 	// Verify that getAttribute really returns attributes and not properties
@@ -1186,7 +1186,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	} );
 
 	/* getElement(s)By*
-	---------------------------------------------------------------------- */
+	BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi------- */
 
 	// Check if getElementsByTagName("*") returns only elements
 	support.getElementsByTagName = assert( function( el ) {
@@ -1302,7 +1302,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	};
 
 	/* QSA/matchesSelector
-	---------------------------------------------------------------------- */
+	BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi------- */
 
 	// QSA and matchesSelector support
 
@@ -1444,7 +1444,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join( "|" ) );
 
 	/* Contains
-	---------------------------------------------------------------------- */
+	BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi------- */
 	hasCompare = rnative.test( docElem.compareDocumentPosition );
 
 	// Element contains another
@@ -1472,7 +1472,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		};
 
 	/* Sorting
-	---------------------------------------------------------------------- */
+	BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi------- */
 
 	// Document order sorting
 	sortOrder = hasCompare ?

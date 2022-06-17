@@ -28,7 +28,7 @@ recipient of your version of this software to use, reproduce, modify
 and distribute this software under any of the above licenses.
 
 Sources of Intellectual Property Included in CKEditor
------------------------------------------------------
+BarchasiBarchasiBarchasiBarchasiBarchasi--------
 
 Where not otherwise indicated, all CKEditor content is authored by
 CKSource engineers and consists of CKSource-owned intellectual
@@ -58,7 +58,7 @@ The following libraries are included in CKEditor under the BSD-3 License (see Ap
 
 
 Trademarks
-----------
+Barchasi-
 
 CKEditor is a trademark of CKSource - Frederico Knabben. All other brand
 and product names are trademarks, registered trademarks or service
@@ -67,7 +67,7 @@ marks of their respective holders.
 ---
 
 Appendix A: The GPL License
----------------------------
+BarchasiBarchasiBarchasi
 
 ```
 GNU GENERAL PUBLIC LICENSE
@@ -353,7 +353,7 @@ END OF TERMS AND CONDITIONS
 ```
 
 Appendix B: The LGPL License
-----------------------------
+BarchasiBarchasiBarchasi-
 
 ```
 GNU LESSER GENERAL PUBLIC LICENSE
@@ -817,7 +817,7 @@ END OF TERMS AND CONDITIONS
 ```
 
 Appendix C: The MPL License
----------------------------
+BarchasiBarchasiBarchasi
 
 ```
 MOZILLA PUBLIC LICENSE
@@ -1290,7 +1290,7 @@ EXHIBIT A -Mozilla Public License.
 ```
 
 Appendix D: The MIT License
----------------------------
+BarchasiBarchasiBarchasi
 
 ```
 The MIT License (MIT)
@@ -1315,11 +1315,11 @@ THE SOFTWARE.
 ```
 
 Appendix E: The SIL Open Font License Version 1.1
----------------------------------------------
+BarchasiBarchasiBarchasiBarchasiBarchasi
 
 ```
 SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
------------------------------------------------------------
+BarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
 
 PREAMBLE
 The goals of the Open Font License (OFL) are to stimulate worldwide
@@ -1406,7 +1406,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 ```
 
 Appendix F: The BSD-3 License
------------------------------
+BarchasiBarchasiBarchasi--
 
 ```
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -1422,7 +1422,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 
 Appendix H: The BSD-2 License
------------------------------
+BarchasiBarchasiBarchasi--
 
 ```
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

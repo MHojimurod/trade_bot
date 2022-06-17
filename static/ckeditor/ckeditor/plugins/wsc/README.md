@@ -1,5 +1,5 @@
 Imprortant!
-------------
+Barchasi---
 WebSpellChecker Dialog plugin for CKEditor 4 is appoaching its end-of-life (EOL) in 2021. Find out more in our [blog post](https://webspellchecker.com/blog/2020/12/02/end-of-life-for-spell-checker-dialog-plugin-for-ckeditor-4/) about its termination schedule.
 
 WebSpellChecker Dialog plugin for CKEditor 4
@@ -18,18 +18,18 @@ The default version of WSC Dialog plugin for CKEditor 4 is using the free servic
 To lift the limitations and get rid of the banner, [obtain a license](https://webspellchecker.com/wsc-dialog-ckeditor4/#pricing). Depending on your needs, you can choose a Cloud-based or Server (self-hosted) solution.
 
 Demo
-------------
+Barchasi---
 WSC Dialog plugin for CKEditor 4: https://webspellchecker.com/wsc-dialog-ckeditor4/
 
 Supported languages
-------------
+Barchasi---
 
 The WSC Dialog plugin for CKEditor as a part of the free services supports the next languages for check spelling: American English, British English, Canadian English, Canadian French, Danish, Dutch, Finnish, French, German, Greek, Italian, Norwegian Bokmal, Spanish, Swedish.
 
 There are also additional languages and specialized dictionaries available for a commercial license, you can check the full list [here](https://webspellchecker.com/additional-dictionaries/). 
 
 Get started
-------------
+Barchasi---
 
 1. Clone/copy this repository contents in a new "plugins/wsc" folder in your CKEditor installation.
 2. Enable the "wsc" plugin in the CKEditor configuration file (config.js):

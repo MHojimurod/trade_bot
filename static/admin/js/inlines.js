@@ -201,7 +201,7 @@
     };
 
 
-    // Tabular inlines ---------------------------------------------------------
+    // Tabular inlines BarchasiBarchasiBarchasiBarchasiBarchasiBarchasi---
     $.fn.tabularFormset = function(selector, options) {
         const $rows = $(this);
 
@@ -259,7 +259,7 @@
         return $rows;
     };
 
-    // Stacked inlines ---------------------------------------------------------
+    // Stacked inlines BarchasiBarchasiBarchasiBarchasiBarchasiBarchasi---
     $.fn.stackedFormset = function(selector, options) {
         const $rows = $(this);
         const updateInlineLabel = function(row) {

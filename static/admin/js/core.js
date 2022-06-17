@@ -23,10 +23,10 @@ function removeChildren(a) {
     }
 }
 
-// ----------------------------------------------------------------------------
+// BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi----
 // Find-position functions by PPK
 // See https://www.quirksmode.org/js/findpos.html
-// ----------------------------------------------------------------------------
+// BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi----
 function findPosX(obj) {
     let curleft = 0;
     if (obj.offsetParent) {
@@ -53,9 +53,9 @@ function findPosY(obj) {
     return curtop;
 }
 
-//-----------------------------------------------------------------------------
+//BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
 // Date object extensions
-// ----------------------------------------------------------------------------
+// BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi----
 {
     Date.prototype.getTwelveHours = function() {
         return this.getHours() % 12 || 12;
@@ -130,9 +130,9 @@ function findPosY(obj) {
         return result;
     };
 
-    // ----------------------------------------------------------------------------
+    // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi----
     // String object extensions
-    // ----------------------------------------------------------------------------
+    // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi----
     String.prototype.strptime = function(format) {
         const split_format = format.split(/[.\-/]/);
         const date = this.split(/[.\-/]/);

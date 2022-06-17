@@ -117,7 +117,9 @@ def all_statistika(request):
                             "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__lte=data.get("from"),).count(),
                             "archive":Busket.objects.filter(actioner=i,status=5,order_time__lte=data.get("from"),).count(),
                         })  
-    
+    filter_active_filial = request.POST.get("fillial")
+    from_date = request.POST.get("from")
+    to_date = request.POST.get("to")
     ctx = {
         "statistics_active": "active",
         "today_user":today_user, #
@@ -131,5 +133,8 @@ def all_statistika(request):
         "fillial_data":fillial_data,
         "category_data":category_data,
         "fillials":fillials,
+        "filter_active_filial": int(filter_active_filial) if not filter_active_filial in ('all', None)  else 0,
+        "from_date":from_date,
+        "to_date":to_date,
     }
     return render(request, 'dashboard/statistics/statistic.html',ctx)

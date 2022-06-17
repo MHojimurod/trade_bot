@@ -192,7 +192,9 @@
           <i class="bx bx-search fs-4 lh-0"></i>
           <input type="text" class="form-control border-0 shadow-none" placeholder="Search..." aria-label="Search...">
         </div> -->
-      <div>{{currency.Ccy}} {{currency.Rate}}</div>
+      <!-- <div id="currency_tab" >{{currency.Ccy}} {{currency.Rate}}</div> -->
+      <div id="currency_tab" ></div>
+
 
       <form method="get">
         {% csrf_token %}
@@ -295,3 +297,36 @@
     </ul>
   </div>
 </nav>
+
+
+
+<!-- block jabascript -->
+<script>
+  // $(document).ready(function () {
+      // send request to server
+  //     $.ajax({
+  //         url: "https://cbu.uz/uz/arkhiv-kursov-valyut/json/",
+  //         type: "GET",
+  //         dataType: "json",
+  //         success: function (data) {
+  //             $('#currency_tab').html(data.Ccy + ' ' + data.Rate);
+  //         }
+  //     });
+
+  // });
+    // send request to server with fetch
+    // set url for currency_api from django template
+    // const url = '{{currency_api}}';
+    fetch("{% url 'currency_api' %}", {
+        method: "GET",
+        headers: {
+    'Access-Control-Allow-Origin':'*'
+    }
+    })
+    .then(response => response.json())
+    .then(data => {
+        $('#currency_tab').html(data.Ccy + ' ' + data.Rate);
+    });
+
+
+  </script>

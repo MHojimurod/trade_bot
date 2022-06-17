@@ -13,7 +13,7 @@
   borderColor = config.colors.borderColor;
 
   // Total Revenue Report Chart - Bar Chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const totalRevenueChartEl = document.querySelector('#totalRevenueChart'),
     totalRevenueChartOptions = {
       series: [
@@ -275,7 +275,7 @@
   }
 
   // Growth Chart - Radial Bar Chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const growthChartEl = document.querySelector('#growthChart'),
     growthChartOptions = {
       series: [78],
@@ -356,7 +356,7 @@
   }
 
   // Profit Report Line Chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const profileReportChartEl = document.querySelector('#profileReportChart'),
     profileReportChartConfig = {
       chart: {
@@ -419,7 +419,7 @@
   }
 
   // Order Statistics Chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const chartOrderStatistics = document.querySelector('#orderStatisticsChart'),
     orderChartConfig = {
       chart: {
@@ -489,7 +489,7 @@
   }
 
   // Income Chart - Area chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const incomeChartEl = document.querySelector('#incomeChart'),
     incomeChartConfig = {
       series: [
@@ -588,7 +588,7 @@
   }
 
   // Expenses Mini Chart - Radial Chart
-  // --------------------------------------------------------------------
+  // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
   const weeklyExpensesEl = document.querySelector('#expensesOfWeek'),
     weeklyExpensesConfig = {
       series: [65],

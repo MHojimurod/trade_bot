@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
       horizVertExample = document.getElementById('both-scrollbars-example');
 
     // Vertical Example
-    // --------------------------------------------------------------------
+    // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
     if (verticalExample) {
       new PerfectScrollbar(verticalExample, {
         wheelPropagation: false
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Horizontal Example
-    // --------------------------------------------------------------------
+    // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
     if (horizontalExample) {
       new PerfectScrollbar(horizontalExample, {
         wheelPropagation: false,
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Both vertical and Horizontal Example
-    // --------------------------------------------------------------------
+    // BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi-----
     if (horizVertExample) {
       new PerfectScrollbar(horizVertExample, {
         wheelPropagation: false

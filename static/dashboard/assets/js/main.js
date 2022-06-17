@@ -8,7 +8,7 @@ let menu, animate;
 
 (function () {
   // Initialize menu
-  //-----------------
+  //Barchasi--------
 
   let layoutMenuEl = document.querySelectorAll('#layout-menu');
   layoutMenuEl.forEach(function (element) {
@@ -71,7 +71,7 @@ let menu, animate;
   }
 
   // Init helpers & misc
-  // --------------------
+  // BarchasiBarchasi--
 
   // Init BS Tooltip
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -104,7 +104,7 @@ let menu, animate;
   window.Helpers.initSpeechToText();
 
   // Manage menu expanded/collapsed with templateCustomizer & local storage
-  //------------------------------------------------------------------
+  //BarchasiBarchasiBarchasiBarchasiBarchasiBarchasiBarchasi---
 
   // If current layout is horizontal OR current window screen is small (overlay menu) than return from here
   if (window.Helpers.isSmallScreen()) {

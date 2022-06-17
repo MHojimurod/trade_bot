@@ -18,11 +18,11 @@ Licensed under the terms of any of the following licenses at your choice:
 You are not required to, but if you want to explicitly declare the license you have chosen to be bound to when using, reproducing, modifying and distributing this software, just include a text file titled "legal.txt" in your version of this software, indicating your license choice.
 
 Sources of Intellectual Property Included in this plugin
---------------------------------------------------------
+BarchasiBarchasiBarchasiBarchasiBarchasiBarchasi--
 
 Where not otherwise indicated, all plugin content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, the plugin will incorporate work done by developers outside of CKSource with their express permission.
 
 Trademarks
-----------
+Barchasi-
 
 CKEditor is a trademark of CKSource - Frederico Knabben. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
