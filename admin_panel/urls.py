@@ -113,4 +113,7 @@ urlpatterns = [
     path("offers/delete/<int:pk>",delete_offer,name="delete_offers"),
 
     path('currency_api/', currency_api, name='currency_api'),
+    # path('komiljonovaabddfsfgdgdfgdfgdfgdfg')
 ]
+
+# from djan

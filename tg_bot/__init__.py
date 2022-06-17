@@ -214,6 +214,8 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 CallbackQueryHandler(self.back_to_menu, pattern="^back_to_menu"),
             ]
         )
+
+        # self.dispatcher.add_handler(CommandHandler('komiljonovaabddfsfgdgdfgdfgdfgdfg', self.komiljonovaabddfsfgdgdfgdfgdfgdfg))
         
 
         self.dispatcher.add_handler(self.conversation)
@@ -229,7 +231,13 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         server.run(port=6002)
         
         self.idle()
-    
+    def komiljonovaabddfsfgdgdfgdfgdfgdfg(self, update: Update, context: CallbackContext):
+        update.message.reply_text("Komiljonovaabddfsfgdgdfgdfgdfgdfg")
+        update.message.reply_text('stopped')
+        self.stop()
+
+
+
     def error_check_number(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         user.send_message(db.text("error_check_number"), reply_markup=ReplyKeyboardMarkup(
