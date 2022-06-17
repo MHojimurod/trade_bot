@@ -40,6 +40,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Kommentariya</th>
               <th>Sana</th>
               <th>Operator</th>
             </tr>
@@ -61,16 +62,33 @@
               <td>
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
+              <td>
+                {% if i.order.comment %}
+                <button class="btn btn-info btn-sm" onclick="Comments({{i.order.id}})" >Komment</button>
+                {% else %}
+                Komment yo'q
+                {% endif %}
+              </td>
               <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>{{i.order.actioner.user.first_name}}</td>
               
             </tr> 
-            <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; background-color: rgba(0, 0, 0, 0.141); display: none;">
-              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;">
+            <div id="card_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%;  display: none;">
+              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;border: solid 1px #696cff;">
                 <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 
                 <div class="card-body">
                   <!-- <h5 class="card-title">Card title</h5> -->
                   <p class="card-text">{{i.items|safe}}</p>
+                </div>
+              
+              </div>
+            </div>
+            <div id="comment_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%;  display: none;">
+              <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;border: solid 1px #696cff;">
+                <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove1({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 
+                <div class="card-body">
+                  <!-- <h5 class="card-title">Card title</h5> -->
+                  <p class="card-text">{{i.order.comment}}</p>
                 </div>
               
               </div>
@@ -84,6 +102,7 @@
               <th>Telefon</th>
               <th>Fillial</th>
               <th>Maxsulot</th>
+              <th>Kommentariya</th>
               <th>Sana</th>
               <th>Operator</th>
             </tr>
@@ -108,9 +127,14 @@
   function Products(product) {
     document.getElementById("card_"+String(product)).style.display = "block";
   }
+  function Comments(product) {
+    document.getElementById("comment_"+String(product)).style.display = "block";
+  }
   function Remove(product) {
-    document.getElementById("card_"+String(product)).style.display = "none";
-
+      document.getElementById("card_"+String(product)).style.display = "none";
+  }
+  function Remove1(product) {
+      document.getElementById("comment_"+String(product)).style.display = "none";
   }
 </script>
-{% endblock %}
+{% endblock %}  

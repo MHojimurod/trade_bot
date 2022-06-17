@@ -1,59 +1,96 @@
-{% extends 'main/base.html' %} {% load static %}
-{% block style %} {% endblock %}
- {% block content %}
-
+{% extends 'main/base.html' %} {% load static %} {% block style %} {% endblock%} {% block content %}
 
 <div class="content-wrapper">
-    <!-- Content -->
+  <!-- Content -->
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="/">Asosiy</a>
-          </li>
-          <li class="breadcrumb-item">
-            <a href="/ads/list">Reklamalar</a>
-          </li>
-          <li class="breadcrumb-item active">Reklama Qo'shish</li>
-        </ol>
-      </nav>
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/">Asosiy</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/ads/list">Reklamalar</a>
+        </li>
+        <li class="breadcrumb-item active">Reklama Qo'shish</li>
+      </ol>
+    </nav>
 
-      <!-- Basic Layout -->
-      <div class="row">
-        <div class="col-xl">
-          <div class="card mb-4">
-            <div class="card-body">
-              <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label"  for="basic-default-fullname">Rasmi</label>
-                        <div class="input-group">
-                          <label class="input-group-text" for="id_photo">Upload</label>
-                          <input type="file" class="form-control" name="photo" id="id_photo">
-                        </div>
-                      </div>
-                  <div class="mb-3 col-md-12">
-                    <label class="form-label"  for="basic-default-fullname">Nomi Ru</label>
-                    {{form.desc }}
+    <!-- Basic Layout -->
+    <div class="row">
+      <div class="col-xl">
+        <div class="card mb-4">
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="row">
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="basic-default-fullname"
+                    >Rasmi</label
+                  >
+                  <div class="input-group">
+                    <label class="input-group-text" for="id_photo"
+                      >Upload</label
+                    >
+                    <input
+                      type="file"
+                      onchange=""
+                      class="form-control"
+                      max-size="19900"
+                      name="photo"
+                      id="id_photo"
+
+                    />
+                    <script>
+                      const input = document.getElementById("id_photo");
+
+                      input.addEventListener("change", (event) => {
+                        const target = event.target;
+                        if (target.files && target.files[0]) {
+                          const maxAllowedSize = 19 * 1024 * 1024;
+                          if (target.files[0].type.split("/")[0] == "image"){
+                            if (target.files[0].size > maxAllowedSize) {
+                            // Here you can ask your users to load correct file
+                            target.value = "";
+                            alert("Kechirasiz rasm fayli 19 mb dan oshmasligi kerak!")
+                          }
+                          } else if (target.files[0].type.split("/")[0] == "video"){
+                            if (target.files[0].size > 49 * 1024 * 1024) {
+                            target.value = "";
+                            alert("Kechirasiz video fayli 50 mb dan oshmasligi kerak!")
+                          }
+                          } else {
+                            alert("Rasm yoki video fayl yuklang!")
+                          }
+                          
+                        }
+                      })
+                    </script>
                   </div>
-
                 </div>
-                <button type="submit" class="btn btn-primary">Saqlash</button>
-              </form>
-            </div>
+                <div class="mb-3 col-md-12">
+                  <label class="form-label" for="basic-default-fullname"
+                    >Nomi Ru</label
+                  >
+                  {{form.desc }}
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Saqlash</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
-    <!-- / Content -->
-
-    <div class="content-backdrop fade"></div>
   </div>
+  <!-- / Content -->
 
-{% endblock %}
-{% block javascript %}
+  <div class="content-backdrop fade"></div>
+</div>
+
+{% endblock %} {% block javascript %}
 <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
-<script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
- {% endblock %}
+<script
+  type="text/javascript"
+  src="/static/ckeditor/ckeditor/ckeditor.js"
+></script>
+{% endblock %}

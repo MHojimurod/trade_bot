@@ -10,7 +10,7 @@ from tg_bot.utils import get_user
 class Settings:
     def settings(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
-        user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})"), reply_markup=ReplyKeyboardMarkup(
+        user.send_message(db.text("settings_info", _name=db.name, number=db.number, lang=f"{db.language.name} ({db.language.code})", filial=db.filial.name(db.language)), reply_markup=ReplyKeyboardMarkup(
             db.settings,True
         ), parse_mode="HTML")
         return SETTINGS
@@ -88,7 +88,7 @@ class Settings:
     
     def settings_number(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
-        user.send_message("enter_new_number", reply_markup=ReplyKeyboardMarkup([
+        user.send_message(db.text("enter_new_number"), reply_markup=ReplyKeyboardMarkup([
             [
                 KeyboardButton(db.text("send_number_button"), request_contact=True)
             ],
@@ -141,9 +141,9 @@ class Settings:
     def settings_change_filial(self, update:Update, context:CallbackContext):
         user, db = get_user(update)
         print(context.user_data,"sds")
-        user.send_message(db.text("select_new_filial"), reply_markup=ReplyKeyboardMarkup(distribute([
+        user.send_message(db.text("select_new_filial"), reply_markup=ReplyKeyboardMarkup([*distribute([
             f.name(db.language) for f in Fillials.objects.filter(active=True)
-        ], 2),resize_keyboard=True), parse_mode="HTML")
+        ], 2), [db.text("back")]],resize_keyboard=True), parse_mode="HTML")
         return SETTINGS_FILIAL
     
     def settings_change_filial_change(self, update:Update, context:CallbackContext):

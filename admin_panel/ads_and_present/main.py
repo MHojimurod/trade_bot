@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 import requests
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.db.models.fields.files import FieldFile
 from admin_panel.forms import AdsForm
 from admin_panel.models import Ads
 from django.contrib import messages
@@ -11,12 +13,32 @@ def all_ads(request):
     }
     return render(request,"dashboard/ads_and_present/ads.html",ctx)
 
+from uuid import uuid4
+
 def add_ads(request):
     model = Ads()
-    form  = AdsForm(request.POST,request.FILES,instance=model)
+    form: AdsForm  = AdsForm(request.POST,request.FILES,instance=model)
+    media: TemporaryUploadedFile = request.FILES.get("photo")
+    
     if form.is_valid():
+        
+
+        if media:
+            media_type = media.content_type.split("/")[0]
+            media.name = f"{uuid4()}.{media.name.split('.')[-1]}"
+            im:FieldFile = form.instance.photo
+            im.name = f"{uuid4()}.{media.name.split('.')[-1]}"
+            if media_type == "image":
+                form.instance.mode = 1
+            elif media_type == "video":
+                form.instance.mode = 2
+            else:
+                form.instance.mode = 0
+
+            
         form.save()
         return redirect("all_ads")
+        # pass
     else:
         print(form.errors)
     ctx = {

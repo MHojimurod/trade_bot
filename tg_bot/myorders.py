@@ -6,9 +6,10 @@ from telegram.ext import CallbackContext
 from admin_panel.models import Busket, BusketItem, money
 from tg_bot.constants import MENU, MY_ORDERS
 
-from tg_bot.utils import get_user
+from tg_bot.utils import get_user, remove_temp_message
 
 class myOrders:
+    @remove_temp_message
     def my_orders(self, update: Update, context:CallbackContext):
         user, db = get_user(update)
         if update.message:

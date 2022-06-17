@@ -1,3 +1,4 @@
+import json
 import requests
 from admin_panel.models import Busket, BusketItem, Fillials, Operators, money
 from django.shortcuts import redirect, render
@@ -123,7 +124,6 @@ def orders_list(request):
 def update_order_status(request, pk, status):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
-        print(request.user)
         operator = Operators.objects.get(user=request.user)
         try:
             requests.get(f"http://localhost:8002/act", json={
@@ -331,6 +331,7 @@ def order_accept(request, pk):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
         order.status = 3
+        order.comment =json.loads(request.body.decode())['desc']
         operator = Operators.objects.get(user=request.user)
         order.actioner = operator
         operator.is_have = False
@@ -349,6 +350,10 @@ def order_accept(request, pk):
 def order_not_accept(request, pk):
     if not request.user.is_superuser:
         order = Busket.objects.get(pk=pk)
+        comment = request.POST.get("comment")
+        data = json.loads(request.body.decode())
+        comment = data['desc']
+        order.comment = comment
         order.status = 4
         operator = Operators.objects.get(user=request.user)
         order.actioner = operator
@@ -372,6 +377,7 @@ def reject_order(request, pk):
         request.user.save()
         order = Busket.objects.get(pk=pk)
         order.status = 2
+        order.comment = json.loads(request.body.decode())['desc']
         order.actioner = Operators.objects.filter(user=request.user).first()
         order.save()
         try:
@@ -398,6 +404,8 @@ def archive_order(request, pk):
         order.actioner = op.first()
         op.update(is_have=False)
         order.status = 5
+        order.comment = json.loads(request.body.decode())['desc']
+
         order.save()
         messages.warning(request, "Maxsulot arxivga joylandi")
     else:

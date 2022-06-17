@@ -8,6 +8,8 @@ from telegram.ext import CallbackContext
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User as DjangoUser
 from multiselectfield import MultiSelectField
+from django.core.validators import FileExtensionValidator
+val=[FileExtensionValidator(allowed_extensions=['mp4', 'jpg','png','mow','avi','3gp',"gif"])]
 # from tg_bot.utils import distribute
 
 
@@ -174,10 +176,10 @@ class Fillials(models.Model):
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     def desc_ru_get(self):
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
     
     
@@ -233,19 +235,27 @@ class Category(models.Model):
         'self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f" {self.name_uz} | cats{len(self.sub_categories())} - products {len(self.products())}"
+        return f" {self.name_uz} | cats {len(self.sub_categories())} - products {len(self.products())} { f'sub {self.parent.name_uz}' if self.parent else ''} "
 
     def name(self, language: Language = None) -> str:
         if language is None:
             return self.name_uz
         return self.__getattribute__(f"name_{language.code}")
 
-    def products(self):
+    def products(self) -> "list[Product]":
         # return Product.objects.filter(category=self).exclude(desc_uz="", desc_ru="")
         return Product.objects.filter(category=self)
 
-    def sub_categories(self):
+    def sub_categories(self) -> "list[Category]":
         return Category.objects.filter(parent=self)
+    
+    @property
+    def sold_products(self):
+        return sum(i.sold_products_sub() for i in self.sub_categories())
+    
+    def sold_products_sub(self):
+        return sum( i.monthly_sold() for i in self.products())
+
 
 
 class Product(models.Model):
@@ -260,13 +270,20 @@ class Product(models.Model):
     desc_uz: str = RichTextField(default="", blank=True)
     desc_ru: str = RichTextField(default="", blank=True)
 
+    def monthly_sold(self):
+        return sum(
+            [i.count for i in [j for j in BusketItem.objects.filter(product=self) if j.busket.is_ordered]]
+        )
+
 
 
     def desc_uz_get(self):
-        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        print(self.desc_uz.encode())
+        return self.desc_uz.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ").replace("<br />","\n")
 
     def desc_ru_get(self):
-        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n")
+        print(self.desc_ru)
+        return self.desc_ru.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("\r\n\r\n", "\n").replace("&nbsp;", " ").replace("<br />","\n")
 
     
     
@@ -338,7 +355,7 @@ class User(models.Model):
     language: Language = models.ForeignKey(Language, on_delete=models.SET(1))
     name: str = models.CharField(max_length=200)
     number: str = models.CharField(max_length=200)
-    filial = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
+    filial: Fillials = models.ForeignKey(Fillials, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     @property
     def settings(self):
@@ -399,7 +416,7 @@ class User(models.Model):
 
         controls = []
         controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"back_to_category_from_category"),)
+            user.text('back'), callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
                 "⬅️", callback_data=f"category_pagination:{page - 1}"))
@@ -439,10 +456,10 @@ class User(models.Model):
 
         controls = []
         controls.append(InlineKeyboardButton(
-            "🔙", callback_data=f"back_to_category_from_category"),)
+            self.text('back'), callback_data=f"back_to_category_from_category"),)
         if page > 1:
             controls.append(InlineKeyboardButton(
-                "⬅️", callback_data=f"category_pagination:{page - 1}"))
+                self.text('⬅️'), callback_data=f"category_pagination:{page - 1}"))
 
         if page < products_pages:
             controls.append(InlineKeyboardButton(
@@ -468,7 +485,7 @@ class User(models.Model):
 
         if not context.user_data['order']['current_product']['month']:
             for i in product.color.months:
-                text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
+                text += """    <b>{per_month} x {months} {month_text} x {count} ta = {price} {money}</b>\n""".format(
                 per_month=money(product.price(i) // i.months),
                 months=i.months,
                 price=money(product.price(i)),
@@ -482,7 +499,7 @@ class User(models.Model):
             month: Percent = context.user_data['order']['current_product']['month']
 
 
-            text += """    {per_month} x {months} {month_text} x {count} ta = {price} {money}\n""".format(
+            text += """    <b>{per_month} x {months} {month_text} x {count} ta = {price} {money}</b>\n""".format(
                 per_month=money(product.price(month) // month.months),
                 months=month.months,
                 price=money(product.price(month)),
@@ -516,11 +533,13 @@ class User(models.Model):
         # keyboard.append([
         #     InlineKeyboardButton(str(i + 1), callback_data=f"product_count:{i + 1}") for i in range(6, 9)
         # ])
-        text += {
+        x = {
             "uz": f"Bir oylik to'lov: {money(per_month)} so'm",
             "ru": f"Ежемесячный платеж: {money(per_month)} сум.",
             "en": f"Monthly payment: {money(per_month)} so'm"
         }[self.language.code]
+
+        text += f'<b>{x}</b>'
 
         keyboard.append([
             InlineKeyboardButton(
@@ -533,9 +552,9 @@ class User(models.Model):
         keyboard.append(
             [
                 InlineKeyboardButton(
-                    "🔙", callback_data=f"back_to_category_from_product"),
+                   user.text('back'), callback_data=f"back_to_category_from_product"),
                 InlineKeyboardButton(
-                    "🛒", callback_data=f"add_to_cart"),
+                    user.text("clearance"), callback_data=f"add_to_cart"),
             ]
         )
         if photo:
@@ -563,7 +582,7 @@ class User(models.Model):
             for pr in busket.products:
                 obshiy_summa += pr.product.price(pr.month) * pr.count
                 pr_texts.append(f"""{pr.product.name(user.language)}
-        {money(pr.product.price(pr.month) // pr.month.months)} {self.language.money()} x {pr.month.months} {self.language.month()} = {money(pr.product.price(pr.month))}
+        {money(pr.product.price(pr.month) // pr.month.months)} {self.language.money()} x {pr.month.months} {self.language.month()} = {money(pr.product.price(pr.month))}  {self.language.money()}
         {money(pr.product.price(pr.month))} {self.language.money()} x {pr.count} = {money(pr.product.price(pr.month) * pr.count)} {self.language.money()}
         { x }: {money((pr.product.price(pr.month) // pr.month.months)  * pr.count) } {self.language.money()}""")
                 controls = []
@@ -588,17 +607,17 @@ class User(models.Model):
             
             keyboard.append([
                 InlineKeyboardButton(
-                    "🔙", callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
-                        InlineKeyboardButton("🛒" + self.text("clearance"), callback_data=f"order_cart"),
+                    self.text('back'), callback_data=f"back_to_category_from_cart" if back_to_category else "back_to_menu_from_cart"),
+                        InlineKeyboardButton(self.text("clearance"), callback_data=f"order_cart"),
 
             ])
             y = {
-                "uz": "Hammasi bo'lib:",
-                "ru": "Всего:",
-                "en": "Total:"
+                "uz": "Umumiy summa",
+                "ru": "Общая сумма",
+                "en": "Total amount"
             }[self.language.code]
             text += "\n———————————————-\n".join(pr_texts)
-            text += f"\n\n{y}: {obshiy_summa}"
+            text += f"\n\n{y}: {money(obshiy_summa)}  {self.language.money()}"
         else:
             text = self.text("cart_empty")
         return {
@@ -742,7 +761,8 @@ class BusketItem(models.Model):
 class Aksiya(models.Model, Name):
     name_uz = models.CharField(max_length=15)
     name_ru = models.CharField(max_length=15)
-    mode = models.IntegerField(choices=[
+    created_at = models.DateTimeField(auto_now_add=True)
+    mode = models.IntegerField(default=0,choices=[
         (0, 'text'),
         (1, "image"),
         (2, 'video')
@@ -776,11 +796,17 @@ class Support(models.Model):
 
 
 class Ads(models.Model):
-    photo = models.ImageField(upload_to="images/")
+    mode = models.IntegerField(default=0, choices=[
+        (0, 'text'),
+        (1, "image"),
+        (2, 'video')
+        
+    ])
+    photo = models.FileField(upload_to="images/",null=True, blank=True,validators=val)
     desc = RichTextField()
-
+    created_at = models.DateTimeField(auto_now_add=True)
     def send_desc(self):
-        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("&nbsp;", "\n")
+        return self.desc.replace("<p>", "").replace("</p>", "").replace("<strong>", "<b>").replace("</strong>", "</b>").replace("<em>", "<i>").replace("</em>", "</i>").replace("<br />","\n").replace("\r\n\r\n", "\n").replace("&nbsp;", " ")
 
 
 [].reverse

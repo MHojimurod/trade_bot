@@ -1,7 +1,8 @@
-from telegram import Update
-from telegram.ext import MessageHandler,Filters
+from telegram import Update, Message
+from telegram.ext import MessageHandler,Filters, MessageFilter
 
 from tg_bot.utils import get_user
+from admin_panel.models import User
 
 
 
@@ -20,3 +21,13 @@ class MultilanguageMessageHandler(MessageHandler):
             print(res, "|", db.text(self.textName), "|" , update.effective_message.text, self.textName)
             return res
         return None
+
+
+class MultiLanguageFilter(MessageFilter):
+    def __init__(self, textName):
+        self.textName = textName
+    
+    def filter(self, message:Message):
+        if message.text:
+            user:User = User.objects.filter(chat_id=message.from_user.id).first()
+            return user and (user.text(self.textName) == message.text)

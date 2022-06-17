@@ -4,7 +4,7 @@ import time
 from flask import Flask, jsonify, request
 from telegram import ReplyKeyboardMarkup, Update
 from admin_panel.models import Ads, Busket, User
-from tg_bot.filters import MultilanguageMessageHandler
+from tg_bot.filters import MultiLanguageFilter, MultilanguageMessageHandler
 
 from tg_bot.myorders import myOrders
 from tg_bot.utils import get_user
@@ -169,27 +169,29 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     ),
                 ],
                 SETTINGS_NAME: [
-                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_name_change),
-                    MessageHandler(Filters.regex("^🔙"), self.settings)
+                    
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_name_change),
+                    MessageHandler(MultiLanguageFilter("back"), self.settings)
                 ],
                 SETTINGS_NUMBER: [
                     MessageHandler(Filters.contact, self.settings_number_change),
                     MessageHandler(Filters.regex(
                         "(?:\+[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})") | Filters.regex(
                         "(?:[9]{2}[8][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2})"), self.settings_number_text),
-                         MessageHandler(Filters.regex("^🔙"), self.settings),
-                    MessageHandler(Filters.text, self.settings_number_error),
+                         MessageHandler(MultiLanguageFilter("back"), self.settings),
+                    MessageHandler(Filters.text & not_start, self.settings_number_error),
                     
                 ],
                 SETTINGS_LANGUAGE: [
-                    MessageHandler(Filters.text & not_start & ~Filters.regex("^🔙"), self.settings_language_change),
-                    MessageHandler(Filters.regex("^🔙"), self.settings)
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_language_change),
+                    MessageHandler(MultiLanguageFilter("back"), self.settings)
                 ],
                 SETTINGS_FILIAL: [
-                    MessageHandler(Filters.text & not_start,self.settings_change_filial_change )
+                    MessageHandler(Filters.text & not_start & ~MultiLanguageFilter("back"), self.settings_change_filial_change ),
+                    MultilanguageMessageHandler('back', self.settings)
                 ],
                 OUR_ADDRESSES: [
-                    MessageHandler(Filters.regex("^🔙"), self.back_to_menu),
+                    MultilanguageMessageHandler('back', self.back_to_menu),
                     MessageHandler(Filters.text & not_start, self.address)
                 ],
                 SUPPORT: [
@@ -274,7 +276,13 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
         if ad:
             for user in User.objects.all():
                 try:
-                    self.bot.send_photo(user.chat_id, open(f".{ad.photo.url}", 'rb'), caption=ad.send_desc(), parse_mode="HTML")
+                    print("sending")
+                    if ad.mode == 0:
+                        self.bot.send_message(user.chat_id, text=ad.send_desc(), parse_mode="HTML")
+                    elif ad.mode == 1:
+                        self.bot.send_photo(user.chat_id, photo=open(f".{ad.photo.url}", "rb"), caption=ad.send_desc(), parse_mode="HTML")
+                    elif ad.mode == 2:
+                        self.bot.send_video(user.chat_id, video=open(f".{ad.photo.url}", "rb"), caption=ad.send_desc(), parse_mode="HTML")
                 except Exception as e:
                     print('user not found', e)
                 per += 1
@@ -292,6 +300,7 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
     
     def send_sms(self):
         data = request.get_json()['data']
+        print(data)
         user: User = User.objects.filter(id=data["id"]).first()
         if user:
             try:

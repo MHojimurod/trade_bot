@@ -55,15 +55,12 @@ def home(request):
     all_user = User.objects.all().count()
     uz_user = User.objects.filter(language__code="uz").count()
     ru_user = User.objects.filter(language__code="ru").count()
-    total_percent = 100* today_user // all_user
-    uz_percent = 100* uz_user // all_user
-    ru_percent = 100* ru_user // all_user
     ctx = {"home":"active",
         "today_user":today_user, #
         "all_user":all_user, #
-        "total_percent":total_percent,
-        "uz_percent":uz_percent,
-        "ru_percent":ru_percent,
+        "total_percent":(100* today_user // all_user) if all_user else 0,
+        "uz_percent":(100* uz_user // all_user) if all_user else 0,
+        "ru_percent":(100* ru_user // all_user) if all_user else 0,
         "uz_user":uz_user, #
         "ru_user":ru_user}
     return render(request, 'dashboard/index.html',ctx)

@@ -13,27 +13,31 @@ def all_statistika(request):
     uz_percent = 100* uz_user // all_user
     ru_percent = 100* ru_user // all_user
     
-    categories = Category.objects.filter(parent=None)
-    category_data = []
-    for i in categories:
-        for j in Category.objects.filter(parent=i):
-            if len(category_data):
-                for l in category_data:
-                    if i.name_uz == l["category"]:
-                        l.update({"data":l["data"]+BusketItem.objects.filter(product__category=j).count()})
-                    else:
-                        category_data.append({
-                            "category":i.name_uz,
-                            "data":BusketItem.objects.filter(product__category=j).count()
-                        })
-            else:
-                category_data.append({
-                    "category":i.name_uz,
-                    "data":BusketItem.objects.filter(product__category=j).count()
-                })
+    category_data = [
+        {
+            "category": i.name_uz,
+            "data": i.sold_products
+        } for i in Category.objects.filter(parent=None)
+    ]
 
+    # for i in categories:
+    #     for j in Category.objects.filter(parent=i):
+    #         if len(category_data):
+    #             for l in category_data:
+    #                 if i.name_uz == l["category"] :
+    #                     l.update({"category":i.name_uz,"data":l["data"]+BusketItem.objects.filter(product__category=j).count()})
+    #                 else:
+    #                     category_data.append({
+    #                         "category":i.name_uz,
+    #                         "data":BusketItem.objects.filter(product__category=j).count()
+    #                     })
+    #         else:
+    #             category_data.append({
+    #                 "category":i.name_uz,
+    #                 "data":BusketItem.objects.filter(product__category=j).count()
+    #             })
 
-
+    print(category_data)
     operators = Operators.objects.all()
     fillials = Fillials.objects.all()
     fillial_data = []
@@ -117,9 +121,22 @@ def all_statistika(request):
                             "not_accept":Busket.objects.filter(actioner=i,status=4,order_time__lte=data.get("from"),).count(),
                             "archive":Busket.objects.filter(actioner=i,status=5,order_time__lte=data.get("from"),).count(),
                         })  
+<<<<<<< HEAD
     filter_active_filial = request.POST.get("fillial")
     from_date = request.POST.get("from")
     to_date = request.POST.get("to")
+=======
+        else:
+            for i in operators:
+                DATA.append({   
+                            "operator":i.user.first_name,
+                            "accept":Busket.objects.filter(actioner=i,status=3,).count(),
+                            "not_accept":Busket.objects.filter(actioner=i,status=4,).count(),
+                            "archive":Busket.objects.filter(actioner=i,status=5,).count(),
+                        })
+
+    
+>>>>>>> 764419ccb970de301d403403a4f3ce36232ece14
     ctx = {
         "statistics_active": "active",
         "today_user":today_user, #
