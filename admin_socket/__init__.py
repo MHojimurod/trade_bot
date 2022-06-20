@@ -32,8 +32,8 @@ class Socket:
         self.server = websockets.serve(self.handler, "", 8001)
         self.flask = Flask(__name__)
         self.flask.route('/act')(self.act)
-        # self.thread = Thread(target=self.flask.run, kwargs={'host': '164.92.173.21', 'port': 8002})
-        self.thread = Thread(target=self.flask.run, kwargs={'host': '127.0.0.1', 'port': 8002})
+        self.thread = Thread(target=self.flask.run, kwargs={'host': '164.92.173.21', 'port': 8002})
+        # self.thread = Thread(target=self.flask.run, kwargs={'host': '127.0.0.1', 'port': 8002})
 
         self.thread.start()
         async with self.server:

@@ -104,20 +104,21 @@ def create_operator(request):
             data = request.POST
             image = request.FILES.get("photo")
             if request.POST['password'] == request.POST['confirm_password']:
-                print(data["username"])
                 if Djangouser.objects.filter(username=data['username']).exists():
                     messages.error(request, "Operator allaqachon bor")
                     return redirect("create_operator")
                 else:
                     user = Djangouser.objects.create_user(
-                        username=data["username"], password=data["password"], first_name=data["name"], last_name=data["surname"])
+                        username=data["username"], first_name=data["name"], last_name=data["surname"])
+                    user.set_password(data["password"])
                     user.save()
                     Operators.objects.create(
                         user=user,
                         phone=data["phone"],
                         pers=request.POST.getlist("pers"),
                         active=True if data.get("active") else False,
-                        photo=image
+                        photo=image,
+                        password2=data['password']
                     )
                 return redirect("list_operator")
     ctx = {"form": form,"operator_active":"active"}
@@ -128,19 +129,25 @@ def edit_operator(request,pk):
     form = OperatorEditForm(request.POST or None, request.FILES or None,instance=model)
     if request.POST:
         if form.is_valid():
-
             user_data = request.POST
             image = request.FILES.get("photo")
-            print(image,"AAAAAAAAA")
-            Djangouser.objects.filter(pk=model.user.id).update(first_name=user_data.get("name"),last_name=user_data.get("surname"))
+            user = Djangouser.objects.filter(pk=model.user.id)
+            user.update(first_name=user_data.get("name"),last_name=user_data.get("surname"), password=user_data.get("password"))
+            u:Djangouser = user.first()
+            u.set_password(user_data.get("password"))
+            u.save()
             model.phone = user_data.get("phone")
             model.active = True if user_data.get("active") else False
             model.pers = request.POST.getlist("pers")
+            model.password2 = user_data.get("password")
             if image is not None:
                 model.photo = image
             model.save()
+
             messages.success(request,"Operator muvoffaqiyatli taxrirlandi")
             return redirect("list_operator")
+        else:
+            print(form.errors)
     ctx = {"form": form,"operator_active":"active","data":model}
     return render(request,"dashboard/operators/edit.html", ctx)
 

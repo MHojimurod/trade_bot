@@ -153,15 +153,17 @@ class Operators(models.Model):
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     username=  models.CharField(max_length=100)
+    password2 = models.CharField(max_length=999999)
 
     phone: int = models.IntegerField()
     photo = models.ImageField(
-        upload_to='images/', default='/static/dashboard/assets/img/default.png')
+        upload_to='images/', default='/static/dashboard/assets/img/default.png', null=True, blank=True)
     region: str = models.CharField(max_length=200, null=True, blank=True)
     address: str = models.CharField(max_length=200, null=True, blank=True)
     active: bool = models.BooleanField(default=False)
     is_have: bool = models.BooleanField(default=False)
     pers = MultiSelectField(choices=access)
+
     def __str__(self):
         return self.user.first_name
 

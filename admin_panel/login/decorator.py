@@ -16,6 +16,7 @@ def dashboard_login(request):
         operator = Operators.objects.filter(user__username__contains=username)
         password = request.POST.get("password")
         user = authenticate(username=username, password=password)
+        print(user)
         if operator:
             if user is not None and operator.first().active:
                 login(request, user)
