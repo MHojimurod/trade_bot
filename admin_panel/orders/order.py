@@ -34,6 +34,36 @@ def filter_text(request, status):
         orders = Busket.objects.filter(bis_ordered=True, status=status)
     return products_text(orders)
 
+def filter_text2(request, status, operator):
+    orders = ""
+    data = request.POST
+    if data.get("fillial") != "all":
+        if data.get("from") and data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True, status=status, user__filial_id=data.get(
+                "fillial"), order_time__gte=data.get("from"), order_time__lte=data.get("to"), actioner=operator)
+        elif data.get("from"):
+            orders = Busket.objects.filter(bis_ordered=True, status=status, user__filial_id=data.get(
+                "fillial"), order_time__gte=data.get("from"), actioner=operator)
+        elif data.get("to"):
+            orders = Busket.objects.filter(bis_ordered=True, status=status, user__filial_id=data.get(
+                "fillial"), order_time__lte=data.get("to"), actioner=operator)
+        else:
+            orders = Busket.objects.filter(
+                bis_ordered=True, status=status, user__filial_id=data.get("fillial"), actioner=operator)
+    elif data.get("from") and data.get("to"):
+        orders = Busket.objects.filter(bis_ordered=True, status=status, order_time__gte=data.get(
+            "from"), order_time__lte=data.get("to"))
+    elif data.get("from"):
+        orders = Busket.objects.filter(
+            bis_ordered=True, status=status, order_time__gte=data.get("from"), actioner=operator)
+    elif data.get("to"):
+        orders = Busket.objects.filter(
+            bis_ordered=True, status=status, order_time__lte=data.get("to"), actioner=operator)
+    else:
+        orders = Busket.objects.filter(bis_ordered=True, status=status, actioner=operator)
+    return products_text(orders)
+
+
 
 def filter_text_operator(request, status, actioner):
     orders = ""
@@ -278,7 +308,7 @@ def order_archive(request):
         else:
             orders = Busket.objects.filter(bis_ordered=True, status__in=[
                                            2, 5], actioner=actioner)
-        data = products_text(orders)
+        data = filter_text2(orders)
     filter_active_filial = request.POST.get("fillial")
     from_date = request.POST.get("from")
     to_date = request.POST.get("to")

@@ -54,10 +54,26 @@
 # window.mainloop()
 
 
-data = [{"a":"b"}]
+# data = [{"a":"b"}]
 
 
-for i in data:
-    i.update({"a":"c"})
+# for i in data:
+#     i.update({"a":"c"})
 
-print(data)
+# print(data)
+
+
+
+class Instagram:
+    def start():
+        pass
+
+
+
+
+
+Instagram(
+    name="Shukurullox",
+    surname="Komiljonov",
+    username="komiljonov_blog"
+).start()
