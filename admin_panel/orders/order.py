@@ -308,7 +308,7 @@ def order_archive(request):
         else:
             orders = Busket.objects.filter(bis_ordered=True, status__in=[
                                            2, 5], actioner=actioner)
-        data = filter_text2(orders)
+        data = products_text(orders)
     filter_active_filial = request.POST.get("fillial")
     from_date = request.POST.get("from")
     to_date = request.POST.get("to")
@@ -338,7 +338,7 @@ def order_not_accepted(request):
             bis_ordered=True, status=4, actioner=Operators.objects.get(user=request.user))
         data = products_text(orders)
         if request.POST:
-            data = filter_text(
+            data = filter_text2(
                 request, 4, Operators.objects.get(user=request.user))
     filter_active_filial = request.POST.get("fillial")
     from_date = request.POST.get("from")
