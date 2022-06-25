@@ -455,9 +455,27 @@ def makeorderpdf(request, order):
     order:Busket = Busket.objects.get(pk=order)
     file = fpdf.FPDF(format='A4')
     file.add_page()
-    file.image(order.self_image.path, x=2, y=10, w=60)
-    file.image(order.passport_image.path, x=72, y=10, w=60)
-    file.image(order.self_password_image.path, x=142, y=10, w=60)
+    # file.image(order.self_image.path, x=2, y=10, w=60)
+    # file.image(order.passport_image.path, x=72, y=10, w=60)
+    # file.image(order.self_password_image.path, x=142, y=10, w=60)
+    file.image(
+        order.self_image.path,
+        x=2,
+        y = 2,
+        h = 95,
+    )
+    file.image(
+        order.passport_image.path,
+        x=2,
+        y = 98,
+        h = 95,
+    )
+    file.image(
+        order.self_password_image.path,
+        x=2,
+        y = 194,
+        h = 95,
+    )
     file.output('order_'+str(order.id)+'.pdf')
     
     return HttpResponse(open('order_'+str(order.id)+'.pdf', 'rb').read(), content_type='application/pdf')
