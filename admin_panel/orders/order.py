@@ -473,9 +473,7 @@ def archive_order(request, pk):
         messages.error(request, "Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
 
-
-import fpdf.py3k
-fpdf.py3k.PY3K = False
+import fpdf
 def makeorderpdf(request, order):
     order:Busket = Busket.objects.get(pk=order)
     file = fpdf.FPDF(format='A4')
@@ -556,7 +554,6 @@ def makeorderpdf(request, order):
         xxx[i]
     )
     
-
-    # buffer = file.output(f'order_{str(order.id)}.pdf'.encode('latin-1', 'replace').decode(), "S")
     buffer = file.output(dest='S')
+    print(buffer)
     return HttpResponse(buffer, content_type='application/pdf')
