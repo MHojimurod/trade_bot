@@ -474,7 +474,8 @@ def archive_order(request, pk):
     return redirect('orders_list')
 
 
-import fpdf
+import fpdf.py3k
+fpdf.py3k.PY3K = False
 def makeorderpdf(request, order):
     order:Busket = Busket.objects.get(pk=order)
     file = fpdf.FPDF(format='A4')
@@ -554,7 +555,7 @@ def makeorderpdf(request, order):
         50 + (10 * i),
         xxx[i]
     )
-    fpdf.PY3K = False
+    
 
     # buffer = file.output(f'order_{str(order.id)}.pdf'.encode('latin-1', 'replace').decode(), "S")
     buffer = file.output(dest='S')
