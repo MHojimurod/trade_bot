@@ -520,7 +520,7 @@ def makeorderpdf(request, order):
     file.text(
         120,
         20,
-        order.user.name
+        order.user.name.encode('latin-1', 'replace').decode()
     )
     file.set_font('Arial', 'B', 20)
     file.text(
@@ -532,7 +532,7 @@ def makeorderpdf(request, order):
     file.text(
         120,
         30,
-        order.user.number
+        order.user.number.encode('latin-1', 'replace').decode()
     )
     file.set_font('Arial', 'B', 20)
     file.text(
