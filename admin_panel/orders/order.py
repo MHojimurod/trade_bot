@@ -106,7 +106,7 @@ def products_text(orders:"list[Busket]"):
         j:BusketItem
         for j in BusketItem.objects.filter(busket=i):
             total_price = j.product.price(j.month) * j.count
-            text += f"<b>{j.product.category.name_uz}</b>&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;<b>{j.product.name_uz}</b><br>      {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm<br>"
+            text += f"<b>{j.product.category.parent.name_uz}</b>&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;<b>{j.product.category.name_uz}</b>&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;<b>{j.product.name_uz}</b><br>      {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm<br>"
             total += total_price
             to_month += total_price//j.month.months
         text += f"<b>Bir oylik to'lov:</b> {money(to_month)} so'm<br>"
