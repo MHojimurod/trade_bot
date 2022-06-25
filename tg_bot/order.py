@@ -214,20 +214,23 @@ class Order:
     def order_cart(self, update: Update, context: CallbackContext):
         user, db = get_user(update)
         update.callback_query.message.delete()
-        context.user_data['temp_message'] = user.send_message(
-            db.text('send_location'), reply_markup=ReplyKeyboardMarkup(
-                [
-                    [
-                        KeyboardButton(
-                            db.text('send_location_button'), request_location=True)
-                    ],
-                    [
-                        KeyboardButton(db.text("skip_location"))
-                    ]
-                ],
-                resize_keyboard=True
-            ), parse_mode="HTML")
-        return CART_ORDER_LOCATION
+        # context.user_data['temp_message'] = user.send_message(
+        #     db.text('send_location'), reply_markup=ReplyKeyboardMarkup(
+        #         [
+        #             [
+        #                 KeyboardButton(
+        #                     db.text('send_location_button'), request_location=True)
+        #             ],
+        #             [
+        #                 KeyboardButton(db.text("skip_location"))
+        #             ]
+        #         ],
+        #         resize_keyboard=True
+        #     ), parse_mode="HTML")
+        # return CART_ORDER_LOCATION
+        context.user_data['temp_message'] = user.send_photo(photo=BotSettings.objects.first().request_self_image, caption=db.text("send_your_self_image"), parse_mode="HTML", reply_markup=ReplyKeyboardRemove())
+
+        return CART_ORDER_SELF_IMAGE
 
     @remove_temp_message
     def cart_order_location(self, update: Update, context: CallbackContext):
