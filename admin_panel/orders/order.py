@@ -555,6 +555,6 @@ def makeorderpdf(request, order):
     )
         
 
-    file.output('order_'+str(order.id)+'.pdf')
+    file.output(f'order_{str(order.id)}.pdf')
     
     return HttpResponse(open('order_'+str(order.id)+'.pdf', 'rb').read(), content_type='application/pdf')
