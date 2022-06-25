@@ -473,6 +473,7 @@ def archive_order(request, pk):
         messages.error(request, "Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
 
+
 import fpdf
 def makeorderpdf(request, order):
     order:Busket = Busket.objects.get(pk=order)
@@ -482,23 +483,36 @@ def makeorderpdf(request, order):
     # file.image(order.self_image.path, x=2, y=10, w=60)
     # file.image(order.passport_image.path, x=72, y=10, w=60)
     # file.image(order.self_password_image.path, x=142, y=10, w=60)
-    file.image(
-        order.self_image.path,
-        x=2,
-        y = 2,
-        h = 95,
-    )
+    # file.image(
+    #     order.self_image.path,
+    #     x=2,
+    #     y = 2,
+    #     h = 95,
+    # )
+    # file.image(
+    #     order.passport_image.path,
+    #     x=2,
+    #     y = 98,
+    #     h = 95,
+    # )
+    # file.image(
+    #     order.self_password_image.path,
+    #     x=2,
+    #     y = 194,
+    #     h = 95,
+    # )
+
     file.image(
         order.passport_image.path,
         x=2,
-        y = 98,
-        h = 95,
+        y = 2,
+        w = 103,
     )
     file.image(
         order.self_password_image.path,
-        x=2,
-        y = 194,
-        h = 95,
+        x=106,
+        y = 2,
+        w = 103,
     )
 
 
@@ -507,37 +521,37 @@ def makeorderpdf(request, order):
     texts = aaaaa(order)
     file.set_font('Arial', 'B', 20)
     file.text(
-        100,
-        10,
+        2,
+        140,
         "Buyurtmachi".encode('latin-1', 'replace').decode()
     )
     file.text(
-        100,
-        20,
+        2,
+        150,
         "FIO:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
-        120,
-        20,
+        17,
+        150,
         order.user.name.encode('latin-1', 'replace').decode()
     )
     file.set_font('Arial', 'B', 20)
     file.text(
-        100,
-        30,
+        2,
+        160,
         "Tel:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
-        120,
-        30,
+        15,
+        160,
         order.user.number.encode('latin-1', 'replace').decode()
     )
     file.set_font('Arial', 'B', 20)
     file.text(
-        100,
-        40,
+        2,
+        170,
         "Buyurtmalar:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
@@ -549,11 +563,12 @@ def makeorderpdf(request, order):
     xxx = texts['items'].split("\n")
     for i in range(len(xxx)):
         file.text(
-        100,
-        50 + (10 * i),
+        2,
+        180 + (10 * i),
         xxx[i]
     )
+        
+
+    file.output(f'order_{str(order.id)}.pdf')
     
-    buffer = file.output(dest='S')
-    print(buffer)
-    return HttpResponse(buffer, content_type='application/pdf')
+    return HttpResponse(open('order_'+str(order.id)+'.pdf', 'rb').read(), content_type='application/pdf')
