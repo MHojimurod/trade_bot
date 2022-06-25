@@ -556,6 +556,6 @@ def makeorderpdf(request, order):
     )
         
 
-    buffer = file.output(f'order_{str(order.id)}.pdf'.encode('latin-1', 'replace').decode(), "S")
-    
+    # buffer = file.output(f'order_{str(order.id)}.pdf'.encode('latin-1', 'replace').decode(), "S")
+    buffer = file.output(dest='S')
     return HttpResponse(buffer, content_type='application/pdf')
