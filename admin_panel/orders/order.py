@@ -510,12 +510,12 @@ def makeorderpdf(request, order):
     file.text(
         100,
         10,
-        "Buyurtmachi"
+        "Buyurtmachi".encode('latin-1', 'replace').decode()
     )
     file.text(
         100,
         20,
-        "FIO:"
+        "FIO:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
@@ -527,7 +527,7 @@ def makeorderpdf(request, order):
     file.text(
         100,
         30,
-        "Tel:"
+        "Tel:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
@@ -539,7 +539,7 @@ def makeorderpdf(request, order):
     file.text(
         100,
         40,
-        "Buyurtmalar:"
+        "Buyurtmalar:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     # file.text(
