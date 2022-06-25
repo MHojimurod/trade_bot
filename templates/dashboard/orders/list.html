@@ -42,7 +42,6 @@
               <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Sana</th>
-              <th>Chop etish</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>
@@ -68,9 +67,7 @@
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
               <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
-              <td>
-                <button class="btn btn-info btn-sm" onclick="PrintOrder('{{i.order.id}}','{{i.img1}}','{{i.img2}}','{{i.img3}}',`{{i.items}}`, `{{i.name}}`, `{{i.number}}`);">Rad etish</button>
-              </td>
+              
               <td>
                 <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
               </td>
@@ -101,7 +98,6 @@
               <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Sana</th>
-              <th>Chop etish</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>

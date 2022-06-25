@@ -124,6 +124,30 @@ def products_text(orders:"list[Busket]"):
     return data
 
 
+
+def aaaaa(i:Busket):
+    text = ""
+    total = 0
+    to_month = 0
+    j:BusketItem
+    for j in BusketItem.objects.filter(busket=i):
+        total_price = j.product.price(j.month) * j.count
+        text += f"{j.product.category.parent.name_uz}   ->   {j.product.category.name_uz}   ->   {j.product.name_uz}\n  {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm\n"
+        total += total_price
+        to_month += total_price//j.month.months
+    text += f"Bir oylik to'lov: {money(to_month)} so'm\n"
+    text += f"Umumiy narx:{ money(total)} so'm"
+    return {
+            "order": i,
+            "items": text,
+            'img1': i.self_image.url,
+            "img2": i.passport_image.url,
+            "img3": i.self_password_image.url,
+            "name": i.user.name,
+            'number': i.user.number,
+        }
+
+
 def orders_list(request):
     fillials = Fillials.objects.all()
     orders = ""
@@ -476,6 +500,61 @@ def makeorderpdf(request, order):
         y = 194,
         h = 95,
     )
+
+
+
+    # set font
+    texts = aaaaa(order)
+    file.set_font('Arial', 'B', 20)
+    file.text(
+        100,
+        10,
+        "Buyurtmachi"
+    )
+    file.text(
+        100,
+        20,
+        "FIO:"
+    )
+    file.set_font("Arial", "B", 16)
+    file.text(
+        120,
+        20,
+        order.user.name
+    )
+    file.set_font('Arial', 'B', 20)
+    file.text(
+        100,
+        30,
+        "Tel:"
+    )
+    file.set_font("Arial", "B", 16)
+    file.text(
+        120,
+        30,
+        order.user.number
+    )
+    file.set_font('Arial', 'B', 20)
+    file.text(
+        100,
+        40,
+        "Buyurtmalar:"
+    )
+    file.set_font("Arial", "B", 16)
+    # file.text(
+    #     110,
+    #     50,
+    #     texts['items']
+    # )
+    xxx = texts['items'].split("\n")
+    for i in range(len(xxx)):
+        file.text(
+        100,
+        50 + (10 * i),
+        xxx[i]
+    )
+        
+
     file.output('order_'+str(order.id)+'.pdf')
     
     return HttpResponse(open('order_'+str(order.id)+'.pdf', 'rb').read(), content_type='application/pdf')
