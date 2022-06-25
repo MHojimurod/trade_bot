@@ -22,7 +22,7 @@
           style="left:50%; transform: translate(-50%,0); width: 40vw; height: auto;margin-bottom: 5vh;">
           <div class="card-body">
             <h5 class="card-title">Passport ma'lumotlari</h5>
-            <div class="row">
+            <div id="imagesrow" class="row">
               <div class="col-md-4">
                 <a href="{{order.self_image.url}}">
                   <img class="card-img" style="height: 100%; object-fit: cover; object-position: center;"
@@ -53,9 +53,10 @@
 
               <button onclick="Reject( {{ i.order.id }} )"  class="btn btn-danger mt-2">Rad etish</button>
             <button onclick="Archive( {{ i.order.id }} )"  class="btn btn-secondary mt-2">Arxiv</button>
+            {{i}}
+            <a class="btn btn-info mt-2"  href="/makepdfoforder/{{ order.id }}">download pdf</a>
           </div>
         </div>
-
         </div>
         {% endif %}
       </div>
@@ -100,6 +101,11 @@
 {% csrf_token %}
 {% endblock %}
 {% block javascript %}
+<script src="/static/admin/js/jspdf.min.js"></script>
+<script src="/static/admin/js/html2canvas.min.js"></script>
+<script src="/static/admin/js/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
 <script>
   function Reject(id) {
     console.log(id);
@@ -163,6 +169,17 @@
        console.log(this);
     }
     document.getElementById("archive").style.display = "block";
+  }
+
+
+
+
+
+
+
+  function print_pdf(e) {
+    var data = document.getElementById('imagesrow');
+
   }
 </script>
 {% endblock %}

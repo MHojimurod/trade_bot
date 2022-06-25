@@ -1,4 +1,5 @@
 import json
+from django.http import FileResponse, HttpResponse
 import requests
 from admin_panel.models import Busket, BusketItem, Fillials, Operators, money
 from django.shortcuts import redirect, render
@@ -96,24 +97,29 @@ def filter_text_operator(request, status, actioner):
     return products_text(orders)
 
 
-def products_text(orders):
+def products_text(orders:"list[Busket]"):
     data = []
     for i in orders:
         text = ""
         total = 0
         to_month = 0
+        j:BusketItem
         for j in BusketItem.objects.filter(busket=i):
             total_price = j.product.price(j.month) * j.count
-            text += f"<b>{j.product.name_uz}</b><br>      {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm<br>"
+            text += f"<b>{j.product.category.name_uz}</b>&nbsp;&nbsp;&nbsp;->&nbsp;&nbsp;&nbsp;<b>{j.product.name_uz}</b><br>      {money(total_price//j.month.months)} x {j.month.months} oy x {j.count} ta = {money(total_price)} so'm<br>"
             total += total_price
             to_month += total_price//j.month.months
         text += f"<b>Bir oylik to'lov:</b> {money(to_month)} so'm<br>"
         text += f"<b>Umumiy narx:</b>{ money(total)} so'm<br>"
-
         data.append(
             {
                 "order": i,
-                "items": text
+                "items": text,
+                'img1': i.self_image.url,
+                "img2": i.passport_image.url,
+                "img3": i.self_password_image.url,
+                "name": i.user.name,
+                'number': i.user.number,
             })
     return data
 
@@ -127,6 +133,7 @@ def orders_list(request):
         if operator.is_have:
             order = Busket.objects.order_by(
                 '-id').filter(bis_ordered=True, status=1, actioner=operator).first()
+            print(order)
             return redirect('one_order', order.id)
 
     orders = Busket.objects.filter(bis_ordered=True, status=0)
@@ -441,3 +448,16 @@ def archive_order(request, pk):
     else:
         messages.error(request, "Kechirasiz siz Operator emassiz")
     return redirect('orders_list')
+
+
+import fpdf
+def makeorderpdf(request, order):
+    order:Busket = Busket.objects.get(pk=order)
+    file = fpdf.FPDF(format='A4')
+    file.add_page()
+    file.image(order.self_image.path, x=2, y=10, w=60)
+    file.image(order.passport_image.path, x=72, y=10, w=60)
+    file.image(order.self_password_image.path, x=142, y=10, w=60)
+    file.output('order_'+str(order.id)+'.pdf')
+    
+    return HttpResponse(open('order_'+str(order.id)+'.pdf', 'rb').read(), content_type='application/pdf')

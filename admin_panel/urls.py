@@ -8,7 +8,7 @@ from admin_panel.views import account, home,list_operators,create_operator,edit_
 from admin_panel.login.decorator import dashboard_logout,dashboard_login
 from admin_panel.fillials.fillial import create_fillial, delete_fillial,list_fillial,edit_fillial, one_fillial
 from admin_panel.clients.all_clients import clients_list, comments_list,send_telegram
-from admin_panel.orders.order import archive_order, order_accept, order_accepted, order_archive, order_not_accept, order_not_accepted, orders_list, update_order_status, one_order, reject_order
+from admin_panel.orders.order import archive_order, makeorderpdf, order_accept, order_accepted, order_archive, order_not_accept, order_not_accepted, orders_list, update_order_status, one_order, reject_order
 from admin_panel.statistics.statistika import all_statistika
 from admin_panel.settings.bot_settings import colors_update, text_update, texts,settings
 from admin_panel.ads_and_present.main import add_ads, all_ads,delete_ads,send_ads
@@ -113,7 +113,5 @@ urlpatterns = [
     path("offers/delete/<int:pk>",delete_offer,name="delete_offers"),
 
     path('currency_api/', currency_api, name='currency_api'),
-    # path('komiljonovaabddfsfgdgdfgdfgdfgdfg')
+    path('makepdfoforder/<int:order>/', makeorderpdf, name='makeorderpdf'),
 ]
-
-# from djan

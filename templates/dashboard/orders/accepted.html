@@ -73,6 +73,7 @@
               <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
               <td>{{i.order.actioner.user.first_name}}</td>
             </tr> 
+            
             <div id="comment_{{i.order.id}}" style="position: fixed; width: 100%;height: 100%; display: none;">
               <div class="card" style="position: fixed; left:50%; transform: translate(-50%,0);top:30%;border: solid 1px #696cff;">
                 <div style="margin-left: auto;display: flex;flex-direction: row-reverse;"><button class="btn mt-1" onclick="Remove1({{i.order.id}})" ><i class='bx bx-x-circle'></i></button></div> 

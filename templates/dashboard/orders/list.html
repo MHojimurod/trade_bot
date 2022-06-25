@@ -42,6 +42,7 @@
               <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Sana</th>
+              <th>Chop etish</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>
@@ -67,6 +68,9 @@
                 <button class="btn btn-secondary btn-sm" onclick="Products({{i.order.id}})" >#{{i.order.id}} mahsulot</button>
               </td>
               <td>{{i.order.order_time|date:"d-m-Y H:i"}}</td>
+              <td>
+                <button class="btn btn-info btn-sm" onclick="PrintOrder('{{i.order.id}}','{{i.img1}}','{{i.img2}}','{{i.img3}}',`{{i.items}}`, `{{i.name}}`, `{{i.number}}`);">Rad etish</button>
+              </td>
               <td>
                 <a href="{% url 'update_order' pk=i.order.id status=1 %}" onclick="socket.close()" class="btn btn-success btn-sm" >Qabul qilish</a>
               </td>
@@ -97,6 +101,7 @@
               <th>Fillial</th>
               <th>Maxsulot</th>
               <th>Sana</th>
+              <th>Chop etish</th>
               <th>Qabul qilish</th>
               <th>Rad etish</th>
             </tr>
@@ -132,7 +137,7 @@
 
 
 {% block javascript %}
-
+<script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
 <script>
   function Products(product) {
     document.getElementById("card_"+String(product)).style.display = "block";
@@ -167,6 +172,36 @@
 
   }
 
+
+
+
+
+    function PrintOrder(id, selfimg, selfimg2, selfimg3, items, name, number) {
+      console.log(arguments)
+      let props = {
+        outputType: 'save',
+          returnJsPDFDocObject: true,
+          fileName: "Invoice 2021",
+          orientationLandscape: false,
+          compress: true,
+          logo: {
+          // src: "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/logo.png",
+            src: selfimg,
+            type: 'PNG', //optional, when src= data:uri (nodejs case)
+            width: 50,
+            height: 50,
+            margin: {
+                top: -20, //negative or positive num, from the current position
+                left: 0 //negative or positive num, from the current position
+            }
+          },
+          
+      }
+
+      var pdfObject = jsPDFInvoiceTemplate.default(props);
+
+    }
+
   const socket = new WebSocket(`ws://${location.hostname}:8001`);
 
   console.log(socket);
@@ -178,7 +213,7 @@
       }
     } );
   }
-  console.log(socket)
+  console.log(socket);
 </script>
 
 {% endblock %}
