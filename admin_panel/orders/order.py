@@ -554,7 +554,7 @@ def makeorderpdf(request, order):
         50 + (10 * i),
         xxx[i]
     )
-        
+    fpdf.PY3K = False
 
     # buffer = file.output(f'order_{str(order.id)}.pdf'.encode('latin-1', 'replace').decode(), "S")
     buffer = file.output(dest='S')
