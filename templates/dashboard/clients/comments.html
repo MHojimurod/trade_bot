@@ -44,7 +44,13 @@
                     <h6><b>Foydalanuvchi:</b> {{i.user.name}}</h6>
                     <h6><b>Telefon:</b> {{i.user.number}}</h6>
                     <h6><b>Vaqti:</b> {{i.created_at|date:"d-m-Y H:i"}}</h6>
-        
+                    {% if i.media_type == 1 %}
+                    <img src="{{ i.media.url }}" width="400px" alt="">
+                    {% elif i.media_type == 2 %}
+                    <video width="400px" controls>
+                      <source src="{{ i.media.url }}" type="video/mp4">
+                    </video>
+                    {% endif %}
                     <h5 class="fw-semibold">Savol va Taklif</h5>
                     <p >{{i.data|safe}}</p>
                     {% if not i.status %}

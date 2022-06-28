@@ -1,10 +1,13 @@
+import os
+from uuid import uuid4
 from telegram.ext import CallbackContext, Updater
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from admin_panel.models import Aksiya, Language, Support, User, Fillials
 from telegram import User as tgUser
 from tg_bot.utils import distribute, get_user
 from .constants import  ADDRESS, AKSIYA, FILIAL, LANGUAGE, NAME, NUMBER, MENU, OUR_ADDRESSES, SUPPORT
-
+# import settings from django
+from django.conf import settings
 
 from .utils import *
 class a(Update):
@@ -159,10 +162,35 @@ class Basehandlers():
     
     def support_message(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
-        Support.objects.create(user=db, data=update.message.text)
+        Support.objects.create(user=db, data=update.message.text, media_type=0)
         user.send_message(db.text('support_accepted'),
                           reply_markup=ReplyKeyboardMarkup(db.menu()))
         return MENU
+
+    def support_photo(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        # save photo to media folder and get path
+        photo_path = f"media/comments/{user.id}_comment_photo_{db.id}_{uuid4()}"
+        photo_path = update.message.photo[-1].get_file().download(photo_path)[6:]
+        Support.objects.create(user=db, data=update.message.caption if update.message.caption else "No comment" , media=photo_path, media_type=1)
+        user.send_message(db.text('support_accepted'),
+                            reply_markup=ReplyKeyboardMarkup(db.menu()))
+        return MENU
+
+    def support_video(self, update:Update, context: CallbackContext):
+        user, db = get_user(update)
+        # save video to media folder and get path
+        # video_path = settings.MEDIA_ROOT, "support_videos", str(uuid4())
+        # video_path = update.message.video.get_file().download(video_path)
+        video_path = f"media/comments/{user.id}_comment_video_{db.id}_{uuid4()}"
+        video_path = update.message.video.get_file().download(video_path)[6:]
+
+        Support.objects.create(user=db, data=update.message.caption if update.message.caption else "No comment", media=video_path, media_type=2)
+        user.send_message(db.text('support_accepted'),
+                            reply_markup=ReplyKeyboardMarkup(db.menu()))
+        return MENU
+
+
 
     @remove_temp_message
     def aksiya(self, update: Update,context: CallbackContext):

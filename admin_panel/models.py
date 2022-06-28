@@ -791,10 +791,17 @@ class Aksiya(models.Model, Name):
 
 class Support(models.Model):
     data = models.TextField(blank=True)
+    media = models.FileField(null=True, blank=True)
+    media_type = models.IntegerField(default=0,choices=[
+        (0, 'text'),
+        (1, "image"),
+        (2, 'video')
+    ])
     status = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     answer = models.CharField(max_length=1000,default="")
     created_at = models.DateTimeField(auto_now_add=True)
+    
 
 
 class Ads(models.Model):

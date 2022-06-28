@@ -195,7 +195,15 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                     MessageHandler(Filters.text & not_start, self.address)
                 ],
                 SUPPORT: [
-                    MessageHandler(Filters.text, self.support_message)
+                    MessageHandler(Filters.text, self.support_message),
+                    MessageHandler(
+                        Filters.photo,
+                        self.support_photo
+                    ),
+                    MessageHandler(
+                        Filters.video,
+                        self.support_video
+                    ),
                 ],
                 AKSIYA: [CallbackQueryHandler(
                         self.aksiya, pattern="^back_to_aksiyas"),
