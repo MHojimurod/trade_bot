@@ -1,7 +1,7 @@
 from admin_panel.models import BotSettings, BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
-from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, MENU, ORDER
+from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, LIVE_PLACE, MENU, ORDER
 from tg_bot.utils import get_user, remove_temp_message
 
 
@@ -302,7 +302,21 @@ class Order:
         f = update.message.photo[-1].get_file().download(f"media/busket/{user.id}_cart_self_passport_image_{db.busket.id}")
         db.busket.set_self_passport_image(
             f[6:])
-        print(f, f[6:])
+        user.send_message(db.text('send_work_place'), reply_markup=ReplyKeyboardRemove())
+        return WORK_PLACE
+    
+    def work_place(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        context.user_data['order']['work_place'] = update.message.text
+        db.busket.set_work_place(update.message.text)
+        user.send_message(db.text('send_live_place'), reply_markup=ReplyKeyboardRemove())
+        return LIVE_PLACE
+    
+    def live_place(self, update:Update, context:CallbackContext):
+        user, db = get_user(update)
+        context.user_data['order']['live_place'] = update.message.text
+        db.busket.set_live_place(update.message.text)
+        user.send_message(db.text('send_work_time'), reply_markup=ReplyKeyboardRemove())
         user.send_message(db.text('is_your_number',number=db.number), reply_markup=ReplyKeyboardMarkup(
             [
                 [
@@ -314,7 +328,9 @@ class Order:
         ), parse_mode="HTML")
 
         return CART_ORDER_CHECK_NUMBER
-    
+
+
+
     def cart_order_check_number(self, update:Update, context: CallbackContext):
         user, db = get_user(update)
         if update.message.text.startswith("✅"):

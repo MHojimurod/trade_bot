@@ -666,6 +666,8 @@ class Busket(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     bis_ordered: bool = models.BooleanField(default=False)
     order_time = models.DateTimeField(null=True, blank=True)
+    work_place = models.CharField(max_length=100, null=True, blank=True)
+    live_place = models.CharField(max_length=100, null=True, blank=True)
 
     def get_is_ordered(self):
         return self.bis_ordered and self.products.count() > 0
@@ -724,6 +726,14 @@ class Busket(models.Model):
 
     def set_self_passport_image(self, image):
         self.self_password_image = image
+        self.save()
+    
+    def set_work_place(self, work_place):
+        self.work_place = work_place
+        self.save()
+    
+    def set_live_place(self, live_place):
+        self.live_place = live_place
         self.save()
     
     def set_extra_number(self, number):

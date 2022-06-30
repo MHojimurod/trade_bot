@@ -11,7 +11,7 @@ from tg_bot.utils import get_user
 from .settings import Settings
 from telegram.ext import Updater, ConversationHandler, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from .constants import (
-    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_FILIAL, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU
+    ADDRESS, AKSIYA, CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, FILIAL, GET_NUMBER_FOR_ORDER, LIVE_PLACE, MY_ORDERS, ORDER, OUR_ADDRESSES, SETTINGS, SETTINGS_FILIAL, SETTINGS_LANGUAGE, SETTINGS_NAME, SETTINGS_NUMBER, SUPPORT, TOKEN, LANGUAGE, NAME, NUMBER,MENU, WORK_PLACE
 )
 from .basehandlers import Basehandlers
 from .order import Order
@@ -134,6 +134,12 @@ class Bot(Updater, Basehandlers, Order, Settings, myOrders):
                 CART_ORDER_SELF_PASSWORD_IMAGE: [
                     MessageHandler(Filters.photo, self.cart_order_self_password_image),
                     MessageHandler(Filters.text & not_start, self.error_self_passport_image)
+                ],
+                WORK_PLACE: [
+                    MessageHandler(Filters.text & not_start, self.work_place)
+                ],
+                LIVE_PLACE: [
+                    MessageHandler(Filters.text & not_start, self.live_place)
                 ],
                 CART_ORDER_CHECK_NUMBER: [
                     MessageHandler(
