@@ -502,18 +502,20 @@ def makeorderpdf(request, order):
     #     h = 95,
     # )
 
-    file.image(
-        order.passport_image.path,
-        x=2,
-        y = 2,
-        w = 103,
-    )
-    file.image(
-        order.self_password_image.path,
-        x=106,
-        y = 2,
-        w = 103,
-    )
+    # file.image(
+    #     order.passport_image.path,
+    #     x=2,
+    #     y = 2,
+    #     w = 103,
+    #     type='jpg'
+    # )
+    # file.image(
+    #     order.self_password_image.path,
+    #     x=106,
+    #     y = 2,
+    #     w = 103,
+    #     type='jpg'
+    # )
 
 
 
@@ -522,36 +524,74 @@ def makeorderpdf(request, order):
     file.set_font('Arial', 'B', 20)
     file.text(
         2,
-        140,
+        7,
         "Buyurtmachi".encode('latin-1', 'replace').decode()
     )
     file.text(
         2,
-        150,
+        17,
         "FIO:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
         17,
-        150,
+        17,
         order.user.name.encode('latin-1', 'replace').decode()
     )
+
+
     file.set_font('Arial', 'B', 20)
     file.text(
         2,
-        160,
+        27,
         "Tel:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
     file.text(
         15,
-        160,
+        27,
         order.user.number.encode('latin-1', 'replace').decode()
     )
+
+
     file.set_font('Arial', 'B', 20)
     file.text(
         2,
-        170,
+        37,
+        "Yashash joyi:".encode('latin-1', 'replace').decode()
+    )
+    file.set_font("Arial", "B", 16)
+    file.text(
+        50,
+        37,
+        order.live_place.encode('latin-1', 'replace').decode()
+    )
+
+
+    file.set_font('Arial', 'B', 20)
+    file.text(
+        2,
+        47,
+        "Ish joyi:".encode('latin-1', 'replace').decode()
+    )
+    file.set_font("Arial", "B", 16)
+    file.text(
+        30,
+        47,
+        order.work_place.encode('latin-1', 'replace').decode()
+    )
+
+
+
+
+
+
+
+
+    file.set_font('Arial', 'B', 20)
+    file.text(
+        2,
+        60,
         "Buyurtmalar:".encode('latin-1', 'replace').decode()
     )
     file.set_font("Arial", "B", 16)
@@ -563,8 +603,8 @@ def makeorderpdf(request, order):
     xxx = texts['items'].split("\n")
     for i in range(len(xxx)):
         file.text(
-        2,
-        180 + (10 * i),
+        10,
+        70 + (10 * i),
         xxx[i]
     )
         

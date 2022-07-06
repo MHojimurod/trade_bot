@@ -1,7 +1,7 @@
 from admin_panel.models import BotSettings, BusketItem, Category, Product
 from telegram import *
 from telegram.ext import *
-from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, LIVE_PLACE, MENU, ORDER
+from tg_bot.constants import CART, CART_ORDER_CHECK_NUMBER, CART_ORDER_LOCATION, CART_ORDER_PASSPORT_IMAGE, CART_ORDER_SELF_IMAGE, CART_ORDER_SELF_PASSWORD_IMAGE, GET_NUMBER_FOR_ORDER, LIVE_PLACE, MENU, ORDER, WORK_PLACE
 from tg_bot.utils import get_user, remove_temp_message
 
 
